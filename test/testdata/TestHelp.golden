@@ -1,0 +1,64 @@
+adr help
+usage: adr help COMMAND [ARG] ...
+COMMAND is one of:
+  config
+  generate
+  help
+  init
+  link
+  list
+  new
+  upgrade-repository
+Run 'adr help COMMAND' for help on a specific command.
+adr help generate
+usage: adr generate [REPORT [OPTION ...]]
+
+Generates summary documentation about the architecture decision records
+that is typically fed into the tool chain for publishing a project's
+documentatation.
+
+To list the report types that can be generated, run:
+
+    adr generate
+
+To get help on a specific report generator, run:
+
+    adr help generate <report-type>
+
+For example, the following command will run the "toc" (table of contents)
+generator:
+
+    adr generate toc
+
+The following command will display help for the "toc" generator:
+
+    adr help generate toc
+
+Subcommands:
+  adr generate graph
+  adr generate toc
+adr help generate toc
+usage: adr generate toc [-i INTRO] [-o OUTRO] [-p LINK_PREFIX]
+
+Generates a table of contents in Markdown format to stdout.
+
+Options:
+
+-i INTRO  precede the table of contents with the given INTRO text.
+-o OUTRO  follow the table of contents with the given OUTRO text.
+-p LINK_PREFIX
+          prefix each decision file link with LINK_PREFIX.
+
+Both INTRO and OUTRO must be in Markdown format.
+adr nonsense
+usage: adr help COMMAND [ARG] ...
+COMMAND is one of:
+  config
+  generate
+  help
+  init
+  link
+  list
+  new
+  upgrade-repository
+Run 'adr help COMMAND' for help on a specific command.
