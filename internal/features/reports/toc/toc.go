@@ -51,6 +51,13 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 		return Result{}, err
 	}
 
+	// A log with no records has no contents, and a heading with nothing under
+	// it would be published as though it were a document.  The intro and outro
+	// are not read, because nothing is written for them to surround.
+	if len(records) == 0 {
+		return Result{}, nil
+	}
+
 	var out strings.Builder
 	fmt.Fprintln(&out, "# Architecture Decision Records")
 	fmt.Fprintln(&out)

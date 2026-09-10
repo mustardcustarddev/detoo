@@ -1,0 +1,5 @@
+  # Publish a table of contents beside the records:
+  adr list --toc > docs/adr/README.md
+
+  # Publish one elsewhere, with an introduction, linking back to the records:
+  adr list --toc -i intro.md -p ../docs/adr/ > site/decisions.md

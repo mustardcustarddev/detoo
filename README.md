@@ -34,9 +34,8 @@ built-in documentation.
 | `adr init [DIRECTORY]` | Start a log of decision records, and write the first one |
 | `adr new TITLE` | Create the next numbered record and open it in your editor |
 | `adr link (-s \| -u) SOURCE TARGET` | Record that one record supercedes or updates another |
-| `adr list` | List the decision records |
-| `adr generate toc` | Write a table of contents in Markdown |
-| `adr generate graph` | Write the links between records in Graphviz format |
+| `adr list [--toc]` | List the decision records, or write a table of contents in Markdown |
+| `adr graph [--mermaid \| --graphviz]` | Draw the links between records in Mermaid or Graphviz format |
 | `adr config` | Print the configuration in use |
 | `adr help [COMMAND]` | Explain a command, or list them all |
 | `adr completion SHELL` | Write a shell completion script |
@@ -49,10 +48,13 @@ built-in documentation.
 | `-u, --update REFERENCE` | `new` | A decision this one updates, by number or partial filename; repeatable | — |
 | `-s, --supercede` | `link` | SOURCE supercedes TARGET, which is no longer accepted | — |
 | `-u, --update` | `link` | SOURCE makes substantive changes to TARGET | — |
-| `-p, --prefix LINK_PREFIX` | `generate toc`, `generate graph` | Prefix each record link | — |
-| `-i, --intro INTRO` | `generate toc` | Markdown file to precede the contents | — |
-| `-o, --outro OUTRO` | `generate toc` | Markdown file to follow the contents | — |
-| `-e, --extension EXTENSION` | `generate graph` | File extension the generated links refer to | `.html` |
+| `--toc` | `list` | Write a table of contents in Markdown | — |
+| `-i, --intro INTRO` | `list --toc` | Markdown file to precede the contents | — |
+| `-o, --outro OUTRO` | `list --toc` | Markdown file to follow the contents | — |
+| `-p, --prefix LINK_PREFIX` | `list --toc`, `graph` | Prefix each record link | — |
+| `--mermaid` | `graph` | Draw the graph in Mermaid format, the default | — |
+| `--graphviz` | `graph` | Draw the graph in Graphviz format | — |
+| `-e, --extension EXTENSION` | `graph` | File extension the generated links refer to | `.html` |
 | `-h, --help` | all | Show help for the command | `false` |
 
 ### Configuration
@@ -97,11 +99,13 @@ stays accepted:
 adr link --update 12 9
 ```
 
-Publish a table of contents, and render the decisions as a diagram:
+Publish a table of contents, and draw the decisions as a diagram, with Mermaid
+or with Graphviz:
 
 ```bash
-adr generate toc > docs/adr/README.md
-adr generate graph | dot -Tpng -o docs/adr/graph.png
+adr list --toc > docs/adr/README.md
+adr graph | mmdc -i - -o docs/adr/graph.svg
+adr graph --graphviz | dot -Tpng -o docs/adr/graph.png
 ```
 
 ## Exit Codes

@@ -12,49 +12,71 @@ Usage:
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
   config      Print the configuration in use
-  generate    Write a report about the decision records
+  graph       Draw the links between records in Mermaid or Graphviz format
   help        Help about any command
   init        Start a log of decision records
   link        Record that one decision record supercedes or updates another
-  list        List the decision records
+  list        List the decision records, or write a table of contents
   new         Create the next numbered decision record
 
 Flags:
   -h, --help   help for adr
 
 Use "adr [command] --help" for more information about a command.
-adr help generate
-Generates summary documentation about the architecture decision records
-that is typically fed into the tool chain for publishing a project's
-documentatation.
+adr help graph
+Draws the decision records and the links between them, in Mermaid format, or
+in Graphviz format with --graphviz.  The graph can be piped into mmdc or dot to
+make an image.
 
-Run "adr generate" on its own to list the report types that can be
-generated.
+Each node in the graph is a decision record, and links to the record's
+document.  Dotted arrows chain the records in order, and each link between two
+records is drawn once, from the record that made it.
 
-Usage:
-  adr generate [REPORT] [flags]
-  adr generate [command]
-
-Available Commands:
-  graph       Write the links between records in Graphviz format
-  toc         Write a table of contents in Markdown
-
-Flags:
-  -h, --help   help for generate
-
-Use "adr generate [command] --help" for more information about a command.
-adr help generate toc
-Generates a table of contents in Markdown format to stdout.
-
-Both the intro and the outro text must be in Markdown format.
+When there are no records, nothing is written.
 
 Usage:
-  adr generate toc [flags]
+  adr graph [flags]
+
+Examples:
+  # Draw the decision records as an SVG image, with Mermaid:
+  adr graph | mmdc -i - -o graph.svg
+
+  # Draw them with Graphviz instead:
+  adr graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each record links to a .pdf file:
+  adr graph --graphviz -e .pdf | dot -Tpdf > graph.pdf
 
 Flags:
-  -h, --help                 help for toc
+  -e, --extension EXTENSION   the file EXTENSION of the documents the generated links refer to (default ".html")
+      --graphviz              draw the graph in Graphviz format
+  -h, --help                  help for graph
+      --mermaid               draw the graph in Mermaid format, the default
+  -p, --prefix LINK_PREFIX    prefix each decision file link with LINK_PREFIX
+adr help list
+Lists the architecture decision records, one path a line.
+
+With --toc, writes a table of contents in Markdown instead, in which each
+record links to its document.  The intro and the outro, if given, must also be
+in Markdown.
+
+When there are no records, nothing is written.
+
+Usage:
+  adr list [flags]
+
+Examples:
+  # Publish a table of contents beside the records:
+  adr list --toc > docs/adr/README.md
+
+  # Publish one elsewhere, with an introduction, linking back to the records:
+  adr list --toc -i intro.md -p ../docs/adr/ > site/decisions.md
+
+Flags:
+  -h, --help                 help for list
   -i, --intro INTRO          precede the table of contents with the Markdown in INTRO
   -o, --outro OUTRO          follow the table of contents with the Markdown in OUTRO
   -p, --prefix LINK_PREFIX   prefix each decision file link with LINK_PREFIX
+      --toc                  write a table of contents in Markdown
 adr nonsense
 adr: unknown command "nonsense" for "adr"

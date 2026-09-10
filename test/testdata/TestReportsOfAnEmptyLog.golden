@@ -1,0 +1,5 @@
+mkdir -p docs/adr
+adr list
+adr list --toc -i intro.md -o outro.md
+adr graph
+adr graph --graphviz

@@ -1,6 +1,8 @@
-  # Generate a graph visualisation of decision records in SVG format:
-  adr generate graph | dot -Tsvg > graph.svg
+  # Draw the decision records as an SVG image, with Mermaid:
+  adr graph | mmdc -i - -o graph.svg
 
-  # Generate a graph visualisation in PDF format, in which all links
-  # are to .pdf files:
-  adr generate graph -e .pdf | dot -Tpdf > graph.pdf
+  # Draw them with Graphviz instead:
+  adr graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each record links to a .pdf file:
+  adr graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

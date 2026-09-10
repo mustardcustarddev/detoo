@@ -44,6 +44,30 @@ func TestHandlePrefixesTheLinks(t *testing.T) {
 	}
 }
 
+// A log with no records has no contents, so nothing is written — not even the
+// heading, or an intro and outro, which are not read.  The intro and outro
+// named here do not exist, and asking for them is not an error.
+func TestHandleWritesNothingForAnEmptyLog(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		query Query
+	}{
+		{"alone", Query{}},
+		{"with an intro and outro", Query{Intro: "intro.md", Outro: "outro.md"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			empty := memlog.WithRecords(map[string]string{})
+			result, err := Handler{Log: empty}.Handle(context.Background(), test.query)
+			if err != nil {
+				t.Fatalf("Handle: %v", err)
+			}
+			if result.Markdown != "" {
+				t.Errorf("Markdown =\n%s\nwant nothing", result.Markdown)
+			}
+		})
+	}
+}
+
 func TestHandleSurroundsTheListWithAnIntroAndOutro(t *testing.T) {
 	log := newLog()
 	if err := log.Write(context.Background(), "intro.md", "An intro.\n\nMultiple paragraphs.\n"); err != nil {

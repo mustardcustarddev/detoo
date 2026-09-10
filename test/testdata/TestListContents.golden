@@ -4,23 +4,9 @@ adr new "Second Decision"
 docs/adr/0002-second-decision.md
 adr new "Third Decision"
 docs/adr/0003-third-decision.md
-cat > intro.md <<EOF
-An intro.
-
-Multiple paragraphs.
-EOF
-cat > outro.md <<EOF
-An outro.
-EOF
-adr generate toc -i intro.md -o outro.md
+adr list --toc
 # Architecture Decision Records
-
-An intro.
-
-Multiple paragraphs.
 
 * [1. First Decision](0001-first-decision.md)
 * [2. Second Decision](0002-second-decision.md)
 * [3. Third Decision](0003-third-decision.md)
-
-An outro.

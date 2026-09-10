@@ -40,7 +40,7 @@ func NewRootCommand(application *app.Application, stdout, stderr io.Writer, gete
 	root.SetErr(stderr)
 	root.AddCommand(
 		newConfigCommand(application),
-		newGenerateCommand(application),
+		newGraphCommand(application),
 		newInitCommand(application),
 		newLinkCommand(application),
 		newListCommand(application),

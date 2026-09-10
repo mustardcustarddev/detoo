@@ -212,36 +212,60 @@ func TestSupercedeMultipleAdrs(t *testing.T) {
 	w.check()
 }
 
-func TestGenerateContents(t *testing.T) {
+func TestListContents(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
-	w.adr("generate", "toc")
+	w.adr("list", "--toc")
 	w.check()
 }
 
-func TestGenerateContentsWithPrefix(t *testing.T) {
+func TestListContentsWithPrefix(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
-	w.adr("generate", "toc", "-p", "foo/docs/adr/")
+	w.adr("list", "--toc", "-p", "foo/docs/adr/")
 	w.check()
 }
 
-func TestGenerateContentsWithHeaderAndFooter(t *testing.T) {
+func TestListContentsWithHeaderAndFooter(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
 	w.write("intro.md", "An intro.\n\nMultiple paragraphs.\n")
 	w.write("outro.md", "An outro.\n")
-	w.adr("generate", "toc", "-i", "intro.md", "-o", "outro.md")
+	w.adr("list", "--toc", "-i", "intro.md", "-o", "outro.md")
 	w.check()
 }
 
-func TestGenerateGraph(t *testing.T) {
+// TestReportOptionsAreChecked covers options that contradict each other: a
+// table of contents option without --toc, and a graph in two formats.
+func TestReportOptionsAreChecked(t *testing.T) {
+	w := newWorkspace(t)
+	w.adr("new", "First Decision")
+	w.adr("list", "-p", "foo/docs/adr/")
+	w.adr("graph", "--graphviz", "--mermaid")
+	w.check()
+}
+
+// TestReportsOfAnEmptyLog covers a log that exists but has no records yet: each
+// report writes nothing at all, so publishing one creates no empty document.
+func TestReportsOfAnEmptyLog(t *testing.T) {
+	w := newWorkspace(t)
+	w.mkdir("docs/adr")
+	w.adr("list")
+	w.adr("list", "--toc", "-i", "intro.md", "-o", "outro.md")
+	w.adr("graph")
+	w.adr("graph", "--graphviz")
+	w.check()
+}
+
+// graphedLog returns a workspace holding a log whose records supercede and
+// update one another, for a graph to draw.
+func graphedLog(t *testing.T) *workspace {
 	w := newWorkspace(t)
 	w.adr("init")
 	w.adr("new", "An idea that seems good at the time")
@@ -249,8 +273,20 @@ func TestGenerateGraph(t *testing.T) {
 	w.adr("new", "This will work")
 	w.adr("new", "-s", "3", "The end")
 	w.adr("link", "-u", "5", "4")
-	w.adr("generate", "graph")
-	w.adr("generate", "graph", "-p", "http://example.com/", "-e", ".xxx")
+	return w
+}
+
+func TestGraphviz(t *testing.T) {
+	w := graphedLog(t)
+	w.adr("graph", "--graphviz")
+	w.adr("graph", "--graphviz", "-p", "http://example.com/", "-e", ".xxx")
+	w.check()
+}
+
+func TestMermaid(t *testing.T) {
+	w := graphedLog(t)
+	w.adr("graph")
+	w.adr("graph", "--mermaid", "-p", "http://example.com/", "-e", ".xxx")
 	w.check()
 }
 
@@ -279,8 +315,8 @@ func TestOperandsMayBeginWithAHyphen(t *testing.T) {
 func TestHelp(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("help")
-	w.adr("help", "generate")
-	w.adr("help", "generate", "toc")
+	w.adr("help", "graph")
+	w.adr("help", "list")
 	w.adr("nonsense")
 	w.check()
 }

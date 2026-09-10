@@ -2,6 +2,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"testing"
 
@@ -16,8 +17,27 @@ func newLog() *memlog.Log {
 	})
 }
 
-func TestHandleWritesADigraphOfTheLog(t *testing.T) {
+// A graph is drawn in Mermaid unless another format is asked for.
+func TestHandleDrawsTheLogInMermaidByDefault(t *testing.T) {
 	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{LinkExtension: ".html"})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+
+	want := "flowchart TD\n" +
+		"  adr1[\"1. First\"]\n" +
+		"  adr2[\"2. Second\"]\n" +
+		"  adr1 -.-> adr2\n" +
+		"  adr2 -->|\"Supercedes\"| adr1\n" +
+		"  click adr1 \"0001-first.html\"\n" +
+		"  click adr2 \"0002-second.html\"\n"
+	if result.Document != want {
+		t.Errorf("Document =\n%s\nwant\n%s", result.Document, want)
+	}
+}
+
+func TestHandleWritesADigraphOfTheLog(t *testing.T) {
+	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{Format: Graphviz, LinkExtension: ".html"})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -31,35 +51,116 @@ func TestHandleWritesADigraphOfTheLog(t *testing.T) {
 		"  }\n" +
 		"  _2 -> _1 [label=\"Supercedes\", weight=0]\n" +
 		"}\n"
-	if result.Graphviz != want {
-		t.Errorf("Graphviz =\n%s\nwant\n%s", result.Graphviz, want)
+	if result.Document != want {
+		t.Errorf("Document =\n%s\nwant\n%s", result.Document, want)
 	}
 }
 
 // A reverse link is the other record's link seen from the far end, so drawing
 // it too would give every relationship two arrows.
 func TestHandleDrawsEachLinkOnce(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{})
-	if err != nil {
-		t.Fatalf("Handle: %v", err)
-	}
-	if strings.Contains(result.Graphviz, "Superceded by") {
-		t.Errorf("the graph draws a reverse link:\n%s", result.Graphviz)
-	}
-	if got := strings.Count(result.Graphviz, "weight=0"); got != 1 {
-		t.Errorf("the graph has %d links, want 1:\n%s", got, result.Graphviz)
+	for _, test := range []struct {
+		name   string
+		format Format
+		arrow  string // what each link, and nothing else, is drawn with
+	}{
+		{"Mermaid", Mermaid, "-->|"},
+		{"Graphviz", Graphviz, "weight=0"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{Format: test.format})
+			if err != nil {
+				t.Fatalf("Handle: %v", err)
+			}
+			if strings.Contains(result.Document, "Superceded by") {
+				t.Errorf("the graph draws a reverse link:\n%s", result.Document)
+			}
+			if got := strings.Count(result.Document, test.arrow); got != 1 {
+				t.Errorf("the graph has %d links, want 1:\n%s", got, result.Document)
+			}
+		})
 	}
 }
 
 func TestHandlePrefixesAndExtendsTheNodeLinks(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{
-		LinkPrefix:    "http://example.com/",
-		LinkExtension: ".xxx",
+	for _, test := range []struct {
+		name   string
+		format Format
+		want   string
+	}{
+		{"Mermaid", Mermaid, `click adr1 "http://example.com/0001-first.xxx"`},
+		{"Graphviz", Graphviz, `URL="http://example.com/0001-first.xxx"`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{
+				Format:        test.format,
+				LinkPrefix:    "http://example.com/",
+				LinkExtension: ".xxx",
+			})
+			if err != nil {
+				t.Fatalf("Handle: %v", err)
+			}
+			if !strings.Contains(result.Document, test.want) {
+				t.Errorf("the graph does not contain %s:\n%s", test.want, result.Document)
+			}
+		})
+	}
+}
+
+// Mermaid has no backslash escapes, so a quote in a title would end the node's
+// label early and break the diagram.
+func TestHandleEscapesQuotesForMermaid(t *testing.T) {
+	log := memlog.WithRecords(map[string]string{
+		"docs/adr/0001-use-quotes.md": "# 1. Use \"quotes\"\n\n## Status\n\nAccepted\n\n## Context\n\nC.\n",
 	})
+
+	result, err := Handler{Log: log}.Handle(context.Background(), Query{})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	if want := `URL="http://example.com/0001-first.xxx"`; !strings.Contains(result.Graphviz, want) {
-		t.Errorf("the graph does not contain %s:\n%s", want, result.Graphviz)
+	if want := `adr1["1. Use #quot;quotes#quot;"]`; !strings.Contains(result.Document, want) {
+		t.Errorf("the graph does not contain %s:\n%s", want, result.Document)
+	}
+}
+
+// A log with no records has nothing to draw, so nothing is written in either
+// format — not even an empty flowchart or digraph.
+func TestHandleDrawsNothingForAnEmptyLog(t *testing.T) {
+	for _, test := range []struct {
+		name   string
+		format Format
+	}{
+		{"Mermaid", Mermaid},
+		{"Graphviz", Graphviz},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			empty := memlog.WithRecords(map[string]string{})
+			result, err := Handler{Log: empty}.Handle(context.Background(), Query{Format: test.format})
+			if err != nil {
+				t.Fatalf("Handle: %v", err)
+			}
+			if result.Document != "" {
+				t.Errorf("Document =\n%s\nwant nothing", result.Document)
+			}
+		})
+	}
+}
+
+// The format is checked before the log is read, so an unknown one is reported
+// whether or not there is anything to draw.
+func TestHandleRejectsAnUnknownFormat(t *testing.T) {
+	for _, test := range []struct {
+		name string
+		log  *memlog.Log
+	}{
+		{"records", newLog()},
+		{"empty", memlog.WithRecords(map[string]string{})},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := Handler{Log: test.log}.Handle(context.Background(), Query{Format: Format(99)})
+			if !errors.Is(err, ErrUnknownFormat) {
+				t.Errorf("err = %v, want %v", err, ErrUnknownFormat)
+			}
+		})
 	}
 }

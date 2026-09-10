@@ -8,6 +8,7 @@ import (
 
 	"github.com/mustardcustard/decision-records/internal/app"
 	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/features/reports/graph"
 )
 
 // These tests cover what belongs to the CLI: that the tree is assembled, that
@@ -113,6 +114,58 @@ func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
 				t.Errorf("relationFlag() = %v, want %q", err, test.wantErr)
 			case got != test.want:
 				t.Errorf("relationFlag() = %v, want %v", got, test.want)
+			}
+		})
+	}
+}
+
+// TestFormatFlagDefaultsToMermaid covers the switches "adr graph" takes: the
+// graph is Mermaid unless --graphviz is given, and cannot be both.
+func TestFormatFlagDefaultsToMermaid(t *testing.T) {
+	for _, test := range []struct {
+		name              string
+		graphviz, mermaid bool
+		want              graph.Format
+		wantErr           string
+	}{
+		{"neither", false, false, graph.Mermaid, ""},
+		{"mermaid", false, true, graph.Mermaid, ""},
+		{"graphviz", true, false, graph.Graphviz, ""},
+		{"both", true, true, graph.Mermaid, "give either --graphviz or --mermaid, not both"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := formatFlag(test.graphviz, test.mermaid)
+			switch {
+			case test.wantErr == "" && err != nil:
+				t.Errorf("formatFlag() = %v, want no error", err)
+			case test.wantErr != "" && (err == nil || err.Error() != test.wantErr):
+				t.Errorf("formatFlag() = %v, want %q", err, test.wantErr)
+			case got != test.want:
+				t.Errorf("formatFlag() = %v, want %v", got, test.want)
+			}
+		})
+	}
+}
+
+// TestTOCOptionsNeedTheTOCSwitch covers "adr list": the options that shape a
+// table of contents are rejected without --toc, rather than silently ignored.
+func TestTOCOptionsNeedTheTOCSwitch(t *testing.T) {
+	for _, test := range []struct {
+		name                 string
+		toc                  bool
+		intro, outro, prefix string
+		wantErr              bool
+	}{
+		{"list", false, "", "", "", false},
+		{"toc", true, "intro.md", "outro.md", "docs/", false},
+		{"intro without toc", false, "intro.md", "", "", true},
+		{"outro without toc", false, "", "outro.md", "", true},
+		{"prefix without toc", false, "", "", "docs/", true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			err := tocOptions(test.toc, test.intro, test.outro, test.prefix)
+			if (err != nil) != test.wantErr {
+				t.Errorf("tocOptions() = %v, want an error: %t", err, test.wantErr)
 			}
 		})
 	}

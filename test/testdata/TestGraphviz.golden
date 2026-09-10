@@ -9,7 +9,7 @@ docs/adr/0004-this-will-work.md
 adr new -s 3 "The end"
 docs/adr/0005-the-end.md
 adr link -u 5 4
-adr generate graph
+adr graph --graphviz
 digraph {
   node [shape=plaintext];
   subgraph {
@@ -27,7 +27,7 @@ digraph {
   _5 -> _3 [label="Supercedes", weight=0]
   _5 -> _4 [label="Updates", weight=0]
 }
-adr generate graph -p http://example.com/ -e .xxx
+adr graph --graphviz -p http://example.com/ -e .xxx
 digraph {
   node [shape=plaintext];
   subgraph {

@@ -4,7 +4,7 @@ adr new "Second Decision"
 docs/adr/0002-second-decision.md
 adr new "Third Decision"
 docs/adr/0003-third-decision.md
-adr generate toc -p foo/docs/adr/
+adr list --toc -p foo/docs/adr/
 # Architecture Decision Records
 
 * [1. First Decision](foo/docs/adr/0001-first-decision.md)

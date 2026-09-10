@@ -1,0 +1,6 @@
+adr new "First Decision"
+docs/adr/0001-first-decision.md
+adr list -p foo/docs/adr/
+adr: give --toc to use --intro, --outro or --prefix
+adr graph --graphviz --mermaid
+adr: give either --graphviz or --mermaid, not both

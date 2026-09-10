@@ -1,0 +1,49 @@
+adr init
+docs/adr/0001-record-architecture-decisions.md
+adr new "An idea that seems good at the time"
+docs/adr/0002-an-idea-that-seems-good-at-the-time.md
+adr new -s 2 "A better idea"
+docs/adr/0003-a-better-idea.md
+adr new "This will work"
+docs/adr/0004-this-will-work.md
+adr new -s 3 "The end"
+docs/adr/0005-the-end.md
+adr link -u 5 4
+adr graph
+flowchart TD
+  adr1["1. Record architecture decisions"]
+  adr2["2. An idea that seems good at the time"]
+  adr1 -.-> adr2
+  adr3["3. A better idea"]
+  adr2 -.-> adr3
+  adr4["4. This will work"]
+  adr3 -.-> adr4
+  adr5["5. The end"]
+  adr4 -.-> adr5
+  adr3 -->|"Supercedes"| adr2
+  adr5 -->|"Supercedes"| adr3
+  adr5 -->|"Updates"| adr4
+  click adr1 "0001-record-architecture-decisions.html"
+  click adr2 "0002-an-idea-that-seems-good-at-the-time.html"
+  click adr3 "0003-a-better-idea.html"
+  click adr4 "0004-this-will-work.html"
+  click adr5 "0005-the-end.html"
+adr graph --mermaid -p http://example.com/ -e .xxx
+flowchart TD
+  adr1["1. Record architecture decisions"]
+  adr2["2. An idea that seems good at the time"]
+  adr1 -.-> adr2
+  adr3["3. A better idea"]
+  adr2 -.-> adr3
+  adr4["4. This will work"]
+  adr3 -.-> adr4
+  adr5["5. The end"]
+  adr4 -.-> adr5
+  adr3 -->|"Supercedes"| adr2
+  adr5 -->|"Supercedes"| adr3
+  adr5 -->|"Updates"| adr4
+  click adr1 "http://example.com/0001-record-architecture-decisions.xxx"
+  click adr2 "http://example.com/0002-an-idea-that-seems-good-at-the-time.xxx"
+  click adr3 "http://example.com/0003-a-better-idea.xxx"
+  click adr4 "http://example.com/0004-this-will-work.xxx"
+  click adr5 "http://example.com/0005-the-end.xxx"
