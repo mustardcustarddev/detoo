@@ -160,11 +160,24 @@ func TestLinking(t *testing.T) {
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "Third Record")
-	w.adr("link", "3", "Amends", "1", "Amended by")
-	w.adr("link", "3", "Clarifies", "2", "Clarified by")
+	w.adr("link", "--update", "3", "1")
+	w.adr("link", "-s", "3", "2")
 	w.head(12, "docs/adr/0001-first-record.md")
-	w.head(12, "docs/adr/0002-second-record.md")
+	w.head(10, "docs/adr/0002-second-record.md")
 	w.head(14, "docs/adr/0003-third-record.md")
+	w.check()
+}
+
+// TestLinkNeedsExactlyOneRelation covers the CLI half of validating a link: it
+// must say whether it supercedes or updates, and cannot say both.  Nothing is
+// written when it fails.
+func TestLinkNeedsExactlyOneRelation(t *testing.T) {
+	w := newWorkspace(t)
+	w.adr("new", "First Record")
+	w.adr("new", "Second Record")
+	w.adr("link", "2", "1")
+	w.adr("link", "-s", "-u", "2", "1")
+	w.head(9, "docs/adr/0001-first-record.md")
 	w.check()
 }
 
@@ -172,7 +185,7 @@ func TestLinkingNewRecords(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
-	w.adr("new", "-l", "1:Amends:Amended by", "-l", "2:Clarifies:Clarified by", "Third Record")
+	w.adr("new", "-u", "1", "-u", "2", "Third Record")
 	w.head(12, "docs/adr/0001-first-record.md")
 	w.head(12, "docs/adr/0002-second-record.md")
 	w.head(14, "docs/adr/0003-third-record.md")
@@ -235,6 +248,7 @@ func TestGenerateGraph(t *testing.T) {
 	w.adr("new", "-s", "2", "A better idea")
 	w.adr("new", "This will work")
 	w.adr("new", "-s", "3", "The end")
+	w.adr("link", "-u", "5", "4")
 	w.adr("generate", "graph")
 	w.adr("generate", "graph", "-p", "http://example.com/", "-e", ".xxx")
 	w.check()
@@ -251,14 +265,12 @@ func TestCompletionScript(t *testing.T) {
 }
 
 // TestOperandsMayBeginWithAHyphen covers the POSIX rule that options come only
-// before the operands, so that a link description may start with "-", and a
-// directory that does may be given after "--".
+// before the operands, so that a directory that begins with "-" may be given
+// after "--".
 func TestOperandsMayBeginWithAHyphen(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("init", "--", "-docs")
 	w.adr("new", "First Record")
-	w.adr("new", "Second Record")
-	w.adr("link", "1", "-> Amends", "2", "<- Amended by")
 	w.ls(".")
 	w.head(10, "-docs/0002-first-record.md")
 	w.check()

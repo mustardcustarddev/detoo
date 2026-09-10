@@ -53,8 +53,7 @@ func NewRootCommand(application *app.Application, stdout, stderr io.Writer, gete
 
 // optionsFirst applies to every command the POSIX rule that options come before
 // operands, so that everything after the first operand is an operand.  Without
-// it pflag reads the options from among the operands, and neither a record
-// title nor a link description could begin with "-".
+// it pflag reads the options from among the operands.
 func optionsFirst(cmd *cobra.Command) {
 	cmd.Flags().SetInterspersed(false)
 	for _, sub := range cmd.Commands() {

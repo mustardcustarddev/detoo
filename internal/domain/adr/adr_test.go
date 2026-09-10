@@ -98,7 +98,7 @@ var recordWithLinks = []string{
 	"",
 	"Supercedes [1. First Record](0001-first-record.md)",
 	"",
-	"Amended by [4. Fourth Record](0004-fourth-record.md)",
+	"Updated by [4. Fourth Record](0004-fourth-record.md)",
 	"",
 	"## Context",
 	"",
@@ -109,7 +109,7 @@ func TestStatusReadsTheStatusSection(t *testing.T) {
 	want := []string{
 		"Accepted",
 		"Supercedes [1. First Record](0001-first-record.md)",
-		"Amended by [4. Fourth Record](0004-fourth-record.md)",
+		"Updated by [4. Fourth Record](0004-fourth-record.md)",
 	}
 	if got := Status(recordWithLinks); !reflect.DeepEqual(got, want) {
 		t.Errorf("Status() = %q, want %q", got, want)
@@ -117,7 +117,7 @@ func TestStatusReadsTheStatusSection(t *testing.T) {
 }
 
 func TestLinksReadsLinksFromTheStatusSection(t *testing.T) {
-	want := []Link{{Type: "Supercedes", Target: 1}, {Type: "Amended by", Target: 4}}
+	want := []Link{{Type: "Supercedes", Target: 1}, {Type: "Updated by", Target: 4}}
 	if got := Links(recordWithLinks); !reflect.DeepEqual(got, want) {
 		t.Errorf("Links() = %v, want %v", got, want)
 	}
@@ -127,10 +127,10 @@ func TestAddLinkAppendsToTheStatusSection(t *testing.T) {
 	lines := []string{"# 1. First", "", "## Status", "", "Accepted", "", "## Context", "", "Context."}
 	want := []string{
 		"# 1. First", "", "## Status", "", "Accepted", "",
-		"Amended by [2. Second](0002-second.md)", "",
+		"Updated by [2. Second](0002-second.md)", "",
 		"## Context", "", "Context.",
 	}
-	got := AddLink(lines, "Amended by", "2. Second", "docs/adr/0002-second.md")
+	got := AddLink(lines, "Updated by", "2. Second", "docs/adr/0002-second.md")
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("AddLink() =\n%q\nwant\n%q", got, want)
 	}
@@ -140,7 +140,7 @@ func TestAddLinkAppendsToTheStatusSection(t *testing.T) {
 // note on AddLink: the behaviour is preserved deliberately.
 func TestAddLinkLeavesATrailingStatusSectionAlone(t *testing.T) {
 	lines := []string{"# 2. Second", "", "## Status", "", "Accepted"}
-	if got := AddLink(lines, "Amends", "1. First", "0001-first.md"); !reflect.DeepEqual(got, lines) {
+	if got := AddLink(lines, "Updates", "1. First", "0001-first.md"); !reflect.DeepEqual(got, lines) {
 		t.Errorf("AddLink() = %q, want it unchanged", got)
 	}
 }

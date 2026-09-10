@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/mustardcustard/decision-records/internal/app"
+	"github.com/mustardcustard/decision-records/internal/domain/adr"
 )
 
 // These tests cover what belongs to the CLI: that the tree is assembled, that
@@ -46,8 +47,8 @@ func TestEveryCommandIsDocumented(t *testing.T) {
 }
 
 // TestEveryCommandTakesItsOptionsFirst guards the POSIX rule that options come
-// before operands.  Without it an operand beginning with "-" — a record title,
-// or a link description — is read as an option and rejected.
+// before operands.  Without it an operand beginning with "-" is read as an
+// option and rejected.
 func TestEveryCommandTakesItsOptionsFirst(t *testing.T) {
 	for _, cmd := range commandsUnder(testRoot(t)) {
 		// pflag does not report the setting, so ask it to parse an operand
@@ -88,19 +89,31 @@ func TestTitleArgRequiresExactlyOneOperand(t *testing.T) {
 	}
 }
 
-func TestParseLinksSplitsTheFlagEncoding(t *testing.T) {
-	links, err := parseLinks([]string{"1:Amends:Amended by"})
-	if err != nil {
-		t.Fatalf("parseLinks: %v", err)
-	}
-	if len(links) != 1 {
-		t.Fatalf("parsed %d links, want 1", len(links))
-	}
-	if links[0].Target != "1" || links[0].Forward != "Amends" || links[0].Reverse != "Amended by" {
-		t.Errorf("parseLinks gave %+v", links[0])
-	}
-
-	if _, err := parseLinks([]string{"1:Amends"}); err == nil {
-		t.Error("parseLinks accepted a two-part link, want an error")
+// TestRelationFlagNeedsExactlyOneSwitch covers the CLI half of validating a
+// link: which switch was typed is checked here, while a request with no
+// relation is a rule the link slice enforces for every client.
+func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
+	for _, test := range []struct {
+		name              string
+		supercede, update bool
+		want              adr.Relation
+		wantErr           string
+	}{
+		{"supercede", true, false, adr.Supercedes, ""},
+		{"update", false, true, adr.Updates, ""},
+		{"neither", false, false, 0, "give either --supercede or --update"},
+		{"both", true, true, 0, "give either --supercede or --update"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			got, err := relationFlag(test.supercede, test.update)
+			switch {
+			case test.wantErr == "" && err != nil:
+				t.Errorf("relationFlag() = %v, want no error", err)
+			case test.wantErr != "" && (err == nil || err.Error() != test.wantErr):
+				t.Errorf("relationFlag() = %v, want %q", err, test.wantErr)
+			case got != test.want:
+				t.Errorf("relationFlag() = %v, want %v", got, test.want)
+			}
+		})
 	}
 }

@@ -3,7 +3,6 @@ package create
 import (
 	"context"
 	"errors"
-	"strings"
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
@@ -100,24 +99,27 @@ func TestHandleSupercedesAnExistingRecord(t *testing.T) {
 	}
 }
 
-func TestHandleLinksBothWays(t *testing.T) {
+func TestHandleUpdatesAnExistingRecord(t *testing.T) {
 	log := memlog.WithRecords(map[string]string{
 		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nAccepted\n\n## Context\n\nContext.\n",
 	})
 
 	result, err := newHandler(log, &spyEditor{}).Handle(context.Background(), Command{
-		Title: "Second",
-		Links: []Link{{Target: "1", Forward: "Amends", Reverse: "Amended by"}},
+		Title:   "Second",
+		Updates: []string{"1"},
 	})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	if got, want := log.Content(result.File), "Amends [1. First](0001-first.md)"; !strings.Contains(got, want) {
-		t.Errorf("new record does not contain %q:\n%s", want, got)
+	// The updated record gains the link, and is still accepted.
+	wantOld := "# 1. First\n\n## Status\n\nAccepted\n\nUpdated by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
+		t.Errorf("updated record is\n%s\nwant\n%s", got, wantOld)
 	}
-	if got, want := log.Content("docs/adr/0001-first.md"), "Amended by [2. Second](0002-second.md)"; !strings.Contains(got, want) {
-		t.Errorf("target record does not contain %q:\n%s", want, got)
+	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\nUpdates [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	if got := log.Content(result.File); got != wantNew {
+		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
 	}
 }
 

@@ -1,0 +1,18 @@
+adr new "First Record"
+docs/adr/0001-first-record.md
+adr new "Second Record"
+docs/adr/0002-second-record.md
+adr link 2 1
+adr: give either --supercede or --update
+adr link -s -u 2 1
+adr: give either --supercede or --update
+head -9 docs/adr/0001-first-record.md
+# 1. First Record
+
+Date: 1992-01-12
+
+## Status
+
+Accepted
+
+## Context

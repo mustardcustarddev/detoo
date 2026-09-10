@@ -15,7 +15,7 @@ Available Commands:
   generate    Write a report about the decision records
   help        Help about any command
   init        Start a log of decision records
-  link        Link two decision records to each other
+  link        Record that one decision record supercedes or updates another
   list        List the decision records
   new         Create the next numbered decision record
 

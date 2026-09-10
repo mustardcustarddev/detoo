@@ -1,5 +1,5 @@
 // Package create adds the next numbered decision record to the log, together
-// with any links it has to the records it supercedes or amends.
+// with its links to the records it supercedes or updates.
 package create
 
 import (
@@ -16,17 +16,6 @@ import (
 // they quoted them, is the CLI's business and is checked there.
 var ErrNoTitle = errors.New("no title given")
 
-// Link is a link from the new record to an existing one.
-//
-// It is structured rather than the "TARGET:LINK:REVERSE-LINK" string the -l
-// option takes, because that encoding belongs to the command line.  The CLI
-// splits it; this slice never learns that a colon was involved.
-type Link struct {
-	Target  string // a reference to the record linked to
-	Forward string // how the new record describes the link
-	Reverse string // how the target describes it
-}
-
 // Command asks for a new record.
 type Command struct {
 	Title string
@@ -35,8 +24,9 @@ type Command struct {
 	// marked superceded, and loses its "Accepted" status.
 	Supercedes []string
 
-	// Links holds further links from the new record to existing ones.
-	Links []Link
+	// Updates holds references to records this one makes substantive changes
+	// to.  Each is marked updated, and keeps its status.
+	Updates []string
 }
 
 // Result names the record that was created.
@@ -103,12 +93,12 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 
 	// The record is written before its links, so that a link to it resolves.
 	for _, ref := range cmd.Supercedes {
-		if err := h.supercede(ctx, record, ref); err != nil {
+		if err := h.relate(ctx, record, adr.Supercedes, ref); err != nil {
 			return Result{}, err
 		}
 	}
-	for _, link := range cmd.Links {
-		if err := h.link(ctx, record, link); err != nil {
+	for _, ref := range cmd.Updates {
+		if err := h.relate(ctx, record, adr.Updates, ref); err != nil {
 			return Result{}, err
 		}
 	}
@@ -121,33 +111,23 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 	return Result{File: record.File}, nil
 }
 
-// supercede marks an existing record replaced by the new one: the old record
-// gains a link forward and loses its "Accepted" status, and the new record
-// records what it replaced.
-func (h Handler) supercede(ctx context.Context, record adr.Record, ref string) error {
+// relate records that the new record supercedes or updates an existing one: the
+// old record gains a link to the new one, and loses its "Accepted" status if
+// the relation retires it, and the new record records the old.
+func (h Handler) relate(ctx context.Context, record adr.Record, relation adr.Relation, ref string) error {
 	target, err := h.Log.Resolve(ctx, ref)
 	if err != nil {
 		return err
 	}
-	if err := h.addLink(ctx, target, "Superceded by", record); err != nil {
+	if err := h.addLink(ctx, target, relation.Reverse(), record); err != nil {
 		return err
 	}
-	if err := h.removeStatus(ctx, target, adr.StatusAccepted); err != nil {
-		return err
+	if relation.Retires() {
+		if err := h.removeStatus(ctx, target, adr.StatusAccepted); err != nil {
+			return err
+		}
 	}
-	return h.addLink(ctx, record, "Supercedes", target)
-}
-
-// link records a link both ways between the new record and an existing one.
-func (h Handler) link(ctx context.Context, record adr.Record, link Link) error {
-	target, err := h.Log.Resolve(ctx, link.Target)
-	if err != nil {
-		return err
-	}
-	if err := h.addLink(ctx, record, link.Forward, target); err != nil {
-		return err
-	}
-	return h.addLink(ctx, target, link.Reverse, record)
+	return h.addLink(ctx, record, relation.Forward(), target)
 }
 
 // addLink appends a link from source to target, labelled with the target's

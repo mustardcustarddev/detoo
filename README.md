@@ -24,8 +24,8 @@ make deploy                 # install into /usr/local (override with PREFIX=)
 adr <command> [options] [arguments]
 ```
 
-Options come before operands, so a title or a link description may begin with
-`-`. Run `adr help` or `adr help <command>` for the built-in documentation.
+Options come before operands. Run `adr help` or `adr help <command>` for the
+built-in documentation.
 
 ### Commands
 
@@ -33,7 +33,7 @@ Options come before operands, so a title or a link description may begin with
 | --- | --- |
 | `adr init [DIRECTORY]` | Start a log of decision records, and write the first one |
 | `adr new TITLE` | Create the next numbered record and open it in your editor |
-| `adr link SOURCE LINK TARGET REVERSE-LINK` | Link two records to each other |
+| `adr link (-s \| -u) SOURCE TARGET` | Record that one record supercedes or updates another |
 | `adr list` | List the decision records |
 | `adr generate toc` | Write a table of contents in Markdown |
 | `adr generate graph` | Write the links between records in Graphviz format |
@@ -46,7 +46,9 @@ Options come before operands, so a title or a link description may begin with
 | Flag | Command | Description | Default |
 | --- | --- | --- | --- |
 | `-s, --supercede REFERENCE` | `new` | A decision this one supercedes, by number or partial filename; repeatable | — |
-| `-l, --link TARGET:LINK:REVERSE-LINK` | `new` | A link to a previous decision; repeatable | — |
+| `-u, --update REFERENCE` | `new` | A decision this one updates, by number or partial filename; repeatable | — |
+| `-s, --supercede` | `link` | SOURCE supercedes TARGET, which is no longer accepted | — |
+| `-u, --update` | `link` | SOURCE makes substantive changes to TARGET | — |
 | `-p, --prefix LINK_PREFIX` | `generate toc`, `generate graph` | Prefix each record link | — |
 | `-i, --intro INTRO` | `generate toc` | Markdown file to precede the contents | — |
 | `-o, --outro OUTRO` | `generate toc` | Markdown file to follow the contents | — |
@@ -88,10 +90,11 @@ Supersede an earlier decision, updating the status of the old record:
 adr new -s 9 "Use Rust for performance-critical functionality"
 ```
 
-Relate two records without superseding either:
+Record that a later decision makes substantive changes to an earlier one, which
+stays accepted:
 
 ```bash
-adr link 12 "Amends" 9 "Amended by"
+adr link --update 12 9
 ```
 
 Publish a table of contents, and render the decisions as a diagram:
