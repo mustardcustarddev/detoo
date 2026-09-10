@@ -1,9 +1,9 @@
 adr new "First Decision"
-doc/adr/0001-first-decision.md
+docs/adr/0001-first-decision.md
 adr new "Second Decision"
-doc/adr/0002-second-decision.md
+docs/adr/0002-second-decision.md
 adr new "Third Decision"
-doc/adr/0003-third-decision.md
+docs/adr/0003-third-decision.md
 adr generate toc
 # Architecture Decision Records
 

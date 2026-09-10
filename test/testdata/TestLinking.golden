@@ -1,12 +1,12 @@
 adr new "First Record"
-doc/adr/0001-first-record.md
+docs/adr/0001-first-record.md
 adr new "Second Record"
-doc/adr/0002-second-record.md
+docs/adr/0002-second-record.md
 adr new "Third Record"
-doc/adr/0003-third-record.md
+docs/adr/0003-third-record.md
 adr link 3 Amends 1 "Amended by"
 adr link 3 Clarifies 2 "Clarified by"
-head -12 doc/adr/0001-first-record.md
+head -12 docs/adr/0001-first-record.md
 # 1. First Record
 
 Date: 1992-01-12
@@ -19,7 +19,7 @@ Amended by [3. Third Record](0003-third-record.md)
 
 ## Context
 
-head -12 doc/adr/0002-second-record.md
+head -12 docs/adr/0002-second-record.md
 # 2. Second Record
 
 Date: 1992-01-12
@@ -32,7 +32,7 @@ Clarified by [3. Third Record](0003-third-record.md)
 
 ## Context
 
-head -14 doc/adr/0003-third-record.md
+head -14 docs/adr/0003-third-record.md
 # 3. Third Record
 
 Date: 1992-01-12

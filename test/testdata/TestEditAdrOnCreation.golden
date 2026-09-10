@@ -1,15 +1,15 @@
 EDITOR=fake-editor
 VISUAL=
 adr new "created with EDITOR environment variable set"
-EDITOR doc/adr/0001-created-with-editor-environment-variable-set.md
-doc/adr/0001-created-with-editor-environment-variable-set.md
+EDITOR docs/adr/0001-created-with-editor-environment-variable-set.md
+docs/adr/0001-created-with-editor-environment-variable-set.md
 EDITOR=
 VISUAL=fake-visual
 adr new "created with VISUAL environment variable set"
-VISUAL doc/adr/0002-created-with-visual-environment-variable-set.md
-doc/adr/0002-created-with-visual-environment-variable-set.md
+VISUAL docs/adr/0002-created-with-visual-environment-variable-set.md
+docs/adr/0002-created-with-visual-environment-variable-set.md
 EDITOR=fake-editor
 VISUAL=fake-visual
 adr new "uses setting of VISUAL if both VISUAL and EDITOR are set"
-VISUAL doc/adr/0003-uses-setting-of-visual-if-both-visual-and-editor-are-set.md
-doc/adr/0003-uses-setting-of-visual-if-both-visual-and-editor-are-set.md
+VISUAL docs/adr/0003-uses-setting-of-visual-if-both-visual-and-editor-are-set.md
+docs/adr/0003-uses-setting-of-visual-if-both-visual-and-editor-are-set.md

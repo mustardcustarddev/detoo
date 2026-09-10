@@ -1,0 +1,6 @@
+  # Generate a graph visualisation of decision records in SVG format:
+  adr generate graph | dot -Tsvg > graph.svg
+
+  # Generate a graph visualisation in PDF format, in which all links
+  # are to .pdf files:
+  adr generate graph -e .pdf | dot -Tpdf > graph.pdf

@@ -1,64 +1,60 @@
 adr help
-usage: adr help COMMAND [ARG] ...
-COMMAND is one of:
-  config
-  generate
-  help
-  init
-  link
-  list
-  new
-  upgrade-repository
-Run 'adr help COMMAND' for help on a specific command.
-adr help generate
-usage: adr generate [REPORT [OPTION ...]]
+Command-line tools for working with a log of architecture decision records.
 
+Decision records are stored as Markdown files in a subdirectory of the
+project, by default `docs/adr`.  Run "adr init" to start a log, and
+"adr new" to add to it.
+
+Usage:
+  adr [flags]
+  adr [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  config      Print the configuration in use
+  generate    Write a report about the decision records
+  help        Help about any command
+  init        Start a log of decision records
+  link        Link two decision records to each other
+  list        List the decision records
+  new         Create the next numbered decision record
+
+Flags:
+  -h, --help   help for adr
+
+Use "adr [command] --help" for more information about a command.
+adr help generate
 Generates summary documentation about the architecture decision records
 that is typically fed into the tool chain for publishing a project's
 documentatation.
 
-To list the report types that can be generated, run:
+Run "adr generate" on its own to list the report types that can be
+generated.
 
-    adr generate
+Usage:
+  adr generate [REPORT] [flags]
+  adr generate [command]
 
-To get help on a specific report generator, run:
+Available Commands:
+  graph       Write the links between records in Graphviz format
+  toc         Write a table of contents in Markdown
 
-    adr help generate <report-type>
+Flags:
+  -h, --help   help for generate
 
-For example, the following command will run the "toc" (table of contents)
-generator:
-
-    adr generate toc
-
-The following command will display help for the "toc" generator:
-
-    adr help generate toc
-
-Subcommands:
-  adr generate graph
-  adr generate toc
+Use "adr generate [command] --help" for more information about a command.
 adr help generate toc
-usage: adr generate toc [-i INTRO] [-o OUTRO] [-p LINK_PREFIX]
-
 Generates a table of contents in Markdown format to stdout.
 
-Options:
+Both the intro and the outro text must be in Markdown format.
 
--i INTRO  precede the table of contents with the given INTRO text.
--o OUTRO  follow the table of contents with the given OUTRO text.
--p LINK_PREFIX
-          prefix each decision file link with LINK_PREFIX.
+Usage:
+  adr generate toc [flags]
 
-Both INTRO and OUTRO must be in Markdown format.
+Flags:
+  -h, --help                 help for toc
+  -i, --intro INTRO          precede the table of contents with the Markdown in INTRO
+  -o, --outro OUTRO          follow the table of contents with the Markdown in OUTRO
+  -p, --prefix LINK_PREFIX   prefix each decision file link with LINK_PREFIX
 adr nonsense
-usage: adr help COMMAND [ARG] ...
-COMMAND is one of:
-  config
-  generate
-  help
-  init
-  link
-  list
-  new
-  upgrade-repository
-Run 'adr help COMMAND' for help on a specific command.
+adr: unknown command "nonsense" for "adr"

@@ -1,0 +1,20 @@
+adr init -- -docs
+-docs/0001-record-architecture-decisions.md
+adr new "First Record"
+-docs/0002-first-record.md
+adr new "Second Record"
+-docs/0003-second-record.md
+adr link 1 "-> Amends" 2 "<- Amended by"
+ls .
+-docs
+head -10 -docs/0002-first-record.md
+# 2. First Record
+
+Date: 1992-01-12
+
+## Status
+
+Accepted
+
+<- Amended by [1. Record architecture decisions](0001-record-architecture-decisions.md)
+

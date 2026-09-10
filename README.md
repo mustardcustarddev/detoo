@@ -1,140 +1,137 @@
-Decision Records
-================
+# adr
 
-Command-line tools for working with a log of [Architecture Decision Records][ADRs]
-(ADRs), written in Go.
+A command-line tool for keeping a log of [Architecture Decision Records][ADRs].
 
-This is a port of Nat Pryce's [adr-tools](https://github.com/npryce/adr-tools),
-which was implemented as a set of Bash scripts.  The commands, the file formats
-and the behaviour are the same; the whole of the original test suite is ported
-along with the tool.  The repository is laid out to hold more than the one
-command: each tool is a package under `cmd/`, and the logic they share lives
-under `internal/`.
+Records are plain Markdown files in your repository, numbered and linked, so
+they version alongside the code they describe.
 
-Quick Start
------------
+## Install
 
-Build and install the tools:
+```bash
+go install github.com/mustardcustard/decision-records/cmd/adr@latest
+```
 
-    make build      # compile everything into build/
-    make deploy     # install into /usr/local (override with PREFIX=)
+Or build from source, which also installs shell completion:
 
-Use the `adr` command to manage ADRs.  Try running `adr help`.
+```bash
+make build                  # compile into build/
+make deploy                 # install into /usr/local (override with PREFIX=)
+```
 
-ADRs are stored in a subdirectory of your project as Markdown files.  The
-default directory is `doc/adr`, but you can specify the directory when you
-initialise the ADR log.
+## Usage
 
-1.  Create an ADR directory in the root of your project:
+```text
+adr <command> [options] [arguments]
+```
 
-        adr init doc/architecture/decisions
+Options come before operands, so a title or a link description may begin with
+`-`. Run `adr help` or `adr help <command>` for the built-in documentation.
 
-    This will create a directory named `doc/architecture/decisions` containing
-    the first ADR, which records that you are using ADRs to record architectural
-    decisions and links to [Michael Nygard's article on the subject][ADRs].
+### Commands
 
-2.  Create Architecture Decision Records:
+| Command | Description |
+| --- | --- |
+| `adr init [DIRECTORY]` | Start a log of decision records, and write the first one |
+| `adr new TITLE` | Create the next numbered record and open it in your editor |
+| `adr link SOURCE LINK TARGET REVERSE-LINK` | Link two records to each other |
+| `adr list` | List the decision records |
+| `adr generate toc` | Write a table of contents in Markdown |
+| `adr generate graph` | Write the links between records in Graphviz format |
+| `adr config` | Print the configuration in use |
+| `adr help [COMMAND]` | Explain a command, or list them all |
+| `adr completion SHELL` | Write a shell completion script |
 
-        adr new Implement as Go commands
+### Options
 
-    This will create a new, numbered ADR file and open it in your editor of
-    choice (as specified by the `VISUAL` or `EDITOR` environment variable).
+| Flag | Command | Description | Default |
+| --- | --- | --- | --- |
+| `-s, --supercede REFERENCE` | `new` | A decision this one supercedes, by number or partial filename; repeatable | — |
+| `-l, --link TARGET:LINK:REVERSE-LINK` | `new` | A link to a previous decision; repeatable | — |
+| `-p, --prefix LINK_PREFIX` | `generate toc`, `generate graph` | Prefix each record link | — |
+| `-i, --intro INTRO` | `generate toc` | Markdown file to precede the contents | — |
+| `-o, --outro OUTRO` | `generate toc` | Markdown file to follow the contents | — |
+| `-e, --extension EXTENSION` | `generate graph` | File extension the generated links refer to | `.html` |
+| `-h, --help` | all | Show help for the command | `false` |
 
-    To create a new ADR that supercedes a previous one (ADR 9, for example), use
-    the `-s` option:
+### Configuration
 
-        adr new -s 9 Use Rust for performance-critical functionality
+Records live in `docs/adr` by default. To use another directory, either pass it
+to `adr init`, or put its path in a `.adr-dir` file in the root of the project.
+`adr config` prints the directory and template in use.
 
-    This will create a new ADR, and change the status of the superceded ADR to
-    record that it has been superceded by the new one.
+A new record is created from `templates/template.md` inside the record
+directory if the project provides one, and otherwise from a built-in template
+in the style described by Michael Nygard. The placeholders `NUMBER`, `TITLE`,
+`DATE` and `STATUS` are each replaced once per line.
 
-3.  For further information, use the built-in help:
+| Variable | Description | Default |
+| --- | --- | --- |
+| `VISUAL` | Editor opened on a new record; preferred over `EDITOR` | — |
+| `EDITOR` | Editor opened on a new record | — |
+| `ADR_TEMPLATE` | Template a new record is created from | project, else built-in |
+| `ADR_DATE` | Date written into a new record | today |
+| `ADR_PAGER` | Pager help is shown in; preferred over `PAGER` | — |
+| `PAGER` | Pager help is shown in | `more` |
 
-        adr help
+## Examples
 
-The decision records are just Markdown files, so you can edit them by hand, and
-manage them with your version control system alongside the code they describe.
+Start a log in a directory of your choosing, and record the first decision:
 
-Commands
---------
+```bash
+adr init doc/architecture/decisions
+adr new "Implement as Go commands"
+```
 
-| Command                   | What it does                                            |
-| ------------------------- | ------------------------------------------------------- |
-| `adr init [DIRECTORY]`    | starts a log of decision records                          |
-| `adr new TITLE...`        | creates the next numbered record                          |
-| `adr link ...`            | links two records to each other                           |
-| `adr list`                | lists the records                                         |
-| `adr generate toc`        | writes a table of contents in Markdown                    |
-| `adr generate graph`      | writes the links between records in Graphviz format       |
-| `adr upgrade-repository`  | brings older records up to the current format             |
-| `adr config`              | prints the configuration in use                           |
-| `adr help [COMMAND]`      | explains a command, or lists them all                     |
+Supersede an earlier decision, updating the status of the old record:
 
-Templates
----------
+```bash
+adr new -s 9 "Use Rust for performance-critical functionality"
+```
 
-A new record is created from `templates/template.md` inside the decision record
-directory, if the project provides one, and otherwise from a built-in template
-in the style described by Michael Nygard.  In a template, the placeholders
-`NUMBER`, `TITLE`, `DATE` and `STATUS` are replaced, once each per line, when the
-record is created.
+Relate two records without superseding either:
 
-Development
------------
+```bash
+adr link 12 "Amends" 9 "Amended by"
+```
 
-`make` on its own lists the targets:
+Publish a table of contents, and render the decisions as a diagram:
 
-| Target    | What it does                                                     |
-| --------- | ---------------------------------------------------------------- |
-| `build`   | vets, tests, and compiles every command in `cmd/` into `build/`   |
-| `deploy`  | installs the commands and their shell completion under `$PREFIX`  |
-| `release` | tags the current commit and publishes a release                   |
-| `clean`   | removes the build output                                          |
+```bash
+adr generate toc > docs/adr/README.md
+adr generate graph | dot -Tpng -o docs/adr/graph.png
+```
 
-The tests live in two places:
+## Exit Codes
 
-*   `internal/adr` holds unit tests for the library the commands are built from.
-*   `test` holds the ported end-to-end tests.  Each one drives the real binary
-    through a scenario and compares the whole transcript against a golden file
-    in `test/testdata`.  After a deliberate change to what a command prints,
-    rewrite the golden files with:
+| Code | Meaning |
+| --- | --- |
+| `0` | Success |
+| `1` | Any failure, reported on stderr and prefixed `adr:` |
 
-        go test ./test -update
+## Architecture
 
-    and read the diff before committing it.
+The application is organised by capability, in vertical slices, and knows
+nothing about the command line. Cobra is an adapter that translates what the
+user typed into a call on a slice and renders what comes back, so the same
+behaviour could be driven by an HTTP API or an MCP server with no change to
+anything under `internal/features`. Dependencies run one way, `cmd → cli → app
+→ features → domain`, which makes that property checkable rather than intended:
 
-Differences from adr-tools
---------------------------
+```bash
+go list -deps ./internal/features/... | grep spf13/cobra    # finds nothing
+```
 
-The commands behave as they did in the shell implementation, with three
-exceptions:
+The layout is described in full by the `feature-driven-vertical-slices` skill
+in [.claude/skills](.claude/skills). Run `make` on its own to list the build
+targets. Tests follow the architecture, one layer at a time; the end-to-end
+tests in [test](test) compare whole terminal transcripts against golden files,
+which `go test ./test -update` rewrites.
 
-*   Errors are reported on stderr, prefixed with `adr:`, in the Go convention.
-    The shell version wrote them to stdout.
-*   `adr config` prints the resolved decision record directory and template
-    rather than the location of the scripts, which a single binary does not have.
-*   `adr autocomplete` is a subcommand of `adr` rather than a separate
-    `_adr_autocomplete` script.  `completion/adr.bash` is the bash completion
-    that calls it.
+With thanks to Nat Pryce for [adr-tools][], which inspired this project.
 
-Environment variables
----------------------
+## License
 
-| Variable       | Effect                                                       |
-| -------------- | ------------------------------------------------------------ |
-| `VISUAL`       | the editor opened on a new record; preferred over `EDITOR`    |
-| `EDITOR`       | the editor opened on a new record                             |
-| `ADR_DATE`     | the date written into a new record; defaults to today         |
-| `ADR_TEMPLATE` | the template a new record is created from                     |
-| `ADR_PAGER`    | the pager help is shown in; preferred over `PAGER`            |
-| `PAGER`        | the pager help is shown in; defaults to `more`                |
-
-License
--------
-
-Copyright © Nat Pryce, and the contributors to this port.
-
-This software is licensed under the GNU General Public License, version 3 or
-later.  See [LICENSE.txt](LICENSE.txt).
+Apache License, Version 2.0. See [LICENSE.txt](LICENSE.txt).
 
 [ADRs]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
+[adr-tools]: https://github.com/npryce/adr-tools

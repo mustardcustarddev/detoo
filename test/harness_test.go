@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 	"testing"
 )
@@ -79,6 +78,22 @@ func (w *workspace) adr(args ...string) {
 			w.t.Fatalf("running adr %s: %v", strings.Join(args, " "), err)
 		}
 	}
+}
+
+// output runs the adr command and returns everything it wrote, leaving the
+// transcript alone.  It is for output that is too long, or too much cobra's
+// own, to keep in a golden file.
+func (w *workspace) output(args ...string) string {
+	w.t.Helper()
+	cmd := exec.Command(adrBin, args...)
+	cmd.Dir = w.cwd()
+	cmd.Env = w.environ()
+	var out bytes.Buffer
+	cmd.Stdout, cmd.Stderr = &out, &out
+	if err := cmd.Run(); err != nil {
+		w.t.Fatalf("running adr %s: %v\n%s", strings.Join(args, " "), err, &out)
+	}
+	return out.String()
 }
 
 func (w *workspace) environ() []string {
@@ -159,29 +174,6 @@ func (w *workspace) head(n int, name string) {
 			break
 		}
 		w.printf("%s", line)
-	}
-}
-
-// grep shows the lines of the files matching a glob that contain a substring,
-// each prefixed by the file it came from.
-func (w *workspace) grep(substring, glob string) {
-	w.t.Helper()
-	w.echo("grep", substring, glob)
-	matches, err := filepath.Glob(w.path(glob))
-	if err != nil {
-		w.t.Fatal(err)
-	}
-	sort.Strings(matches)
-	for _, match := range matches {
-		name, err := filepath.Rel(w.cwd(), match)
-		if err != nil {
-			w.t.Fatal(err)
-		}
-		for _, line := range strings.Split(strings.TrimSuffix(w.read(name), "\n"), "\n") {
-			if strings.Contains(line, substring) {
-				w.printf("%s:%s\n", filepath.ToSlash(name), line)
-			}
-		}
 	}
 }
 

@@ -9,8 +9,12 @@ DESTDIR ?=
 BUILD_DIR   := build
 COMMANDS    := $(notdir $(wildcard cmd/*))
 BINARIES    := $(addprefix $(BUILD_DIR)/,$(COMMANDS))
-COMPLETIONS := $(wildcard completion/*.bash)
-SOURCES     := $(shell find . -type f -name '*.go') go.mod
+COMPLETIONS := $(addsuffix .bash,$(BINARIES))
+
+# The commands embed their help and their record templates, so those files are
+# sources too: a binary is out of date when any of them changes.
+EMBEDDED    := $(shell find internal -type f ! -name '*.go')
+SOURCES     := $(shell find . -type f -name '*.go') $(EMBEDDED) go.mod go.sum
 
 all: help
 
@@ -19,13 +23,19 @@ all: help
 #############################################################################
 
 .PHONY: build
-build: vet test $(BINARIES) ## vet, test, and compile every command into build/
+build: vet test $(BINARIES) $(COMPLETIONS) ## vet, test, and compile every command into build/
 
 # The build directory shares its name with the phony `build` target, so it is
 # created by the recipe rather than by a rule of its own.
 $(BUILD_DIR)/%: $(SOURCES)
 	@mkdir -p $(@D)
 	$(GO) build -o $@ ./cmd/$*
+
+# Each command generates its own shell completion, so it is built rather than
+# kept in the repository.  This is a static pattern rule, which is explicit, so
+# that build/adr.bash is not taken for a command by the pattern rule above.
+$(COMPLETIONS): $(BUILD_DIR)/%.bash: $(BUILD_DIR)/%
+	$< completion bash > $@
 
 .PHONY: vet
 vet:

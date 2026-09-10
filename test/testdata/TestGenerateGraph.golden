@@ -1,13 +1,13 @@
 adr init
-doc/adr/0001-record-architecture-decisions.md
+docs/adr/0001-record-architecture-decisions.md
 adr new "An idea that seems good at the time"
-doc/adr/0002-an-idea-that-seems-good-at-the-time.md
+docs/adr/0002-an-idea-that-seems-good-at-the-time.md
 adr new -s 2 "A better idea"
-doc/adr/0003-a-better-idea.md
+docs/adr/0003-a-better-idea.md
 adr new "This will work"
-doc/adr/0004-this-will-work.md
+docs/adr/0004-this-will-work.md
 adr new -s 3 "The end"
-doc/adr/0005-the-end.md
+docs/adr/0005-the-end.md
 adr generate graph
 digraph {
   node [shape=plaintext];

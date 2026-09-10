@@ -1,19 +1,22 @@
 package adrtest
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestInitAdrRepository(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("init")
-	w.ls("doc/adr")
-	w.cat("doc/adr/0001-record-architecture-decisions.md")
+	w.ls("docs/adr")
+	w.cat("docs/adr/0001-record-architecture-decisions.md")
 	w.check()
 }
 
 func TestCreateFirstRecord(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "The First Decision")
-	w.cat("doc/adr/0001-the-first-decision.md")
+	w.cat("docs/adr/0001-the-first-decision.md")
 	w.check()
 }
 
@@ -22,9 +25,9 @@ func TestCreateMultipleRecords(t *testing.T) {
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
-	w.ls("doc/adr")
-	w.head(7, "doc/adr/0002-second-decision.md")
-	w.head(7, "doc/adr/0003-third-decision.md")
+	w.ls("docs/adr")
+	w.head(7, "docs/adr/0002-second-decision.md")
+	w.head(7, "docs/adr/0003-third-decision.md")
 	w.check()
 }
 
@@ -46,6 +49,13 @@ func TestMustProvideATitleWhenCreatingNewAdr(t *testing.T) {
 	w.check()
 }
 
+func TestTitleMustBeASingleArgument(t *testing.T) {
+	w := newWorkspace(t)
+	w.adr("new", "Use", "MySQL", "Database")
+	w.ls(".")
+	w.check()
+}
+
 func TestAvoidOctalNumbers(t *testing.T) {
 	w := newWorkspace(t)
 	for _, title := range []string{
@@ -55,8 +65,8 @@ func TestAvoidOctalNumbers(t *testing.T) {
 	} {
 		w.adr("new", title)
 	}
-	w.ls("doc/adr")
-	w.head(7, "doc/adr/0009-ninth-decision.md")
+	w.ls("docs/adr")
+	w.head(7, "docs/adr/0009-ninth-decision.md")
 	w.check()
 }
 
@@ -65,7 +75,7 @@ func TestFunnyCharacters(t *testing.T) {
 	w.adr("new", "Something About Node.JS")
 	w.adr("new", "Slash/Slash/Slash/")
 	w.adr("new", "--", "-Bar-")
-	w.ls("doc/adr")
+	w.ls("docs/adr")
 	w.check()
 }
 
@@ -152,9 +162,9 @@ func TestLinking(t *testing.T) {
 	w.adr("new", "Third Record")
 	w.adr("link", "3", "Amends", "1", "Amended by")
 	w.adr("link", "3", "Clarifies", "2", "Clarified by")
-	w.head(12, "doc/adr/0001-first-record.md")
-	w.head(12, "doc/adr/0002-second-record.md")
-	w.head(14, "doc/adr/0003-third-record.md")
+	w.head(12, "docs/adr/0001-first-record.md")
+	w.head(12, "docs/adr/0002-second-record.md")
+	w.head(14, "docs/adr/0003-third-record.md")
 	w.check()
 }
 
@@ -163,9 +173,9 @@ func TestLinkingNewRecords(t *testing.T) {
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-l", "1:Amends:Amended by", "-l", "2:Clarifies:Clarified by", "Third Record")
-	w.head(12, "doc/adr/0001-first-record.md")
-	w.head(12, "doc/adr/0002-second-record.md")
-	w.head(14, "doc/adr/0003-third-record.md")
+	w.head(12, "docs/adr/0001-first-record.md")
+	w.head(12, "docs/adr/0002-second-record.md")
+	w.head(14, "docs/adr/0003-third-record.md")
 	w.check()
 }
 
@@ -173,8 +183,8 @@ func TestSupercedeExistingAdr(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "First Record")
 	w.adr("new", "-s", "1", "Second Record")
-	w.head(10, "doc/adr/0001-first-record.md")
-	w.head(12, "doc/adr/0002-second-record.md")
+	w.head(10, "docs/adr/0001-first-record.md")
+	w.head(12, "docs/adr/0002-second-record.md")
 	w.check()
 }
 
@@ -183,9 +193,9 @@ func TestSupercedeMultipleAdrs(t *testing.T) {
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-s", "1", "-s", "2", "Third Record")
-	w.head(8, "doc/adr/0001-first-record.md")
-	w.head(8, "doc/adr/0002-second-record.md")
-	w.head(12, "doc/adr/0003-third-record.md")
+	w.head(8, "docs/adr/0001-first-record.md")
+	w.head(8, "docs/adr/0002-second-record.md")
+	w.head(12, "docs/adr/0003-third-record.md")
 	w.check()
 }
 
@@ -203,7 +213,7 @@ func TestGenerateContentsWithPrefix(t *testing.T) {
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
-	w.adr("generate", "toc", "-p", "foo/doc/adr/")
+	w.adr("generate", "toc", "-p", "foo/docs/adr/")
 	w.check()
 }
 
@@ -230,26 +240,27 @@ func TestGenerateGraph(t *testing.T) {
 	w.check()
 }
 
-func TestMigrateDateFormat(t *testing.T) {
+// TestCompletionScript checks the completion script that "make deploy" installs
+// is still generated.  Its content is cobra's, and changes between releases, so
+// it is not compared against a golden file.
+func TestCompletionScript(t *testing.T) {
 	w := newWorkspace(t)
-	w.adr("init")
-	w.setenv("ADR_DATE", "12/01/1992")
-	w.adr("new", "With Old Date Format")
-	w.setenv("ADR_DATE", "1992-01-12")
-	w.adr("new", "With Current Date Format")
-	w.grep("Date:", "doc/adr/*")
-	w.adr("upgrade-repository")
-	w.grep("Date:", "doc/adr/*")
-	w.check()
+	if script := w.output("completion", "bash"); !strings.Contains(script, "__start_adr") {
+		t.Errorf("completion script does not define __start_adr:\n%s", script)
+	}
 }
 
-func TestAutocomplete(t *testing.T) {
+// TestOperandsMayBeginWithAHyphen covers the POSIX rule that options come only
+// before the operands, so that a link description may start with "-", and a
+// directory that does may be given after "--".
+func TestOperandsMayBeginWithAHyphen(t *testing.T) {
 	w := newWorkspace(t)
-	w.adr("autocomplete", "adr")
-	w.adr("autocomplete", "adr", "li")
-	w.adr("autocomplete", "adr", "generate")
-	w.adr("autocomplete", "adr", "generate", "to")
-	w.adr("autocomplete", "adr", "ierhir")
+	w.adr("init", "--", "-docs")
+	w.adr("new", "First Record")
+	w.adr("new", "Second Record")
+	w.adr("link", "1", "-> Amends", "2", "<- Amended by")
+	w.ls(".")
+	w.head(10, "-docs/0002-first-record.md")
 	w.check()
 }
 
