@@ -7,10 +7,6 @@ they version alongside the code they describe.
 
 ## Install
 
-```bash
-go install github.com/mustardcustard/decision-records/cmd/adr@latest
-```
-
 Or build from source, which also installs shell completion:
 
 ```bash
