@@ -4,6 +4,9 @@ package initialise
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"path"
 
 	"github.com/mustardcustard/decision-records/internal/domain/adr"
 )
@@ -11,6 +14,10 @@ import (
 // firstRecordTitle names the record that opens a log.  It is the title the file
 // is named after; the record's own heading comes from the template.
 const firstRecordTitle = "record-architecture-decisions"
+
+// ErrLogExists reports that init was asked to start a log in one directory
+// while the project's log, which already has records, is in another.
+var ErrLogExists = errors.New("a log of decision records already exists")
 
 // Command asks for a log.
 type Command struct {
@@ -20,7 +27,8 @@ type Command struct {
 	Dir string
 }
 
-// Result names the record that was created.
+// Result names the record that was created.  File is empty when the log
+// already had records, and nothing was written.
 type Result struct {
 	File string
 }
@@ -29,6 +37,7 @@ type Result struct {
 type Store interface {
 	SetDir(ctx context.Context, dir string) error
 	Dir(ctx context.Context) (string, error)
+	Records(ctx context.Context) ([]adr.Record, error)
 	NextNumber(ctx context.Context, dir string) (int, error)
 	Write(ctx context.Context, file, content string) error
 }
@@ -57,6 +66,27 @@ type Handler struct {
 }
 
 func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
+	// A log that already has records is left as it is, so that init can be run
+	// again safely.  Starting one somewhere else would strand those records in
+	// a directory the project no longer uses, so that is refused.
+	current, err := h.Log.Dir(ctx)
+	if err != nil {
+		return Result{}, err
+	}
+	records, err := h.Log.Records(ctx)
+	var missing *adr.MissingDirError
+	switch {
+	case errors.As(err, &missing):
+		// No directory, no log: start one.
+	case err != nil:
+		return Result{}, err
+	case len(records) > 0:
+		if cmd.Dir != "" && path.Clean(cmd.Dir) != path.Clean(current) {
+			return Result{}, fmt.Errorf("%w in %s", ErrLogExists, current)
+		}
+		return Result{}, nil
+	}
+
 	if cmd.Dir != "" {
 		if err := h.Log.SetDir(ctx, cmd.Dir); err != nil {
 			return Result{}, err

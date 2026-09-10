@@ -13,6 +13,19 @@ func TestInitAdrRepository(t *testing.T) {
 	w.check()
 }
 
+// TestInitIsIdempotent covers running init on a log that already exists: it
+// does nothing, unless it is pointed at another directory, which it refuses.
+func TestInitIsIdempotent(t *testing.T) {
+	w := newWorkspace(t)
+	w.adr("init")
+	w.adr("init")
+	w.adr("init", "docs/adr/")
+	w.adr("init", "other")
+	w.ls(".")
+	w.adr("list")
+	w.check()
+}
+
 func TestCreateFirstRecord(t *testing.T) {
 	w := newWorkspace(t)
 	w.adr("new", "The First Decision")

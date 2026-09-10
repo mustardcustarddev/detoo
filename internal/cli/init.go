@@ -25,7 +25,11 @@ func newInitCommand(application *app.Application) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			output.Path(cmd.OutOrStdout(), result.File)
+			// A log that already existed is left alone, and there is no new
+			// record to name.
+			if result.File != "" {
+				output.Path(cmd.OutOrStdout(), result.File)
+			}
 			return nil
 		},
 	}

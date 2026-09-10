@@ -1,0 +1,10 @@
+adr init
+docs/adr/0001-record-architecture-decisions.md
+adr init
+adr init docs/adr/
+adr init other
+adr: a log of decision records already exists in docs/adr
+ls .
+docs
+adr list
+docs/adr/0001-record-architecture-decisions.md
