@@ -5,10 +5,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/domain/record"
-	"github.com/mustardcustard/decision-records/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/rfc"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // ErrNoRelation reports that a link was asked for without saying whether it

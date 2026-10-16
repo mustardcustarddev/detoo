@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
 )
 
 // stubTemplates reports the project's own template, or none.

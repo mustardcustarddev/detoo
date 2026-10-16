@@ -37,11 +37,11 @@ func runTests(m *testing.M) int {
 
 	fakeEditorBin = filepath.Join(dir, "fakeeditor")
 	binaries := map[string]string{
-		"github.com/mustardcustard/decision-records/test/fakeeditor": fakeEditorBin,
+		"github.com/mustardcustard/detoo/test/fakeeditor": fakeEditorBin,
 	}
 	for _, name := range []string{"adr", "rfc"} {
 		tools[name] = filepath.Join(dir, name)
-		binaries["github.com/mustardcustard/decision-records/cmd/"+name] = tools[name]
+		binaries["github.com/mustardcustard/detoo/cmd/"+name] = tools[name]
 	}
 	for pkg, bin := range binaries {
 		build := exec.Command("go", "build", "-o", bin, pkg)

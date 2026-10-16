@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // kind is the kind of log the other tests store: adr's, whose marker file and

@@ -18,7 +18,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Store is a log of records under a working directory.  Every path it accepts

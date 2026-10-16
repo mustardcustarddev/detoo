@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 func TestHandleReturnsTheRecordsInOrder(t *testing.T) {

@@ -4,7 +4,7 @@ package list
 import (
 	"context"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Query asks for the log's records.  It has no fields yet, and exists so that

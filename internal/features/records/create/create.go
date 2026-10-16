@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // ErrNoTitle reports that no title was given for the record.

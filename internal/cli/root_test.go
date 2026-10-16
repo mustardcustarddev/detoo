@@ -6,11 +6,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/domain/record"
-	"github.com/mustardcustard/decision-records/internal/features/reports/graph"
-	"github.com/mustardcustard/decision-records/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/features/reports/graph"
+	"github.com/mustardcustard/detoo/internal/rfc"
 )
 
 // These tests cover what belongs to the CLI: that the tree is assembled, that

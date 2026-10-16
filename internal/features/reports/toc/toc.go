@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Query asks for a table of contents.

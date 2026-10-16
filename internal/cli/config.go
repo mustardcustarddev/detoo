@@ -3,9 +3,9 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/cli/output"
-	"github.com/mustardcustard/decision-records/internal/features/records/config"
+	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/cli/output"
+	"github.com/mustardcustard/detoo/internal/features/records/config"
 )
 
 func newConfigCommand(t tool, application *app.Application) *cobra.Command {

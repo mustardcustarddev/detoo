@@ -8,7 +8,7 @@ package rfc
 import (
 	"embed"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Kind is the vocabulary of a request for comments log.  The words for its

@@ -9,7 +9,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Clock reports today's date as it will appear in a record.

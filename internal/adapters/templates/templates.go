@@ -14,7 +14,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // The templates a tool ships with, within its files.

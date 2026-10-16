@@ -1,4 +1,4 @@
-module github.com/mustardcustard/decision-records
+module github.com/mustardcustard/detoo
 
 go 1.26
 

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/rfc"
 )
 
 func newLog() *memlog.Log {

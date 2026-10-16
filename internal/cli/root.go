@@ -18,8 +18,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // NewRootCommand returns the command tree of the tool that keeps logs of kind,

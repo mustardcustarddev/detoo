@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/domain/record"
-	"github.com/mustardcustard/decision-records/internal/features/records/link"
+	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/features/records/link"
 )
 
 func newLinkCommand(t tool, application *app.Application) *cobra.Command {

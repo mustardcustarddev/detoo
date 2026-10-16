@@ -10,14 +10,14 @@
 package app
 
 import (
-	"github.com/mustardcustard/decision-records/internal/domain/record"
-	"github.com/mustardcustard/decision-records/internal/features/records/config"
-	"github.com/mustardcustard/decision-records/internal/features/records/create"
-	"github.com/mustardcustard/decision-records/internal/features/records/initialise"
-	"github.com/mustardcustard/decision-records/internal/features/records/link"
-	"github.com/mustardcustard/decision-records/internal/features/records/list"
-	"github.com/mustardcustard/decision-records/internal/features/reports/graph"
-	"github.com/mustardcustard/decision-records/internal/features/reports/toc"
+	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/features/records/config"
+	"github.com/mustardcustard/detoo/internal/features/records/create"
+	"github.com/mustardcustard/detoo/internal/features/records/initialise"
+	"github.com/mustardcustard/detoo/internal/features/records/link"
+	"github.com/mustardcustard/detoo/internal/features/records/list"
+	"github.com/mustardcustard/detoo/internal/features/reports/graph"
+	"github.com/mustardcustard/detoo/internal/features/reports/toc"
 )
 
 // Application groups the slice handlers by capability, so that a caller reads

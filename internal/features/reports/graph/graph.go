@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Format is the language a graph is written in.

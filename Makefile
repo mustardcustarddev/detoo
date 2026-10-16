@@ -1,4 +1,4 @@
-# Build, test and install the decision-records tools.
+# Build, test and install the detoo tools.
 #
 # Run `make` or `make help` to list the targets.
 

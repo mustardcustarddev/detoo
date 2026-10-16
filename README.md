@@ -1,4 +1,4 @@
-# decision-records
+# detoo
 
 Command-line tools for keeping logs of numbered, linked Markdown records in
 your repository, so they version alongside the code they describe:

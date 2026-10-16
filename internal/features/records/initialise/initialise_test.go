@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/rfc"
 )
 
 const firstTemplate = "# 1. Record architecture decisions\n\nDate: DATE\n\n## Status\n\nAccepted\n"

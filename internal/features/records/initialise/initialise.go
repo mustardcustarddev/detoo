@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // ErrLogExists reports that init was asked to start a log in one directory

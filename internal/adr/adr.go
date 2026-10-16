@@ -8,7 +8,7 @@ package adr
 import (
 	"embed"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Kind is the vocabulary of an architecture decision record log.

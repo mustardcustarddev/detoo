@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Path writes the name of a record, alone on a line, so that the command can be

@@ -13,13 +13,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/clock"
-	"github.com/mustardcustard/decision-records/internal/adapters/editor"
-	"github.com/mustardcustard/decision-records/internal/adapters/logstore"
-	"github.com/mustardcustard/decision-records/internal/adapters/templates"
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/cli"
+	"github.com/mustardcustard/detoo/internal/adapters/clock"
+	"github.com/mustardcustard/detoo/internal/adapters/editor"
+	"github.com/mustardcustard/detoo/internal/adapters/logstore"
+	"github.com/mustardcustard/detoo/internal/adapters/templates"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/cli"
 )
 
 func main() {

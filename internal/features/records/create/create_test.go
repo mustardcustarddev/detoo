@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/adr"
-	"github.com/mustardcustard/decision-records/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/adapters/memlog"
+	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/rfc"
 )
 
 // Nothing here builds a binary, parses a flag or writes a file.  The slice's

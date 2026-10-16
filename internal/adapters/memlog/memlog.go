@@ -18,7 +18,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Log is an in-memory log of records.  Its zero value is not usable: call
