@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "check-adrs": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/check-adrs/SKILL.md",
+      "computedHash": "2a34e99323727b32662f9dc38fb2636072301f8e4256d1a629da1913925ea35f"
+    },
+    "create-adr": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/create-adr/SKILL.md",
+      "computedHash": "c121b7543175ccf3e1a8734656e0c926d853e946b34ce59dd66337c7b1bf207d"
+    },
+    "create-piosee": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/create-piosee/SKILL.md",
+      "computedHash": "f1d8380204a6ff5c120ecf6c332cdd4700a5858e52896cd1d3bb0805fae2923f"
+    },
+    "create-rfc": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/create-rfc/SKILL.md",
+      "computedHash": "c838294b708d450e8a1301db7122d740240319f107fd191a05ac0e1635858a38"
+    },
+    "create-user-story": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/create-user-story/SKILL.md",
+      "computedHash": "e2b59f9edb1bdf9d07a597887d03b00936fc7fa8d7be000d0421876d407d1ccd"
+    },
+    "feature-driven-vertical-slices": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/feature-driven-vertical-slices/SKILL.md",
+      "computedHash": "22b890b92ee39a54f746595fab491d84e154fe27d3d41a9644c989e7128da204"
+    },
+    "find-missing-adrs": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/find-missing-adrs/SKILL.md",
+      "computedHash": "a33af0f1699543ed922fca3b808d283252aafe12eb966766e02db92d831180f6"
+    },
+    "review-adrs": {
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
+      "skillPath": "skills/review-adrs/SKILL.md",
+      "computedHash": "99a4f37146ec651470e7201c77142a8ff92f290f31150fa383cb00c9a626ef4e"
+    }
+  }
+}

@@ -46,10 +46,10 @@ A new document can replace or update earlier ones, and the link is recorded
 in both:
 
 ```bash
-adr new -s 9 "Use Rust for performance-critical functionality"
-rfc new -o 4 "Adopt Connect for internal services"
-sty new -r 12 "Reorder a previous purchase"
-pse new -r 4 "Restore release 2.3 with the fix"
+adr new --supercede 9 "Use Rust for performance-critical functionality"
+rfc new --obsolete 4 "Adopt Connect for internal services"
+sty new --replace 12 "Reorder a previous purchase"
+pse new --reverse 4 "Restore release 2.3 with the fix"
 ```
 
 Publish a table of contents, or draw the links between documents with Mermaid
@@ -57,7 +57,7 @@ or Graphviz:
 
 ```bash
 adr list --toc > docs/adr/README.md
-sty graph | mmdc -i - -o docs/userstory/graph.svg
+sty graph | mmdc --input - --output docs/userstory/graph.svg
 ```
 
 Run `adr help`, or `sty help new`, for each tool's commands and options.

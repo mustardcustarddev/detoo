@@ -137,3 +137,7 @@ terraform.rc
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/terraform,git,homebrew,macos,visualstudiocode,dotenv,go
+
+### Agent skills ###
+# Symlinks into .agents/skills, created by the skills installer
+.claude/skills/
