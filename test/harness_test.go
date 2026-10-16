@@ -1,4 +1,4 @@
-package adrtest
+package clitest
 
 import (
 	"bytes"
@@ -16,22 +16,30 @@ import (
 // original test scripts used, and each one records what it did in the
 // transcript, so that a golden file reads like a terminal session.
 type workspace struct {
-	t    *testing.T
-	root string            // the project directory
-	dir  string            // the current directory, relative to root
-	env  map[string]string // environment variables set by the test
-	log  bytes.Buffer      // the transcript
+	t     *testing.T
+	suite string            // the tool whose golden files hold this transcript
+	root  string            // the project directory
+	dir   string            // the current directory, relative to root
+	env   map[string]string // environment variables set by the test
+	log   bytes.Buffer      // the transcript
 }
 
 // newWorkspace returns an empty project, with the environment the tests share:
-// a fixed date, so that records are reproducible, and no editor, so that
-// creating a record does not try to open one.
-func newWorkspace(t *testing.T) *workspace {
+// a fixed date for each tool, so that records are reproducible, and no editor,
+// so that creating a record does not try to open one.  The transcript is
+// compared against a golden file among those of the suite's tool.
+func newWorkspace(t *testing.T, suite string) *workspace {
 	return &workspace{
-		t:    t,
-		root: t.TempDir(),
-		dir:  ".",
-		env:  map[string]string{"ADR_DATE": "1992-01-12", "VISUAL": "", "EDITOR": ""},
+		t:     t,
+		suite: suite,
+		root:  t.TempDir(),
+		dir:   ".",
+		env: map[string]string{
+			"ADR_DATE": "1992-01-12",
+			"RFC_DATE": "1992-01-12",
+			"VISUAL":   "",
+			"EDITOR":   "",
+		},
 	}
 }
 
@@ -62,42 +70,54 @@ func (w *workspace) printf(format string, a ...any) {
 	fmt.Fprintf(&w.log, format, a...)
 }
 
-// adr runs the adr command, recording its output — on both streams, in the
-// order it was written — in the transcript.
+// adr runs the adr command.
 func (w *workspace) adr(args ...string) {
 	w.t.Helper()
-	w.echo("adr", args...)
+	w.run("adr", args...)
+}
 
-	cmd := exec.Command(adrBin, args...)
+// rfc runs the rfc command.
+func (w *workspace) rfc(args ...string) {
+	w.t.Helper()
+	w.run("rfc", args...)
+}
+
+// run runs a tool, recording its output — on both streams, in the order it was
+// written — in the transcript.
+func (w *workspace) run(tool string, args ...string) {
+	w.t.Helper()
+	w.echo(tool, args...)
+
+	cmd := exec.Command(tools[tool], args...)
 	cmd.Dir = w.cwd()
 	cmd.Env = w.environ()
 	cmd.Stdout, cmd.Stderr = &w.log, &w.log
 	if err := cmd.Run(); err != nil {
 		var exit *exec.ExitError
 		if !errors.As(err, &exit) {
-			w.t.Fatalf("running adr %s: %v", strings.Join(args, " "), err)
+			w.t.Fatalf("running %s %s: %v", tool, strings.Join(args, " "), err)
 		}
 	}
 }
 
-// output runs the adr command and returns everything it wrote, leaving the
-// transcript alone.  It is for output that is too long, or too much cobra's
-// own, to keep in a golden file.
-func (w *workspace) output(args ...string) string {
+// output runs a tool and returns everything it wrote, leaving the transcript
+// alone.  It is for output that is too long, or too much cobra's own, to keep
+// in a golden file.
+func (w *workspace) output(tool string, args ...string) string {
 	w.t.Helper()
-	cmd := exec.Command(adrBin, args...)
+	cmd := exec.Command(tools[tool], args...)
 	cmd.Dir = w.cwd()
 	cmd.Env = w.environ()
 	var out bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &out, &out
 	if err := cmd.Run(); err != nil {
-		w.t.Fatalf("running adr %s: %v\n%s", strings.Join(args, " "), err, &out)
+		w.t.Fatalf("running %s %s: %v\n%s", tool, strings.Join(args, " "), err, &out)
 	}
 	return out.String()
 }
 
 func (w *workspace) environ() []string {
-	env := append(os.Environ(), "ADR_TEMPLATE=", "ADR_PAGER=cat")
+	env := append(os.Environ(), "ADR_TEMPLATE=", "ADR_PAGER=cat", "RFC_TEMPLATE=", "RFC_PAGER=cat")
 	for name, value := range w.env {
 		env = append(env, name+"="+value)
 	}
@@ -186,11 +206,11 @@ func (w *workspace) read(name string) string {
 	return string(content)
 }
 
-// check compares the transcript against the test's golden file, which -update
-// rewrites.
+// check compares the transcript against the test's golden file, in the
+// directory of the suite's tool, which -update rewrites.
 func (w *workspace) check() {
 	w.t.Helper()
-	golden := filepath.Join("testdata", w.t.Name()+".golden")
+	golden := filepath.Join("testdata", w.suite, w.t.Name()+".golden")
 	if *update {
 		if err := os.WriteFile(golden, w.log.Bytes(), 0o644); err != nil {
 			w.t.Fatal(err)

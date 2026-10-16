@@ -1,0 +1,19 @@
+adr init
+docs/adr/0001-record-architecture-decisions.md
+rfc init
+docs/rfc/0001-use-requests-for-comments.md
+adr new "A Decision"
+docs/adr/0002-a-decision.md
+rfc new "A Proposal"
+docs/rfc/0002-a-proposal.md
+ls docs
+adr
+rfc
+adr list
+docs/adr/0001-record-architecture-decisions.md
+docs/adr/0002-a-decision.md
+rfc list
+docs/rfc/0001-use-requests-for-comments.md
+docs/rfc/0002-a-proposal.md
+rfc link -o 2 a-decision
+rfc: no RFC matches "a-decision"

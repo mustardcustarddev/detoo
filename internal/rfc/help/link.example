@@ -1,0 +1,5 @@
+  # Record that RFC 3 updates RFC 2:
+  rfc link --update 3 2
+
+  # Record that RFC 12 obsoletes RFC 10:
+  rfc link -o 12 10

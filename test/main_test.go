@@ -1,8 +1,8 @@
-// Package adrtest drives the adr command the way a user does — a sequence of
+// Package clitest drives the record tools the way a user does — a sequence of
 // commands in a working directory — and compares the whole transcript against a
-// golden file.  These are the tests the shell implementation of adr-tools ran,
-// ported along with the tool.
-package adrtest
+// golden file.  The adr tests are the ones the shell implementation of
+// adr-tools ran, ported along with the tool.
+package clitest
 
 import (
 	"flag"
@@ -15,9 +15,10 @@ import (
 
 var update = flag.Bool("update", false, "rewrite the golden files from the transcripts produced by this run")
 
-// Paths of the binaries the tests drive, built once by TestMain.
+// Paths of the binaries the tests drive, built once by TestMain: each tool, by
+// name, and the fake editor.
 var (
-	adrBin        string
+	tools         = map[string]string{}
 	fakeEditorBin string
 )
 
@@ -27,18 +28,20 @@ func TestMain(m *testing.M) {
 }
 
 func runTests(m *testing.M) int {
-	dir, err := os.MkdirTemp("", "adr-tools-test")
+	dir, err := os.MkdirTemp("", "record-tools-test")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return 1
 	}
 	defer os.RemoveAll(dir)
 
-	adrBin = filepath.Join(dir, "adr")
 	fakeEditorBin = filepath.Join(dir, "fakeeditor")
 	binaries := map[string]string{
-		"github.com/mustardcustard/decision-records/cmd/adr":         adrBin,
 		"github.com/mustardcustard/decision-records/test/fakeeditor": fakeEditorBin,
+	}
+	for _, name := range []string{"adr", "rfc"} {
+		tools[name] = filepath.Join(dir, name)
+		binaries["github.com/mustardcustard/decision-records/cmd/"+name] = tools[name]
 	}
 	for pkg, bin := range binaries {
 		build := exec.Command("go", "build", "-o", bin, pkg)

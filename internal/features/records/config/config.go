@@ -6,10 +6,10 @@ import "context"
 // Query asks for the configuration in use.
 type Query struct{}
 
-// Result is where this project keeps its decision records, and which template
+// Result is where this project keeps its records, and which template
 // it creates them from.
 type Result struct {
-	// Dir is the decision record directory, relative to the working directory.
+	// Dir is the record directory, relative to the working directory.
 	Dir string
 
 	// Template is the project's own record template, or "" if it has none and

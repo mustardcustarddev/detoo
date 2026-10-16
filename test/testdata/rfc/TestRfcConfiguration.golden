@@ -1,0 +1,68 @@
+rfc config
+rfc_dir="docs/rfc"
+rfc_template=""
+rfc init proposals
+proposals/0001-use-requests-for-comments.md
+rfc config
+rfc_dir="proposals"
+rfc_template=""
+mkdir -p subdir
+cd subdir
+rfc config
+rfc_dir="../proposals"
+rfc_template=""
+cd ..
+mkdir -p proposals/templates
+cat > proposals/templates/template.md <<EOF
+# NUMBER. TITLE
+
+Date: DATE
+
+## Status
+
+STATUS
+
+## Proposal
+EOF
+rfc config
+rfc_dir="proposals"
+rfc_template="proposals/templates/template.md"
+cat > custom.md <<EOF
+# NUMBER. TITLE, from custom.md
+
+Date: DATE
+
+## Status
+
+STATUS
+
+## Proposal
+EOF
+ADR_TEMPLATE=custom.md
+ADR_DATE=2000-01-01
+rfc new "Ignores the ADR settings"
+proposals/0002-ignores-the-adr-settings.md
+RFC_TEMPLATE=custom.md
+RFC_DATE=2026-09-10
+rfc new "Uses the RFC settings"
+proposals/0003-uses-the-rfc-settings.md
+cat proposals/0002-ignores-the-adr-settings.md
+# 2. Ignores the ADR settings
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+## Proposal
+cat proposals/0003-uses-the-rfc-settings.md
+# 3. Uses the RFC settings, from custom.md
+
+Date: 2026-09-10
+
+## Status
+
+Draft
+
+## Proposal

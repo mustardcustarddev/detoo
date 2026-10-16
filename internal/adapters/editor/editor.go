@@ -1,4 +1,4 @@
-// Package editor opens a decision record in the user's editor.
+// Package editor opens a record in the user's editor.
 //
 // A driven adapter over another program.  The slice that creates a record says
 // only that the record should be opened; which editor, and whether there is one

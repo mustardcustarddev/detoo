@@ -1,10 +1,10 @@
-// Package list reports the decision records in the log.
+// Package list reports the records in the log.
 package list
 
 import (
 	"context"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 // Query asks for the log's records.  It has no fields yet, and exists so that
@@ -18,12 +18,12 @@ type Query struct{}
 // caller decides what to make of them: the CLI prints one path a line, and
 // another client might render titles or serialise the numbers.
 type Result struct {
-	Records []adr.Record
+	Records []record.Record
 }
 
 // Store is the port this slice needs.
 type Store interface {
-	Records(ctx context.Context) ([]adr.Record, error)
+	Records(ctx context.Context) ([]record.Record, error)
 }
 
 // Handler lists the records in a log.

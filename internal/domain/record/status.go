@@ -1,4 +1,4 @@
-package adr
+package record
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ const statusHeading = "## Status"
 // the number of the record it points at.
 var linkPattern = regexp.MustCompile(`^(.+) \[.*\]\(0*([1-9][0-9]*).*\)`)
 
-// Link is a reference from one decision record to another.
+// Link is a reference from one record to another.
 type Link struct {
 	Type   string // how the source record describes the link, e.g. "Supercedes"
 	Target int    // the number of the record linked to

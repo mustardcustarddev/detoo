@@ -1,0 +1,8 @@
+  # Draw the RFCs as an SVG image, with Mermaid:
+  rfc graph | mmdc -i - -o graph.svg
+
+  # Draw them with Graphviz instead:
+  rfc graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each RFC links to a .pdf file:
+  rfc graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

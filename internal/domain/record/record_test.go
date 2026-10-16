@@ -1,4 +1,4 @@
-package adr
+package record
 
 import (
 	"reflect"
@@ -8,6 +8,39 @@ import (
 // These tests need no temporary directory, no binary and no fakes: the package
 // they cover is pure, so the whole of the record format can be exercised from
 // literals.
+
+// Only replacing a record retires it, and the zero Relation is no relation at
+// all, so that a request which names none is recognised.
+func TestRelations(t *testing.T) {
+	if Relation(0).Valid() {
+		t.Error("the zero Relation is valid")
+	}
+	if !Replaces.Valid() || !Replaces.Retires() {
+		t.Error("Replaces is not a valid relation that retires its target")
+	}
+	if !Updates.Valid() || Updates.Retires() {
+		t.Error("Updates is not a valid relation that leaves its target alone")
+	}
+}
+
+func TestWordsForARelation(t *testing.T) {
+	kind := Kind{
+		Replaces: Words{Verb: "obsolete", Forward: "Obsoletes", Reverse: "Obsoleted by"},
+		Updates:  Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
+	}
+	if got := kind.WordsFor(Replaces); got != kind.Replaces {
+		t.Errorf("WordsFor(Replaces) = %v, want %v", got, kind.Replaces)
+	}
+	if got := kind.WordsFor(Updates); got != kind.Updates {
+		t.Errorf("WordsFor(Updates) = %v, want %v", got, kind.Updates)
+	}
+}
+
+func TestVariableIsNamedAfterTheTool(t *testing.T) {
+	if got, want := (Kind{Name: "rfc"}).Variable("DATE"), "RFC_DATE"; got != want {
+		t.Errorf("Variable(DATE) = %q, want %q", got, want)
+	}
+}
 
 func TestSlug(t *testing.T) {
 	for _, test := range []struct {

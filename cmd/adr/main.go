@@ -2,9 +2,10 @@
 //
 // Run "adr help" for the available commands.
 //
-// This is the only package main, and it holds no behaviour of its own: it
-// chooses the adapters, wires the application, runs the command tree, and turns
-// an error into an exit status.  That is why nothing below it calls os.Exit.
+// This package holds no behaviour of its own: it chooses the adapters, wires
+// the application for the adr tool, runs the command tree, and turns an error
+// into an exit status.  That is why nothing below it calls os.Exit.  Every
+// other record tool has a package main just like it.
 package main
 
 import (
@@ -16,6 +17,7 @@ import (
 	"github.com/mustardcustard/decision-records/internal/adapters/editor"
 	"github.com/mustardcustard/decision-records/internal/adapters/logstore"
 	"github.com/mustardcustard/decision-records/internal/adapters/templates"
+	"github.com/mustardcustard/decision-records/internal/adr"
 	"github.com/mustardcustard/decision-records/internal/app"
 	"github.com/mustardcustard/decision-records/internal/cli"
 )
@@ -33,13 +35,14 @@ func run() int {
 	// The composition root.  Every dependence on the outside world — the disk,
 	// the environment, the clock, the user's editor — is chosen here, once.
 	application := app.New(
-		logstore.New(workdir),
-		templates.New(workdir, os.Getenv),
-		clock.New(os.Getenv),
+		adr.Kind,
+		logstore.New(workdir, adr.Kind),
+		templates.New(workdir, os.Getenv, adr.Kind, adr.Files),
+		clock.New(os.Getenv, adr.Kind),
 		editor.New(workdir, os.Getenv, os.Stdin, os.Stdout, os.Stderr),
 	)
 
-	if err := cli.NewRootCommand(application, os.Stdout, os.Stderr, os.Getenv).Execute(); err != nil {
+	if err := cli.NewRootCommand(adr.Kind, adr.Files, application, os.Stdout, os.Stderr, os.Getenv).Execute(); err != nil {
 		// A command that has already explained itself says only how to exit.
 		if exit, ok := errors.AsType[*cli.ExitError](err); ok {
 			return exit.Code

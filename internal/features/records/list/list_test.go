@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 func TestHandleReturnsTheRecordsInOrder(t *testing.T) {
@@ -22,7 +22,7 @@ func TestHandleReturnsTheRecordsInOrder(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	want := []adr.Record{
+	want := []record.Record{
 		{Number: 1, File: "docs/adr/0001-first.md"},
 		{Number: 2, File: "docs/adr/0002-second.md"},
 	}
@@ -32,13 +32,13 @@ func TestHandleReturnsTheRecordsInOrder(t *testing.T) {
 }
 
 // A project with no log is a condition the caller recognises, not an opaque
-// filesystem error, so the store's *adr.MissingDirError reaches it intact.
+// filesystem error, so the store's *record.MissingDirError reaches it intact.
 func TestHandleReportsAMissingLog(t *testing.T) {
 	_, err := Handler{Log: memlog.New()}.Handle(context.Background(), Query{})
 
-	var missing *adr.MissingDirError
+	var missing *record.MissingDirError
 	if !errors.As(err, &missing) {
-		t.Fatalf("err = %v, want an *adr.MissingDirError", err)
+		t.Fatalf("err = %v, want an *record.MissingDirError", err)
 	}
 	if missing.Dir != "docs/adr" {
 		t.Errorf("missing directory = %q, want docs/adr", missing.Dir)

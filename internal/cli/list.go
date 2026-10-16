@@ -11,15 +11,15 @@ import (
 	"github.com/mustardcustard/decision-records/internal/features/reports/toc"
 )
 
-func newListCommand(application *app.Application) *cobra.Command {
+func newListCommand(t tool, application *app.Application) *cobra.Command {
 	var contents bool
 	var intro, outro, linkPrefix string
 
 	cmd := &cobra.Command{
 		Use:     "list",
-		Short:   "List the decision records, or write a table of contents",
-		Long:    helpText("list.md"),
-		Example: helpText("list.example"),
+		Short:   "List the " + t.Plural + ", or write a table of contents",
+		Long:    t.help("list.md"),
+		Example: t.help("list.example"),
 		Args:    cobra.NoArgs,
 
 		// One command, two slices: the records are either listed for a script,
@@ -55,7 +55,7 @@ func newListCommand(application *app.Application) *cobra.Command {
 	cmd.Flags().StringVarP(&outro, "outro", "o", "",
 		"follow the table of contents with the Markdown in `OUTRO`")
 	cmd.Flags().StringVarP(&linkPrefix, "prefix", "p", "",
-		"prefix each decision file link with `LINK_PREFIX`")
+		"prefix each link to a record with `LINK_PREFIX`")
 	return cmd
 }
 

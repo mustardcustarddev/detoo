@@ -1,4 +1,4 @@
-// Package graph draws the decision records and the links between them, in
+// Package graph draws the records of a log and the links between them, in
 // Mermaid or Graphviz format.
 package graph
 
@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 // Format is the language a graph is written in.
@@ -49,13 +49,14 @@ type Result struct {
 
 // Store is the port this slice needs.
 type Store interface {
-	Records(ctx context.Context) ([]adr.Record, error)
+	Records(ctx context.Context) ([]record.Record, error)
 	Lines(ctx context.Context, file string) ([]string, error)
 }
 
 // Handler draws the graph.
 type Handler struct {
-	Log Store
+	Kind record.Kind
+	Log  Store
 }
 
 // node is a record, as the graph draws it.
@@ -75,7 +76,7 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 	var draw func(nodes []node, edges []edge) string
 	switch query.Format {
 	case Mermaid:
-		draw = mermaid
+		draw = func(nodes []node, edges []edge) string { return mermaid(h.Kind.Name, nodes, edges) }
 	case Graphviz:
 		draw = graphviz
 	default:
@@ -95,23 +96,23 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 
 	var nodes []node
 	var edges []edge
-	for _, record := range records {
-		lines, err := h.Log.Lines(ctx, record.File)
+	for _, r := range records {
+		lines, err := h.Log.Lines(ctx, r.File)
 		if err != nil {
 			return Result{}, err
 		}
-		name := strings.TrimSuffix(path.Base(record.File), ".md")
+		name := strings.TrimSuffix(path.Base(r.File), ".md")
 		nodes = append(nodes, node{
-			number: record.Number,
-			title:  adr.Title(lines),
+			number: r.Number,
+			title:  record.Title(lines),
 			url:    query.LinkPrefix + name + query.LinkExtension,
 		})
-		for _, link := range adr.Links(lines) {
+		for _, link := range record.Links(lines) {
 			// Reverse links duplicate a link recorded by the other record.
 			if strings.HasSuffix(link.Type, " by") {
 				continue
 			}
-			edges = append(edges, edge{from: record.Number, to: link.Target, label: link.Type})
+			edges = append(edges, edge{from: r.Number, to: link.Target, label: link.Type})
 		}
 	}
 	return Result{Document: draw(nodes, edges)}, nil
@@ -139,21 +140,24 @@ func graphviz(nodes []node, edges []edge) string {
 }
 
 // mermaid draws a flowchart, laid out as the digraph is: each record chained to
-// the one before it by a dotted arrow, and linked to its document.
-func mermaid(nodes []node, edges []edge) string {
+// the one before it by a dotted arrow, and linked to its document.  Each node
+// is named after the tool and the record's number, as adr1 or rfc1.
+func mermaid(tool string, nodes []node, edges []edge) string {
+	id := func(number int) string { return fmt.Sprintf("%s%d", tool, number) }
+
 	var out strings.Builder
 	fmt.Fprintln(&out, "flowchart TD")
 	for _, n := range nodes {
-		fmt.Fprintf(&out, "  adr%d[\"%s\"]\n", n.number, mermaidText(n.title))
+		fmt.Fprintf(&out, "  %s[\"%s\"]\n", id(n.number), mermaidText(n.title))
 		if n.number > 1 {
-			fmt.Fprintf(&out, "  adr%d -.-> adr%d\n", n.number-1, n.number)
+			fmt.Fprintf(&out, "  %s -.-> %s\n", id(n.number-1), id(n.number))
 		}
 	}
 	for _, e := range edges {
-		fmt.Fprintf(&out, "  adr%d -->|\"%s\"| adr%d\n", e.from, mermaidText(e.label), e.to)
+		fmt.Fprintf(&out, "  %s -->|\"%s\"| %s\n", id(e.from), mermaidText(e.label), id(e.to))
 	}
 	for _, n := range nodes {
-		fmt.Fprintf(&out, "  click adr%d \"%s\"\n", n.number, n.url)
+		fmt.Fprintf(&out, "  click %s \"%s\"\n", id(n.number), n.url)
 	}
 	return out.String()
 }

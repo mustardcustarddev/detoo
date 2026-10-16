@@ -1,4 +1,4 @@
-package adrtest
+package clitest
 
 import (
 	"strings"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestInitAdrRepository(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init")
 	w.ls("docs/adr")
 	w.cat("docs/adr/0001-record-architecture-decisions.md")
@@ -16,7 +16,7 @@ func TestInitAdrRepository(t *testing.T) {
 // TestInitIsIdempotent covers running init on a log that already exists: it
 // does nothing, unless it is pointed at another directory, which it refuses.
 func TestInitIsIdempotent(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init")
 	w.adr("init")
 	w.adr("init", "docs/adr/")
@@ -27,14 +27,14 @@ func TestInitIsIdempotent(t *testing.T) {
 }
 
 func TestCreateFirstRecord(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "The First Decision")
 	w.cat("docs/adr/0001-the-first-decision.md")
 	w.check()
 }
 
 func TestCreateMultipleRecords(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
@@ -45,7 +45,7 @@ func TestCreateMultipleRecords(t *testing.T) {
 }
 
 func TestListRecords(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("list")
 	w.adr("new", "first")
 	w.adr("list")
@@ -57,20 +57,20 @@ func TestListRecords(t *testing.T) {
 }
 
 func TestMustProvideATitleWhenCreatingNewAdr(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new")
 	w.check()
 }
 
 func TestTitleMustBeASingleArgument(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "Use", "MySQL", "Database")
 	w.ls(".")
 	w.check()
 }
 
 func TestAvoidOctalNumbers(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	for _, title := range []string{
 		"First Decision", "Second Decision", "Third Decision", "Fourth Decision",
 		"Fifth Decision", "Sixth Decision", "Seventh Decision", "Eighth Decision",
@@ -84,7 +84,7 @@ func TestAvoidOctalNumbers(t *testing.T) {
 }
 
 func TestFunnyCharacters(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "Something About Node.JS")
 	w.adr("new", "Slash/Slash/Slash/")
 	w.adr("new", "--", "-Bar-")
@@ -93,7 +93,7 @@ func TestFunnyCharacters(t *testing.T) {
 }
 
 func TestEditAdrOnCreation(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.useEditor("EDITOR", "EDITOR")
 	w.setenv("VISUAL", "")
 	w.adr("new", "created with EDITOR environment variable set")
@@ -109,7 +109,7 @@ func TestEditAdrOnCreation(t *testing.T) {
 }
 
 func TestAlternativeAdrDirectory(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init", "alternative-dir")
 	w.adr("new", "Example ADR")
 	w.ls(".")
@@ -119,7 +119,7 @@ func TestAlternativeAdrDirectory(t *testing.T) {
 }
 
 func TestSearchForAdrDir(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.mkdir("subdir")
 	w.cd("subdir")
@@ -131,7 +131,7 @@ func TestSearchForAdrDir(t *testing.T) {
 }
 
 func TestSearchForCustomAdrDir(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init", "architecture-log")
 	w.adr("new", "First Record")
 	w.mkdir("subdir")
@@ -144,7 +144,7 @@ func TestSearchForCustomAdrDir(t *testing.T) {
 }
 
 func TestProjectSpecificTemplate(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init", "adrs")
 	w.mkdir("adrs/templates")
 	w.write("adrs/templates/template.md", `# TITLE
@@ -169,7 +169,7 @@ Date: DATE
 }
 
 func TestLinking(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "Third Record")
@@ -185,7 +185,7 @@ func TestLinking(t *testing.T) {
 // must say whether it supercedes or updates, and cannot say both.  Nothing is
 // written when it fails.
 func TestLinkNeedsExactlyOneRelation(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("link", "2", "1")
@@ -195,7 +195,7 @@ func TestLinkNeedsExactlyOneRelation(t *testing.T) {
 }
 
 func TestLinkingNewRecords(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-u", "1", "-u", "2", "Third Record")
@@ -206,7 +206,7 @@ func TestLinkingNewRecords(t *testing.T) {
 }
 
 func TestSupercedeExistingAdr(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "-s", "1", "Second Record")
 	w.head(10, "docs/adr/0001-first-record.md")
@@ -215,7 +215,7 @@ func TestSupercedeExistingAdr(t *testing.T) {
 }
 
 func TestSupercedeMultipleAdrs(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-s", "1", "-s", "2", "Third Record")
@@ -226,7 +226,7 @@ func TestSupercedeMultipleAdrs(t *testing.T) {
 }
 
 func TestListContents(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
@@ -235,7 +235,7 @@ func TestListContents(t *testing.T) {
 }
 
 func TestListContentsWithPrefix(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
@@ -244,7 +244,7 @@ func TestListContentsWithPrefix(t *testing.T) {
 }
 
 func TestListContentsWithHeaderAndFooter(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Decision")
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
@@ -257,7 +257,7 @@ func TestListContentsWithHeaderAndFooter(t *testing.T) {
 // TestReportOptionsAreChecked covers options that contradict each other: a
 // table of contents option without --toc, and a graph in two formats.
 func TestReportOptionsAreChecked(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("new", "First Decision")
 	w.adr("list", "-p", "foo/docs/adr/")
 	w.adr("graph", "--graphviz", "--mermaid")
@@ -267,7 +267,7 @@ func TestReportOptionsAreChecked(t *testing.T) {
 // TestReportsOfAnEmptyLog covers a log that exists but has no records yet: each
 // report writes nothing at all, so publishing one creates no empty document.
 func TestReportsOfAnEmptyLog(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.mkdir("docs/adr")
 	w.adr("list")
 	w.adr("list", "--toc", "-i", "intro.md", "-o", "outro.md")
@@ -279,7 +279,7 @@ func TestReportsOfAnEmptyLog(t *testing.T) {
 // graphedLog returns a workspace holding a log whose records supercede and
 // update one another, for a graph to draw.
 func graphedLog(t *testing.T) *workspace {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init")
 	w.adr("new", "An idea that seems good at the time")
 	w.adr("new", "-s", "2", "A better idea")
@@ -307,8 +307,8 @@ func TestMermaid(t *testing.T) {
 // is still generated.  Its content is cobra's, and changes between releases, so
 // it is not compared against a golden file.
 func TestCompletionScript(t *testing.T) {
-	w := newWorkspace(t)
-	if script := w.output("completion", "bash"); !strings.Contains(script, "__start_adr") {
+	w := newWorkspace(t, "adr")
+	if script := w.output("adr", "completion", "bash"); !strings.Contains(script, "__start_adr") {
 		t.Errorf("completion script does not define __start_adr:\n%s", script)
 	}
 }
@@ -317,7 +317,7 @@ func TestCompletionScript(t *testing.T) {
 // before the operands, so that a directory that begins with "-" may be given
 // after "--".
 func TestOperandsMayBeginWithAHyphen(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("init", "--", "-docs")
 	w.adr("new", "First Record")
 	w.ls(".")
@@ -326,7 +326,7 @@ func TestOperandsMayBeginWithAHyphen(t *testing.T) {
 }
 
 func TestHelp(t *testing.T) {
-	w := newWorkspace(t)
+	w := newWorkspace(t, "adr")
 	w.adr("help")
 	w.adr("help", "graph")
 	w.adr("help", "list")

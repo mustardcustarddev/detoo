@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 // The store is the one place that touches the disk, so these are the only tests
@@ -17,7 +17,7 @@ import (
 
 func newStore(t *testing.T) *Store {
 	t.Helper()
-	return New(t.TempDir())
+	return New(t.TempDir(), kind)
 }
 
 func writeRecord(t *testing.T, s *Store, name, content string) {
@@ -36,14 +36,14 @@ func TestDirDefaultsWhenNothingIsFound(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if dir != DefaultDir {
-		t.Errorf("Dir() = %q, want %q", dir, DefaultDir)
+	if dir != adrDir {
+		t.Errorf("Dir() = %q, want %q", dir, adrDir)
 	}
 }
 
 func TestDirFindsAMarkerFile(t *testing.T) {
 	s := newStore(t)
-	write(t, filepath.Join(s.workdir, DirMarkerFile), "architecture-log\n")
+	write(t, filepath.Join(s.workdir, adrMarker), "architecture-log\n")
 
 	dir, err := s.Dir(context.Background())
 	if err != nil {
@@ -67,7 +67,7 @@ func TestDirSearchesAncestors(t *testing.T) {
 		},
 		{
 			name:  "marker file in an ancestor",
-			setup: func(root string) { write(t, filepath.Join(root, DirMarkerFile), "architecture-log\n") },
+			setup: func(root string) { write(t, filepath.Join(root, adrMarker), "architecture-log\n") },
 			want:  "../../architecture-log",
 		},
 	} {
@@ -77,7 +77,7 @@ func TestDirSearchesAncestors(t *testing.T) {
 			deep := filepath.Join(root, "src", "main")
 			mkdirAll(t, deep)
 
-			dir, err := New(deep).Dir(context.Background())
+			dir, err := New(deep, kind).Dir(context.Background())
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -92,12 +92,12 @@ func TestDirSearchesAncestors(t *testing.T) {
 // directory wins over one further up.
 func TestDirPrefersTheNearestMarker(t *testing.T) {
 	root := t.TempDir()
-	write(t, filepath.Join(root, DirMarkerFile), "outer\n")
+	write(t, filepath.Join(root, adrMarker), "outer\n")
 	inner := filepath.Join(root, "component")
 	mkdirAll(t, inner)
-	write(t, filepath.Join(inner, DirMarkerFile), "inner\n")
+	write(t, filepath.Join(inner, adrMarker), "inner\n")
 
-	dir, err := New(inner).Dir(context.Background())
+	dir, err := New(inner, kind).Dir(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -134,7 +134,7 @@ func TestRecordsReturnsOnlyRecordsInOrder(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []adr.Record{
+	want := []record.Record{
 		{Number: 1, File: "docs/adr/0001-first.md"},
 		{Number: 2, File: "docs/adr/0002-second.md"},
 	}
@@ -146,12 +146,12 @@ func TestRecordsReturnsOnlyRecordsInOrder(t *testing.T) {
 func TestRecordsReportsAMissingDirectory(t *testing.T) {
 	_, err := newStore(t).Records(context.Background())
 
-	var missing *adr.MissingDirError
+	var missing *record.MissingDirError
 	if !errors.As(err, &missing) {
-		t.Fatalf("Records() error = %v, want an *adr.MissingDirError", err)
+		t.Fatalf("Records() error = %v, want an *record.MissingDirError", err)
 	}
-	if missing.Dir != DefaultDir {
-		t.Errorf("missing directory = %q, want %q", missing.Dir, DefaultDir)
+	if missing.Dir != adrDir {
+		t.Errorf("missing directory = %q, want %q", missing.Dir, adrDir)
 	}
 }
 

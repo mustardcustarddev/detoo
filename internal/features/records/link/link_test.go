@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 const (
@@ -26,8 +28,8 @@ func newLog() *memlog.Log {
 func TestHandleUpdateLinksBothRecords(t *testing.T) {
 	log := newLog()
 
-	result, err := Handler{Log: log}.Handle(context.Background(), Command{
-		Relation: adr.Updates,
+	result, err := Handler{Kind: adr.Kind, Log: log}.Handle(context.Background(), Command{
+		Relation: record.Updates,
 		Source:   "2",
 		Target:   "1",
 	})
@@ -53,8 +55,8 @@ func TestHandleUpdateLinksBothRecords(t *testing.T) {
 func TestHandleSupercedeRetiresTheTarget(t *testing.T) {
 	log := newLog()
 
-	if _, err := (Handler{Log: log}).Handle(context.Background(), Command{
-		Relation: adr.Supercedes,
+	if _, err := (Handler{Kind: adr.Kind, Log: log}).Handle(context.Background(), Command{
+		Relation: record.Replaces,
 		Source:   "2",
 		Target:   "1",
 	}); err != nil {
@@ -71,11 +73,40 @@ func TestHandleSupercedeRetiresTheTarget(t *testing.T) {
 	}
 }
 
+// The words a link is written in, and the status a replaced record loses,
+// belong to the kind of log: an RFC obsoletes a draft.
+func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
+	log := memlog.WithRecords(map[string]string{
+		"docs/rfc/0001-first.md":  "# 1. First\n\n## Status\n\nDraft\n\n## Summary\n\nSummary.\n",
+		"docs/rfc/0002-second.md": "# 2. Second\n\n## Status\n\nDraft\n\n## Summary\n\nSummary.\n",
+	})
+	if err := log.SetDir(context.Background(), "docs/rfc"); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := (Handler{Kind: rfc.Kind, Log: log}).Handle(context.Background(), Command{
+		Relation: record.Replaces,
+		Source:   "2",
+		Target:   "1",
+	}); err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+
+	wantSource := "# 2. Second\n\n## Status\n\nDraft\n\nObsoletes [1. First](0001-first.md)\n\n## Summary\n\nSummary.\n"
+	if got := log.Content("docs/rfc/0002-second.md"); got != wantSource {
+		t.Errorf("source record is\n%s\nwant\n%s", got, wantSource)
+	}
+	wantTarget := "# 1. First\n\n## Status\n\nObsoleted by [2. Second](0002-second.md)\n\n## Summary\n\nSummary.\n"
+	if got := log.Content("docs/rfc/0001-first.md"); got != wantTarget {
+		t.Errorf("target record is\n%s\nwant\n%s", got, wantTarget)
+	}
+}
+
 // A record is named by its number or by part of its file name, and either is
 // resolved before anything is written.
 func TestHandleResolvesRecordsByName(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Command{
-		Relation: adr.Updates,
+	result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Command{
+		Relation: record.Updates,
 		Source:   "second",
 		Target:   "first",
 	})
@@ -92,7 +123,7 @@ func TestHandleResolvesRecordsByName(t *testing.T) {
 func TestHandleRejectsALinkWithNoRelation(t *testing.T) {
 	log := newLog()
 
-	_, err := Handler{Log: log}.Handle(context.Background(), Command{Source: "2", Target: "1"})
+	_, err := Handler{Kind: adr.Kind, Log: log}.Handle(context.Background(), Command{Source: "2", Target: "1"})
 	if !errors.Is(err, ErrNoRelation) {
 		t.Errorf("err = %v, want %v", err, ErrNoRelation)
 	}
@@ -105,8 +136,8 @@ func TestHandleRejectsALinkWithNoRelation(t *testing.T) {
 }
 
 func TestHandleReportsAnUnknownRecord(t *testing.T) {
-	if _, err := (Handler{Log: newLog()}).Handle(context.Background(), Command{
-		Relation: adr.Updates,
+	if _, err := (Handler{Kind: adr.Kind, Log: newLog()}).Handle(context.Background(), Command{
+		Relation: record.Updates,
 		Source:   "2",
 		Target:   "nothing-like-this",
 	}); err == nil {

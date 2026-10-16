@@ -10,6 +10,7 @@
 package app
 
 import (
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 	"github.com/mustardcustard/decision-records/internal/features/records/config"
 	"github.com/mustardcustard/decision-records/internal/features/records/create"
 	"github.com/mustardcustard/decision-records/internal/features/records/initialise"
@@ -26,7 +27,7 @@ type Application struct {
 	Reports Reports
 }
 
-// Records are the capabilities that read and write the decision record log.
+// Records are the capabilities that read and write the log.
 type Records struct {
 	Initialise initialise.Handler
 	Create     create.Handler
@@ -68,20 +69,21 @@ type Clock interface {
 	initialise.Clock
 }
 
-// New wires the application.  Its parameters are the adapters; below this line
-// nothing knows that records are Markdown files on a disk.
-func New(log Log, templates Templates, clock Clock, editor create.Editor) *Application {
+// New wires the application for logs of kind.  Its other parameters are the
+// adapters; below this line nothing knows that records are Markdown files on a
+// disk.
+func New(kind record.Kind, log Log, templates Templates, clock Clock, editor create.Editor) *Application {
 	return &Application{
 		Records: Records{
-			Initialise: initialise.Handler{Log: log, Templates: templates, Clock: clock},
-			Create:     create.Handler{Log: log, Templates: templates, Clock: clock, Editor: editor},
-			Link:       link.Handler{Log: log},
+			Initialise: initialise.Handler{Kind: kind, Log: log, Templates: templates, Clock: clock},
+			Create:     create.Handler{Kind: kind, Log: log, Templates: templates, Clock: clock, Editor: editor},
+			Link:       link.Handler{Kind: kind, Log: log},
 			List:       list.Handler{Log: log},
 			Config:     config.Handler{Log: log, Templates: templates},
 		},
 		Reports: Reports{
-			TOC:   toc.Handler{Log: log},
-			Graph: graph.Handler{Log: log},
+			TOC:   toc.Handler{Kind: kind, Log: log},
+			Graph: graph.Handler{Kind: kind, Log: log},
 		},
 	}
 }

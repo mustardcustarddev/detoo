@@ -6,9 +6,11 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/mustardcustard/decision-records/internal/adr"
 	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 	"github.com/mustardcustard/decision-records/internal/features/reports/graph"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 // These tests cover what belongs to the CLI: that the tree is assembled, that
@@ -18,9 +20,13 @@ import (
 //
 // A zero Application is enough, because no command is run: building the tree
 // and parsing flags never reaches a handler.
-func testRoot(t *testing.T) *cobra.Command {
+func testRoots(t *testing.T) []*cobra.Command {
 	t.Helper()
-	return NewRootCommand(&app.Application{}, io.Discard, io.Discard, func(string) string { return "" })
+	getenv := func(string) string { return "" }
+	return []*cobra.Command{
+		NewRootCommand(adr.Kind, adr.Files, &app.Application{}, io.Discard, io.Discard, getenv),
+		NewRootCommand(rfc.Kind, rfc.Files, &app.Application{}, io.Discard, io.Discard, getenv),
+	}
 }
 
 // commandsUnder returns cmd and every command beneath it.
@@ -32,17 +38,19 @@ func commandsUnder(cmd *cobra.Command) []*cobra.Command {
 	return found
 }
 
-// TestEveryCommandIsDocumented checks that each command explains itself.  The
-// help is embedded, and helpText panics on a file that is not there, so
-// building the tree at all proves the files exist; this proves that each
+// TestEveryCommandIsDocumented checks that each command of each tool explains
+// itself.  The help is embedded, and help panics on a file that is not there,
+// so building the trees at all proves the files exist; this proves that each
 // command names one, and that none of them is empty.
 func TestEveryCommandIsDocumented(t *testing.T) {
-	for _, cmd := range commandsUnder(testRoot(t)) {
-		if cmd.Short == "" {
-			t.Errorf("%q has no short description", cmd.CommandPath())
-		}
-		if cmd.Long == "" {
-			t.Errorf("%q has no long description", cmd.CommandPath())
+	for _, root := range testRoots(t) {
+		for _, cmd := range commandsUnder(root) {
+			if cmd.Short == "" {
+				t.Errorf("%q has no short description", cmd.CommandPath())
+			}
+			if cmd.Long == "" {
+				t.Errorf("%q has no long description", cmd.CommandPath())
+			}
 		}
 	}
 }
@@ -51,17 +59,41 @@ func TestEveryCommandIsDocumented(t *testing.T) {
 // before operands.  Without it an operand beginning with "-" is read as an
 // option and rejected.
 func TestEveryCommandTakesItsOptionsFirst(t *testing.T) {
-	for _, cmd := range commandsUnder(testRoot(t)) {
-		// pflag does not report the setting, so ask it to parse an operand
-		// followed by something option-shaped: it belongs to the operands.
-		flags := cmd.Flags()
-		if err := flags.Parse([]string{"operand", "-s"}); err != nil {
-			t.Errorf("%q: parsing an operand before an option: %v", cmd.CommandPath(), err)
-			continue
+	for _, root := range testRoots(t) {
+		for _, cmd := range commandsUnder(root) {
+			// pflag does not report the setting, so ask it to parse an operand
+			// followed by something option-shaped: it belongs to the operands.
+			flags := cmd.Flags()
+			if err := flags.Parse([]string{"operand", "-s"}); err != nil {
+				t.Errorf("%q: parsing an operand before an option: %v", cmd.CommandPath(), err)
+				continue
+			}
+			if got := flags.Args(); len(got) != 2 {
+				t.Errorf("%q: operands are %q, want both of them", cmd.CommandPath(), got)
+			}
 		}
-		if got := flags.Args(); len(got) != 2 {
-			t.Errorf("%q: operands are %q, want both of them", cmd.CommandPath(), got)
-		}
+	}
+}
+
+// TestPagerIsTheTools covers where help is paged: through the tool's own PAGER
+// variable, else PAGER, else more.  A pager runs only on a terminal, so the
+// end-to-end tests cannot see which one was chosen.
+func TestPagerIsTheTools(t *testing.T) {
+	env := map[string]string{}
+	getenv := func(name string) string { return env[name] }
+	rfcTool := tool{Kind: rfc.Kind}
+
+	if got := pager(rfcTool, getenv); got != "more" {
+		t.Errorf("with nothing set, pager = %q, want more", got)
+	}
+	env["PAGER"] = "less"
+	env["ADR_PAGER"] = "adr-pager"
+	if got := pager(rfcTool, getenv); got != "less" {
+		t.Errorf("with PAGER and ADR_PAGER set, rfc's pager = %q, want less", got)
+	}
+	env["RFC_PAGER"] = "rfc-pager"
+	if got := pager(rfcTool, getenv); got != "rfc-pager" {
+		t.Errorf("with RFC_PAGER set, pager = %q, want rfc-pager", got)
 	}
 }
 
@@ -91,22 +123,26 @@ func TestTitleArgRequiresExactlyOneOperand(t *testing.T) {
 }
 
 // TestRelationFlagNeedsExactlyOneSwitch covers the CLI half of validating a
-// link: which switch was typed is checked here, while a request with no
-// relation is a rule the link slice enforces for every client.
+// link: which switch was typed is checked here, and named in the tool's words,
+// while a request with no relation is a rule the link slice enforces for every
+// client.
 func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
 	for _, test := range []struct {
-		name              string
-		supercede, update bool
-		want              adr.Relation
-		wantErr           string
+		name            string
+		kind            record.Kind
+		replace, update bool
+		want            record.Relation
+		wantErr         string
 	}{
-		{"supercede", true, false, adr.Supercedes, ""},
-		{"update", false, true, adr.Updates, ""},
-		{"neither", false, false, 0, "give either --supercede or --update"},
-		{"both", true, true, 0, "give either --supercede or --update"},
+		{"supercede", adr.Kind, true, false, record.Replaces, ""},
+		{"update", adr.Kind, false, true, record.Updates, ""},
+		{"neither", adr.Kind, false, false, 0, "give either --supercede or --update"},
+		{"both", adr.Kind, true, true, 0, "give either --supercede or --update"},
+		{"obsolete", rfc.Kind, true, false, record.Replaces, ""},
+		{"neither, for an RFC", rfc.Kind, false, false, 0, "give either --obsolete or --update"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			got, err := relationFlag(test.supercede, test.update)
+			got, err := relationFlag(test.kind, test.replace, test.update)
 			switch {
 			case test.wantErr == "" && err != nil:
 				t.Errorf("relationFlag() = %v, want no error", err)
@@ -119,8 +155,8 @@ func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
 	}
 }
 
-// TestFormatFlagDefaultsToMermaid covers the switches "adr graph" takes: the
-// graph is Mermaid unless --graphviz is given, and cannot be both.
+// TestFormatFlagDefaultsToMermaid covers the switches "graph" takes: the graph
+// is Mermaid unless --graphviz is given, and cannot be both.
 func TestFormatFlagDefaultsToMermaid(t *testing.T) {
 	for _, test := range []struct {
 		name              string
@@ -147,8 +183,8 @@ func TestFormatFlagDefaultsToMermaid(t *testing.T) {
 	}
 }
 
-// TestTOCOptionsNeedTheTOCSwitch covers "adr list": the options that shape a
-// table of contents are rejected without --toc, rather than silently ignored.
+// TestTOCOptionsNeedTheTOCSwitch covers "list": the options that shape a table
+// of contents are rejected without --toc, rather than silently ignored.
 func TestTOCOptionsNeedTheTOCSwitch(t *testing.T) {
 	for _, test := range []struct {
 		name                 string

@@ -1,11 +1,12 @@
-// Package adr holds the concepts the decision-record features exchange: what a
-// record is, how its file is named, and how its Markdown is read and written.
+// Package record holds the concepts the features of every record tool
+// exchange: what a record is, how its file is named, how its Markdown is read
+// and written, and the vocabulary each kind of log describes it in.
 //
 // Everything here is pure.  The package reads no files, writes no output, and
 // knows nothing of Cobra, so a slice built on it can be driven by a CLI, an
 // HTTP API or a test with equal ease.  Anything that touches the disk belongs
 // in an adapter; anything that belongs to one use case belongs in that slice.
-package adr
+package record
 
 import (
 	"fmt"
@@ -16,17 +17,13 @@ import (
 	"unicode"
 )
 
-// StatusAccepted is the status a new record is created with.
-const StatusAccepted = "Accepted"
-
-// recordName matches the file name of a decision record: a number, a hyphen and
-// a slug.
+// recordName matches the file name of a record: a number, a hyphen and a slug.
 var recordName = regexp.MustCompile(`^[0-9]+-[^/]*\.md`)
 
 // leadingNumber matches the number a record's file name starts with.
 var leadingNumber = regexp.MustCompile(`^[0-9]+`)
 
-// Record identifies one decision record in the log.
+// Record identifies one record in a log.
 //
 // It carries no content: the title and status live in the file, and a slice
 // that needs them reads its lines through a store and parses them here.  That
@@ -40,10 +37,10 @@ type Record struct {
 	File string
 }
 
-// MissingDirError reports that the decision record directory does not exist.
+// MissingDirError reports that the record directory does not exist.
 //
 // It is a domain condition rather than a filesystem one — this project has no
-// decision log yet — so a store adapter translates fs.ErrNotExist into it, and
+// log yet — so a store adapter translates fs.ErrNotExist into it, and
 // every client is free to decide what that should mean.
 type MissingDirError struct {
 	Dir string
@@ -53,7 +50,7 @@ func (e *MissingDirError) Error() string {
 	return fmt.Sprintf("the %s directory does not exist", e.Dir)
 }
 
-// IsRecordName reports whether a file name is that of a decision record, so
+// IsRecordName reports whether a file name is that of a record, so
 // that a README or a template directory is not mistaken for one.
 func IsRecordName(name string) bool {
 	return recordName.MatchString(name)

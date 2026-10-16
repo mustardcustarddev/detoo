@@ -1,4 +1,4 @@
-// Package memlog keeps a log of decision records in memory.
+// Package memlog keeps a log of records in memory.
 //
 // It is a second driven adapter, satisfying the same ports as logstore, and it
 // exists to make the boundary demonstrable rather than merely claimed: the
@@ -18,10 +18,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
-// Log is an in-memory decision record log.  Its zero value is not usable: call
+// Log is an in-memory log of records.  Its zero value is not usable: call
 // New.
 type Log struct {
 	dir     string
@@ -63,43 +63,43 @@ func (l *Log) SetDir(_ context.Context, dir string) error {
 	return nil
 }
 
-func (l *Log) Records(context.Context) ([]adr.Record, error) {
+func (l *Log) Records(context.Context) ([]record.Record, error) {
 	if !l.created {
-		return nil, &adr.MissingDirError{Dir: l.dir}
+		return nil, &record.MissingDirError{Dir: l.dir}
 	}
 	var files []string
 	for file := range l.files {
-		if path.Dir(file) == l.dir && adr.IsRecordName(path.Base(file)) {
+		if path.Dir(file) == l.dir && record.IsRecordName(path.Base(file)) {
 			files = append(files, file)
 		}
 	}
 	sort.Strings(files)
 
-	records := make([]adr.Record, 0, len(files))
+	records := make([]record.Record, 0, len(files))
 	for _, file := range files {
-		records = append(records, adr.Record{Number: adr.Number(file), File: file})
+		records = append(records, record.Record{Number: record.Number(file), File: file})
 	}
 	return records, nil
 }
 
-func (l *Log) Resolve(ctx context.Context, ref string) (adr.Record, error) {
+func (l *Log) Resolve(ctx context.Context, ref string) (record.Record, error) {
 	records, err := l.Records(ctx)
 	if err != nil {
-		return adr.Record{}, err
+		return record.Record{}, err
 	}
-	for _, record := range records {
-		if strings.Contains(record.File, ref) {
-			return record, nil
+	for _, r := range records {
+		if strings.Contains(r.File, ref) {
+			return r, nil
 		}
 	}
-	return adr.Record{}, fmt.Errorf("no decision record matches %q", ref)
+	return record.Record{}, fmt.Errorf("no record matches %q", ref)
 }
 
 func (l *Log) NextNumber(_ context.Context, dir string) (int, error) {
 	highest := 0
 	for file := range l.files {
 		if path.Dir(file) == dir {
-			if number := adr.Number(file); number > highest {
+			if number := record.Number(file); number > highest {
 				highest = number
 			}
 		}

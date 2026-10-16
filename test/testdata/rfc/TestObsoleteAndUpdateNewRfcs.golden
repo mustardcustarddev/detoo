@@ -1,0 +1,45 @@
+rfc new "First Proposal"
+docs/rfc/0001-first-proposal.md
+rfc new "Second Proposal"
+docs/rfc/0002-second-proposal.md
+rfc new -o 1 --update 2 "Third Proposal"
+docs/rfc/0003-third-proposal.md
+head -10 docs/rfc/0001-first-proposal.md
+# 1. First Proposal
+
+Date: 1992-01-12
+
+## Status
+
+Obsoleted by [3. Third Proposal](0003-third-proposal.md)
+
+## Summary
+
+head -12 docs/rfc/0002-second-proposal.md
+# 2. Second Proposal
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [3. Third Proposal](0003-third-proposal.md)
+
+## Summary
+
+head -14 docs/rfc/0003-third-proposal.md
+# 3. Third Proposal
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Obsoletes [1. First Proposal](0001-first-proposal.md)
+
+Updates [2. Second Proposal](0002-second-proposal.md)
+
+## Summary
+

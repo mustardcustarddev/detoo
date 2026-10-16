@@ -1,26 +1,28 @@
 package cli
 
 import (
-	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/mustardcustard/decision-records/internal/app"
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 	"github.com/mustardcustard/decision-records/internal/features/records/link"
 )
 
-func newLinkCommand(application *app.Application) *cobra.Command {
-	var supercede, update bool
+func newLinkCommand(t tool, application *app.Application) *cobra.Command {
+	var replace, update bool
 
 	cmd := &cobra.Command{
-		Use:     "link (--supercede | --update) SOURCE TARGET",
-		Short:   "Record that one decision record supercedes or updates another",
-		Long:    helpText("link.md"),
-		Example: helpText("link.example"),
+		Use: fmt.Sprintf("link (--%s | --%s) SOURCE TARGET", t.Replaces.Verb, t.Updates.Verb),
+		Short: fmt.Sprintf("Record that one %s %s or %s another",
+			t.Noun, strings.ToLower(t.Replaces.Forward), strings.ToLower(t.Updates.Forward)),
+		Long:    t.help("link.md"),
+		Example: t.help("link.example"),
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			relation, err := relationFlag(supercede, update)
+			relation, err := relationFlag(t.Kind, replace, update)
 			if err != nil {
 				return err
 			}
@@ -33,23 +35,28 @@ func newLinkCommand(application *app.Application) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVarP(&supercede, "supercede", "s", false, "SOURCE supercedes TARGET, which is no longer accepted")
-	cmd.Flags().BoolVarP(&update, "update", "u", false, "SOURCE makes substantive changes to TARGET")
+	// Each switch is named with the tool's verb for its relation, such as
+	// --supercede, and abbreviated to the verb's first letter.
+	cmd.Flags().BoolVarP(&replace, t.Replaces.Verb, t.Replaces.Verb[:1], false,
+		fmt.Sprintf("SOURCE %s TARGET, which loses its %s status", strings.ToLower(t.Replaces.Forward), t.Status))
+	cmd.Flags().BoolVarP(&update, t.Updates.Verb, t.Updates.Verb[:1], false,
+		"SOURCE makes substantive changes to TARGET")
 	return cmd
 }
 
-// relationFlag returns the relation named by the --supercede and --update
-// switches, exactly one of which must be set.
+// relationFlag returns the relation named by the switches for replacing and
+// updating a record, such as --supercede and --update, exactly one of which
+// must be set.
 //
 // This is CLI validation: which switches were typed.  That a link must have a
 // relation is a rule about the request, and lives in the slice as
 // link.ErrNoRelation.
-func relationFlag(supercede, update bool) (adr.Relation, error) {
+func relationFlag(kind record.Kind, replace, update bool) (record.Relation, error) {
 	switch {
-	case supercede == update:
-		return 0, errors.New("give either --supercede or --update")
-	case supercede:
-		return adr.Supercedes, nil
+	case replace == update:
+		return 0, fmt.Errorf("give either --%s or --%s", kind.Replaces.Verb, kind.Updates.Verb)
+	case replace:
+		return record.Replaces, nil
 	}
-	return adr.Updates, nil
+	return record.Updates, nil
 }

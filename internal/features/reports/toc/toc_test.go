@@ -2,9 +2,12 @@ package toc
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
+	"github.com/mustardcustard/decision-records/internal/adr"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 func newLog() *memlog.Log {
@@ -15,7 +18,7 @@ func newLog() *memlog.Log {
 }
 
 func TestHandleWritesAListOfRecords(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{})
+	result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -28,10 +31,21 @@ func TestHandleWritesAListOfRecords(t *testing.T) {
 	}
 }
 
+// The contents are headed with what the kind of log holds.
+func TestHandleHeadsTheListForTheKind(t *testing.T) {
+	result, err := Handler{Kind: rfc.Kind, Log: newLog()}.Handle(context.Background(), Query{})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	if want := "# Requests for Comments\n\n"; !strings.HasPrefix(result.Markdown, want) {
+		t.Errorf("Markdown =\n%s\nwant it to begin %q", result.Markdown, want)
+	}
+}
+
 // The prefix lets the contents be published somewhere other than beside the
 // records it links to.
 func TestHandlePrefixesTheLinks(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{LinkPrefix: "foo/docs/adr/"})
+	result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{LinkPrefix: "foo/docs/adr/"})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -57,7 +71,7 @@ func TestHandleWritesNothingForAnEmptyLog(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			empty := memlog.WithRecords(map[string]string{})
-			result, err := Handler{Log: empty}.Handle(context.Background(), test.query)
+			result, err := Handler{Kind: adr.Kind, Log: empty}.Handle(context.Background(), test.query)
 			if err != nil {
 				t.Fatalf("Handle: %v", err)
 			}
@@ -77,7 +91,7 @@ func TestHandleSurroundsTheListWithAnIntroAndOutro(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	result, err := Handler{Log: log}.Handle(context.Background(), Query{Intro: "intro.md", Outro: "outro.md"})
+	result, err := Handler{Kind: adr.Kind, Log: log}.Handle(context.Background(), Query{Intro: "intro.md", Outro: "outro.md"})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}

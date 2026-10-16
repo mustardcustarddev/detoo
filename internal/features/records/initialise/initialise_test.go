@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
+	"github.com/mustardcustard/decision-records/internal/adr"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 const firstTemplate = "# 1. Record architecture decisions\n\nDate: DATE\n\n## Status\n\nAccepted\n"
@@ -20,7 +22,21 @@ type stubClock struct{}
 func (stubClock) Today(context.Context) string { return "1992-01-12" }
 
 func newHandler(log *memlog.Log) Handler {
-	return Handler{Log: log, Templates: stubTemplates{}, Clock: stubClock{}}
+	return Handler{Kind: adr.Kind, Log: log, Templates: stubTemplates{}, Clock: stubClock{}}
+}
+
+// The first record is filed under the title the kind of log gives it.
+func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
+	handler := newHandler(memlog.New())
+	handler.Kind = rfc.Kind
+
+	result, err := handler.Handle(context.Background(), Command{Dir: "docs/rfc"})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	if want := "docs/rfc/0001-use-requests-for-comments.md"; result.File != want {
+		t.Errorf("File = %q, want %q", result.File, want)
+	}
 }
 
 func TestHandleWritesTheFirstRecordInTheDefaultDirectory(t *testing.T) {

@@ -1,4 +1,4 @@
-package adr
+package record
 
 import (
 	"strconv"
@@ -6,7 +6,7 @@ import (
 )
 
 // ProjectTemplate is the template a project can provide, relative to its
-// decision record directory, to override the built-in one.
+// record directory, to override the built-in one.
 const ProjectTemplate = "templates/template.md"
 
 // Render fills in a template, replacing the first occurrence of each

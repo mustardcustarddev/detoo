@@ -1,0 +1,22 @@
+rfc new "First Proposal"
+docs/rfc/0001-first-proposal.md
+rfc new "Second Proposal"
+docs/rfc/0002-second-proposal.md
+rfc link 2 1
+rfc: give either --obsolete or --update
+rfc link -s 2 1
+rfc: unknown shorthand flag: 's' in -s
+rfc new --supercede 1 "Third Proposal"
+rfc: unknown flag: --supercede
+ls docs/rfc
+0001-first-proposal.md
+0002-second-proposal.md
+head -8 docs/rfc/0001-first-proposal.md
+# 1. First Proposal
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+

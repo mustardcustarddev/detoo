@@ -1,0 +1,63 @@
+# 1. Use requests for comments
+
+Date: DATE
+
+## Status
+
+Accepted
+
+## Summary
+
+We will propose significant changes to this project in requests for comments
+(RFCs): short, numbered documents kept in the repository, which everyone the
+change affects can read and comment on before it is made.
+
+## Motivation
+
+A significant change affects more people than the ones who make it. Agreed in
+a meeting or a chat thread, it is agreed by whoever was there, and the
+reasoning is soon lost. Agreed in a pull request, it is agreed after the work
+is done, when changing course costs the most.
+
+A proposal written down before the work starts gives everyone it affects the
+same chance to understand it and to object. It also leaves a record of what
+was proposed, and of why the change was made.
+
+## Design
+
+An RFC is a Markdown file in the repository, numbered in sequence. Numbers are
+not reused.
+
+A new RFC is a draft. Its author proposes it for comment, usually in a pull
+request, and revises it in response. Its status records the outcome: an RFC
+may be accepted, rejected or withdrawn.
+
+An RFC that replaces an earlier one obsoletes it, and one that makes
+substantive changes to an earlier one updates it. Both RFCs record the link, so
+the history of a proposal can be followed in either direction.
+
+Every RFC has the same sections:
+
+* Summary: the proposal, in a paragraph.
+* Motivation: why the change should be made.
+* Design: the change, in enough detail to comment on and to build.
+* Drawbacks: why the change might not be made.
+* Alternatives: what else was considered, and why this design was chosen.
+* Unresolved questions: what should be settled before the RFC is accepted, and
+  what can wait.
+
+## Drawbacks
+
+Writing an RFC takes time, and a proposal can wait days for comments. A small
+change does not need one: an RFC is for a change that others would want a say
+in.
+
+## Alternatives
+
+Proposals could be discussed in issues or pull requests alone. Both belong to
+a hosting service rather than to the repository, and neither keeps a proposal
+together with its outcome.
+
+## Unresolved questions
+
+None.

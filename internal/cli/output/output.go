@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 // Path writes the name of a record, alone on a line, so that the command can be
@@ -20,17 +20,19 @@ func Path(w io.Writer, file string) {
 }
 
 // Records writes a log, one record a line.
-func Records(w io.Writer, records []adr.Record) {
-	for _, record := range records {
-		fmt.Fprintln(w, record.File)
+func Records(w io.Writer, records []record.Record) {
+	for _, r := range records {
+		fmt.Fprintln(w, r.File)
 	}
 }
 
-// Config writes the configuration as shell-style assignments, so that it can be
-// read by eval as well as by a person.
-func Config(w io.Writer, dir, template string) {
-	fmt.Fprintf(w, "adr_dir=%q\n", dir)
-	fmt.Fprintf(w, "adr_template=%q\n", template)
+// Config writes the configuration of the tool called name as shell-style
+// assignments, so that it can be read by eval as well as by a person.  Each
+// variable is named after the tool, so that the configurations of two tools can
+// be evaluated together.
+func Config(w io.Writer, name, dir, template string) {
+	fmt.Fprintf(w, "%s_dir=%q\n", name, dir)
+	fmt.Fprintf(w, "%s_template=%q\n", name, template)
 }
 
 // Document writes a generated report, which already ends in a newline.

@@ -1,4 +1,4 @@
-// Package toc writes a table of contents for the decision records, in
+// Package toc writes a table of contents for the records of a log, in
 // Markdown.
 package toc
 
@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
 
 // Query asks for a table of contents.
@@ -35,14 +35,15 @@ type Result struct {
 
 // Store is the port this slice needs.
 type Store interface {
-	Records(ctx context.Context) ([]adr.Record, error)
+	Records(ctx context.Context) ([]record.Record, error)
 	Lines(ctx context.Context, file string) ([]string, error)
 	ReadFile(ctx context.Context, file string) (string, error)
 }
 
 // Handler writes a table of contents.
 type Handler struct {
-	Log Store
+	Kind record.Kind
+	Log  Store
 }
 
 func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
@@ -59,7 +60,7 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 	}
 
 	var out strings.Builder
-	fmt.Fprintln(&out, "# Architecture Decision Records")
+	fmt.Fprintf(&out, "# %s\n", h.Kind.Heading)
 	fmt.Fprintln(&out)
 
 	if query.Intro != "" {
@@ -71,12 +72,12 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 		fmt.Fprintln(&out)
 	}
 
-	for _, record := range records {
-		lines, err := h.Log.Lines(ctx, record.File)
+	for _, r := range records {
+		lines, err := h.Log.Lines(ctx, r.File)
 		if err != nil {
 			return Result{}, err
 		}
-		fmt.Fprintf(&out, "* [%s](%s)\n", adr.Title(lines), query.LinkPrefix+path.Base(record.File))
+		fmt.Fprintf(&out, "* [%s](%s)\n", record.Title(lines), query.LinkPrefix+path.Base(r.File))
 	}
 
 	if query.Outro != "" {

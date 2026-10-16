@@ -1,0 +1,8 @@
+  # Create a new RFC with the title "Adopt gRPC for internal services":
+  rfc new "Adopt gRPC for internal services"
+
+  # Create a new RFC that obsoletes RFC 12:
+  rfc new -o 12 "Adopt Connect for internal services"
+
+  # Create a new RFC that obsoletes RFCs 3 and 4, and updates RFC 5:
+  rfc new -o 3 -o 4 -u 5 "Version the public API"

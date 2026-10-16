@@ -52,7 +52,7 @@ Flags:
       --graphviz              draw the graph in Graphviz format
   -h, --help                  help for graph
       --mermaid               draw the graph in Mermaid format, the default
-  -p, --prefix LINK_PREFIX    prefix each decision file link with LINK_PREFIX
+  -p, --prefix LINK_PREFIX    prefix each link to a record with LINK_PREFIX
 adr help list
 Lists the architecture decision records, one path a line.
 
@@ -76,7 +76,7 @@ Flags:
   -h, --help                 help for list
   -i, --intro INTRO          precede the table of contents with the Markdown in INTRO
   -o, --outro OUTRO          follow the table of contents with the Markdown in OUTRO
-  -p, --prefix LINK_PREFIX   prefix each decision file link with LINK_PREFIX
+  -p, --prefix LINK_PREFIX   prefix each link to a record with LINK_PREFIX
       --toc                  write a table of contents in Markdown
 adr nonsense
 adr: unknown command "nonsense" for "adr"

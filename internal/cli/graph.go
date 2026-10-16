@@ -10,15 +10,15 @@ import (
 	"github.com/mustardcustard/decision-records/internal/features/reports/graph"
 )
 
-func newGraphCommand(application *app.Application) *cobra.Command {
+func newGraphCommand(t tool, application *app.Application) *cobra.Command {
 	var graphviz, mermaid bool
 	var linkPrefix, linkExtension string
 
 	cmd := &cobra.Command{
 		Use:     "graph",
 		Short:   "Draw the links between records in Mermaid or Graphviz format",
-		Long:    helpText("graph.md"),
-		Example: helpText("graph.example"),
+		Long:    t.help("graph.md"),
+		Example: t.help("graph.example"),
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			format, err := formatFlag(graphviz, mermaid)
@@ -42,7 +42,7 @@ func newGraphCommand(application *app.Application) *cobra.Command {
 	cmd.Flags().StringVarP(&linkExtension, "extension", "e", ".html",
 		"the file `EXTENSION` of the documents the generated links refer to")
 	cmd.Flags().StringVarP(&linkPrefix, "prefix", "p", "",
-		"prefix each decision file link with `LINK_PREFIX`")
+		"prefix each link to a record with `LINK_PREFIX`")
 	return cmd
 }
 

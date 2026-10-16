@@ -8,11 +8,11 @@ import (
 	"github.com/mustardcustard/decision-records/internal/features/records/initialise"
 )
 
-func newInitCommand(application *app.Application) *cobra.Command {
+func newInitCommand(t tool, application *app.Application) *cobra.Command {
 	return &cobra.Command{
 		Use:   "init [DIRECTORY]",
-		Short: "Start a log of decision records",
-		Long:  helpText("init.md"),
+		Short: "Start a log of " + t.Plural,
+		Long:  t.help("init.md"),
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// No directory means the project keeps whichever it already uses,

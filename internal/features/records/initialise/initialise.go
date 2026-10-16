@@ -1,5 +1,5 @@
-// Package initialise starts a log of decision records, whose first record is
-// the decision to keep one.
+// Package initialise starts a log of records, whose first record is the
+// decision to keep one.
 package initialise
 
 import (
@@ -8,16 +8,24 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/mustardcustard/decision-records/internal/domain/adr"
+	"github.com/mustardcustard/decision-records/internal/domain/record"
 )
-
-// firstRecordTitle names the record that opens a log.  It is the title the file
-// is named after; the record's own heading comes from the template.
-const firstRecordTitle = "record-architecture-decisions"
 
 // ErrLogExists reports that init was asked to start a log in one directory
 // while the project's log, which already has records, is in another.
-var ErrLogExists = errors.New("a log of decision records already exists")
+var ErrLogExists = errors.New("a log already exists")
+
+// logExistsError is ErrLogExists, told in the words of the kind of log and
+// naming the directory the log is in.
+type logExistsError struct {
+	plural, dir string
+}
+
+func (e *logExistsError) Error() string {
+	return fmt.Sprintf("a log of %s already exists in %s", e.plural, e.dir)
+}
+
+func (e *logExistsError) Is(target error) bool { return target == ErrLogExists }
 
 // Command asks for a log.
 type Command struct {
@@ -37,7 +45,7 @@ type Result struct {
 type Store interface {
 	SetDir(ctx context.Context, dir string) error
 	Dir(ctx context.Context) (string, error)
-	Records(ctx context.Context) ([]adr.Record, error)
+	Records(ctx context.Context) ([]record.Record, error)
 	NextNumber(ctx context.Context, dir string) (int, error)
 	Write(ctx context.Context, file, content string) error
 }
@@ -60,6 +68,7 @@ type Clock interface {
 // user did not sit down to write it.  Sharing the code would mean options that
 // exist only to switch that behaviour off.
 type Handler struct {
+	Kind      record.Kind
 	Log       Store
 	Templates Templates
 	Clock     Clock
@@ -74,7 +83,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 		return Result{}, err
 	}
 	records, err := h.Log.Records(ctx)
-	var missing *adr.MissingDirError
+	var missing *record.MissingDirError
 	switch {
 	case errors.As(err, &missing):
 		// No directory, no log: start one.
@@ -82,7 +91,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 		return Result{}, err
 	case len(records) > 0:
 		if cmd.Dir != "" && path.Clean(cmd.Dir) != path.Clean(current) {
-			return Result{}, fmt.Errorf("%w in %s", ErrLogExists, current)
+			return Result{}, &logExistsError{plural: h.Kind.Plural, dir: current}
 		}
 		return Result{}, nil
 	}
@@ -106,8 +115,9 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 		return Result{}, err
 	}
 
-	file := adr.FileName(dir, number, firstRecordTitle)
-	content := adr.Render(template, number, firstRecordTitle, h.Clock.Today(ctx), adr.StatusAccepted)
+	// The title only names the file: the record's heading is in the template.
+	file := record.FileName(dir, number, h.Kind.FirstRecord)
+	content := record.Render(template, number, h.Kind.FirstRecord, h.Clock.Today(ctx), h.Kind.Status)
 	if err := h.Log.Write(ctx, file, content); err != nil {
 		return Result{}, err
 	}

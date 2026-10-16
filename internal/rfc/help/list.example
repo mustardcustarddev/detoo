@@ -1,0 +1,5 @@
+  # Publish a table of contents beside the RFCs:
+  rfc list --toc > docs/rfc/README.md
+
+  # Publish one elsewhere, with an introduction, linking back to the RFCs:
+  rfc list --toc -i intro.md -p ../docs/rfc/ > site/rfcs.md

@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
+	"github.com/mustardcustard/decision-records/internal/adr"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 func newLog() *memlog.Log {
@@ -19,7 +21,7 @@ func newLog() *memlog.Log {
 
 // A graph is drawn in Mermaid unless another format is asked for.
 func TestHandleDrawsTheLogInMermaidByDefault(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{LinkExtension: ".html"})
+	result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{LinkExtension: ".html"})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -36,8 +38,21 @@ func TestHandleDrawsTheLogInMermaidByDefault(t *testing.T) {
 	}
 }
 
+// Mermaid nodes are named after the tool whose log is drawn.
+func TestHandleNamesMermaidNodesAfterTheKind(t *testing.T) {
+	result, err := Handler{Kind: rfc.Kind, Log: newLog()}.Handle(context.Background(), Query{})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	for _, want := range []string{`rfc1["1. First"]`, "rfc1 -.-> rfc2", `rfc2 -->|"Supercedes"| rfc1`, "click rfc1"} {
+		if !strings.Contains(result.Document, want) {
+			t.Errorf("the graph does not contain %s:\n%s", want, result.Document)
+		}
+	}
+}
+
 func TestHandleWritesADigraphOfTheLog(t *testing.T) {
-	result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{Format: Graphviz, LinkExtension: ".html"})
+	result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{Format: Graphviz, LinkExtension: ".html"})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -68,7 +83,7 @@ func TestHandleDrawsEachLinkOnce(t *testing.T) {
 		{"Graphviz", Graphviz, "weight=0"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{Format: test.format})
+			result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{Format: test.format})
 			if err != nil {
 				t.Fatalf("Handle: %v", err)
 			}
@@ -92,7 +107,7 @@ func TestHandlePrefixesAndExtendsTheNodeLinks(t *testing.T) {
 		{"Graphviz", Graphviz, `URL="http://example.com/0001-first.xxx"`},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			result, err := Handler{Log: newLog()}.Handle(context.Background(), Query{
+			result, err := Handler{Kind: adr.Kind, Log: newLog()}.Handle(context.Background(), Query{
 				Format:        test.format,
 				LinkPrefix:    "http://example.com/",
 				LinkExtension: ".xxx",
@@ -114,7 +129,7 @@ func TestHandleEscapesQuotesForMermaid(t *testing.T) {
 		"docs/adr/0001-use-quotes.md": "# 1. Use \"quotes\"\n\n## Status\n\nAccepted\n\n## Context\n\nC.\n",
 	})
 
-	result, err := Handler{Log: log}.Handle(context.Background(), Query{})
+	result, err := Handler{Kind: adr.Kind, Log: log}.Handle(context.Background(), Query{})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -135,7 +150,7 @@ func TestHandleDrawsNothingForAnEmptyLog(t *testing.T) {
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			empty := memlog.WithRecords(map[string]string{})
-			result, err := Handler{Log: empty}.Handle(context.Background(), Query{Format: test.format})
+			result, err := Handler{Kind: adr.Kind, Log: empty}.Handle(context.Background(), Query{Format: test.format})
 			if err != nil {
 				t.Fatalf("Handle: %v", err)
 			}
@@ -157,7 +172,7 @@ func TestHandleRejectsAnUnknownFormat(t *testing.T) {
 		{"empty", memlog.WithRecords(map[string]string{})},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			_, err := Handler{Log: test.log}.Handle(context.Background(), Query{Format: Format(99)})
+			_, err := Handler{Kind: adr.Kind, Log: test.log}.Handle(context.Background(), Query{Format: Format(99)})
 			if !errors.Is(err, ErrUnknownFormat) {
 				t.Errorf("err = %v, want %v", err, ErrUnknownFormat)
 			}

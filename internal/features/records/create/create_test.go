@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/mustardcustard/decision-records/internal/adapters/memlog"
+	"github.com/mustardcustard/decision-records/internal/adr"
+	"github.com/mustardcustard/decision-records/internal/rfc"
 )
 
 // Nothing here builds a binary, parses a flag or writes a file.  The slice's
@@ -37,6 +39,7 @@ func (e *spyEditor) Edit(_ context.Context, file string) error {
 
 func newHandler(log *memlog.Log, editor *spyEditor) Handler {
 	return Handler{
+		Kind:      adr.Kind,
 		Log:       log,
 		Templates: stubTemplates{record: template},
 		Clock:     stubClock{},
@@ -80,8 +83,8 @@ func TestHandleSupercedesAnExistingRecord(t *testing.T) {
 	})
 
 	result, err := newHandler(log, &spyEditor{}).Handle(context.Background(), Command{
-		Title:      "Second",
-		Supercedes: []string{"1"},
+		Title:    "Second",
+		Replaces: []string{"1"},
 	})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
@@ -123,6 +126,33 @@ func TestHandleUpdatesAnExistingRecord(t *testing.T) {
 	}
 }
 
+// The status a record starts with, the words its links are written in, and the
+// status a replaced record loses all belong to the kind of log.
+func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
+	log := memlog.WithRecords(map[string]string{
+		"docs/rfc/0001-first.md": "# 1. First\n\n## Status\n\nDraft\n\n## Context\n\nContext.\n",
+	})
+	if err := log.SetDir(context.Background(), "docs/rfc"); err != nil {
+		t.Fatal(err)
+	}
+	handler := newHandler(log, &spyEditor{})
+	handler.Kind = rfc.Kind
+
+	result, err := handler.Handle(context.Background(), Command{Title: "Second", Replaces: []string{"1"}})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+
+	wantOld := "# 1. First\n\n## Status\n\nObsoleted by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	if got := log.Content("docs/rfc/0001-first.md"); got != wantOld {
+		t.Errorf("obsoleted record is\n%s\nwant\n%s", got, wantOld)
+	}
+	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nDraft\n\nObsoletes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	if got := log.Content(result.File); got != wantNew {
+		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
+	}
+}
+
 // A record that cannot be found is reported rather than silently skipped.
 func TestHandleReportsAnUnknownRecordToSupercede(t *testing.T) {
 	log := memlog.WithRecords(map[string]string{
@@ -130,8 +160,8 @@ func TestHandleReportsAnUnknownRecordToSupercede(t *testing.T) {
 	})
 
 	_, err := newHandler(log, &spyEditor{}).Handle(context.Background(), Command{
-		Title:      "Second",
-		Supercedes: []string{"nothing-like-this"},
+		Title:    "Second",
+		Replaces: []string{"nothing-like-this"},
 	})
 	if err == nil {
 		t.Error("Handle succeeded, want an error naming the missing record")
