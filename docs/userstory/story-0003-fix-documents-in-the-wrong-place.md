@@ -4,7 +4,7 @@ Date: 2026-10-16
 
 ## Status
 
-Draft
+Accepted
 
 ## Story
 
@@ -17,9 +17,11 @@ keep my documentation up to date.
 * `detoo doctor --fix` moves a log from `doc/` to `docs/`.
 * It moves a log from a former directory to the current one, such as
   `docs/sty` to `docs/userstory`.
-* It renames stories to the current file names, such as
-  `0001-describe-work-in-user-stories.md` to
-  `story-0001-describe-work-in-user-stories.md`.
+* It renames documents to begin with their log's upper-case prefix, such as
+  `0001-record-architecture-decisions.md` to
+  `ADR-0001-record-architecture-decisions.md`, and
+  `story-0001-describe-work-in-user-stories.md` to
+  `STORY-0001-describe-work-in-user-stories.md`.
 * When it renames a file, it updates the links to it in other documents, so
   that none break.
 * It leaves clashes unchanged, and reports that they need fixing by hand.

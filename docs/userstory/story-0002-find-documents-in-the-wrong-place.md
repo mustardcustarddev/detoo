@@ -4,7 +4,7 @@ Date: 2026-10-16
 
 ## Status
 
-Draft
+Accepted
 
 ## Story
 
@@ -18,14 +18,19 @@ the tools have lost after a rename and keep my documentation up to date.
 * It reports a log kept under `doc/` instead of `docs/`.
 * It reports a log kept in a former directory, such as stories in `docs/sty`
   instead of `docs/userstory`.
-* It reports stories whose file names lack the `story-` prefix, such as
-  `0001-describe-work-in-user-stories.md`.
+* It reports documents whose file names do not begin with their log's prefix
+  in upper case: `ADR-` for ADRs, `RFC-` for RFCs, `STORY-` for user stories
+  and `PIOSEE-` for PIOSEE records. For example, it reports
+  `0001-record-architecture-decisions.md` and
+  `story-0001-describe-work-in-user-stories.md`.
 * When a fix would clash, such as when both `docs/sty` and `docs/userstory`
   exist, or `.sty-dir` names the old directory, it reports that the problem
   needs fixing by hand.
 * It changes nothing.
 * When nothing is wrong, it says so and exits 0. When it finds problems, it
   exits 1.
+* `adr`, `rfc`, `sty` and `pse` name each new document with its log's
+  upper-case prefix, such as `ADR-0004-use-postgresql-for-persistence.md`.
 
 ## Notes
 
@@ -35,7 +40,9 @@ There is no `detoo` command today: the project has four tools, `adr`, `rfc`,
 A tool loses a renamed log because it looks only for its `.<tool>-dir` file
 and then for `docs/<dir>`: stories left in `docs/sty`, for example, are no
 longer found. Stories were kept in `docs/sty`, with no file-name prefix, until
-the default changed to `docs/userstory` and the `story-` prefix.
+the default changed to `docs/userstory` and the `story-` prefix. Today ADRs
+and RFCs have no prefix, and stories and PIOSEE records have the lower-case
+prefixes `story-` and `piosee-`.
 
 Out of scope: what is inside a document, such as missing sections, or broken
 links that a rename did not cause.
