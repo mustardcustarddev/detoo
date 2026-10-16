@@ -39,8 +39,9 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `rfc graph [--mermaid | --graphviz] [-p PREFIX] [-e EXT]`: draws the RFCs
   and the links between them.
 
-A reference (`REF`, `SOURCE`, `TARGET`) is an RFC's number, or part of its file
-name.
+A reference (`REF`, `SOURCE`, `TARGET`) is an RFC's number, its path, or
+part of its file name. Digits alone are a number: `2` finds RFC 2 or nothing,
+never RFC 12.
 
 ## What the tool writes
 
@@ -85,8 +86,8 @@ afterwards, so that both RFCs agree.
 
 The template in use is, in order of preference:
 
-1. the file named by `$RFC_TEMPLATE`, a path relative to the working
-   directory;
+1. the file named by `$RFC_TEMPLATE`, an absolute path or one relative to
+   the working directory;
 2. `templates/template.md` inside the log directory, which `rfc config`
    reports as `rfc_template`;
 3. the built-in template, below.

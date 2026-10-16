@@ -1,0 +1,9 @@
+  # Create a new story with the title "Export invoices for a month":
+  sty new "Export invoices for a month"
+
+  # Split story 4 in two, replacing it with two smaller stories:
+  sty new -r 4 "Reorder a previous purchase"
+  sty new -r 4 "Adjust quantities when reordering"
+
+  # Create a new story that updates story 7:
+  sty new -u 7 "Warn of clashing sessions"

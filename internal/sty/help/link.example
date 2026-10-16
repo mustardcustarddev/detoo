@@ -1,0 +1,6 @@
+  # Record that story 3 updates story 2:
+  sty link --update 3 2
+
+  # Record that stories 11 and 12 replace story 10, which was split:
+  sty link -r 11 10
+  sty link -r 12 10

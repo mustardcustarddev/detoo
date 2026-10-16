@@ -1,0 +1,22 @@
+sty new "First Story"
+docs/sty/0001-first-story.md
+sty new "Second Story"
+docs/sty/0002-second-story.md
+sty link 2 1
+sty: give either --replace or --update
+sty link -o 2 1
+sty: unknown shorthand flag: 'o' in -o
+sty new --supercede 1 "Third Story"
+sty: unknown flag: --supercede
+ls docs/sty
+0001-first-story.md
+0002-second-story.md
+head -8 docs/sty/0001-first-story.md
+# 1. First Story
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+

@@ -36,8 +36,9 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `adr graph [--mermaid | --graphviz] [-p PREFIX] [-e EXT]`: draws the records
   and the links between them.
 
-A reference (`REF`, `SOURCE`, `TARGET`) is a record's number, or part of its
-file name.
+A reference (`REF`, `SOURCE`, `TARGET`) is a record's number, its path, or
+part of its file name. Digits alone are a number: `2` finds record 2 or nothing,
+never record 12.
 
 ## What the tool writes
 
@@ -82,7 +83,8 @@ afterwards, so that both records agree.
 
 The template in use is, in order of preference:
 
-1. the file named by `$ADR_TEMPLATE`;
+1. the file named by `$ADR_TEMPLATE`, an absolute path or one relative to
+   the working directory;
 2. `templates/template.md` inside the log directory, which `adr config` reports
    as `adr_template`;
 3. the built-in template, below.

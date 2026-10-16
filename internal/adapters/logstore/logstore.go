@@ -22,8 +22,9 @@ import (
 )
 
 // Store is a log of records under a working directory.  Every path it accepts
-// and reports is relative to that directory, and slash separated, whatever the
-// host filesystem uses.
+// and reports is relative to that directory, unless the project keeps its log
+// at an absolute path, and is slash separated, whatever the host filesystem
+// uses.
 type Store struct {
 	workdir string
 	kind    record.Kind
@@ -47,9 +48,14 @@ func (s *Store) defaultDir() string {
 	return path.Join("docs", s.kind.Name)
 }
 
-// path resolves a path reported by this package to a path on disk.
-func (s *Store) path(rel string) string {
-	return filepath.Join(s.workdir, filepath.FromSlash(rel))
+// path resolves a path reported by this package to a path on disk.  An
+// absolute path is kept as it is.
+func (s *Store) path(name string) string {
+	name = filepath.FromSlash(name)
+	if filepath.IsAbs(name) {
+		return name
+	}
+	return filepath.Join(s.workdir, name)
 }
 
 // Dir returns the directory holding the records.  The working
@@ -65,7 +71,13 @@ func (s *Store) Dir(context.Context) (string, error) {
 		marker, err := os.ReadFile(filepath.Join(dir, s.markerFile()))
 		switch {
 		case err == nil:
-			return path.Join(up, filepath.ToSlash(strings.TrimSpace(string(marker)))), nil
+			// A relative directory is relative to the marker file, and an
+			// absolute one is the same from anywhere.
+			named := strings.TrimSpace(string(marker))
+			if filepath.IsAbs(named) {
+				return filepath.ToSlash(named), nil
+			}
+			return path.Join(up, filepath.ToSlash(named)), nil
 		case !errors.Is(err, fs.ErrNotExist):
 			return "", err
 		}
@@ -119,17 +131,14 @@ func (s *Store) Records(ctx context.Context) ([]record.Record, error) {
 	return records, nil
 }
 
-// Resolve returns the record referred to by ref, which is either a record's
-// number or any part of its file name.  The first matching record wins.
+// Resolve returns the record referred to by ref: see record.Find.
 func (s *Store) Resolve(ctx context.Context, ref string) (record.Record, error) {
 	records, err := s.Records(ctx)
 	if err != nil {
 		return record.Record{}, err
 	}
-	for _, r := range records {
-		if strings.Contains(r.File, ref) {
-			return r, nil
-		}
+	if r, ok := record.Find(records, ref); ok {
+		return r, nil
 	}
 	return record.Record{}, fmt.Errorf("no %s matches %q", s.kind.Noun, ref)
 }

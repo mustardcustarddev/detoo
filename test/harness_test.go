@@ -29,18 +29,23 @@ type workspace struct {
 // so that creating a record does not try to open one.  The transcript is
 // compared against a golden file among those of the suite's tool.
 func newWorkspace(t *testing.T, suite string) *workspace {
+	env := map[string]string{"VISUAL": "", "EDITOR": ""}
+	for _, name := range names {
+		env[variable(name, "DATE")] = "1992-01-12"
+	}
 	return &workspace{
 		t:     t,
 		suite: suite,
 		root:  t.TempDir(),
 		dir:   ".",
-		env: map[string]string{
-			"ADR_DATE": "1992-01-12",
-			"RFC_DATE": "1992-01-12",
-			"VISUAL":   "",
-			"EDITOR":   "",
-		},
+		env:   env,
 	}
+}
+
+// variable returns the name of a tool's environment variable: ADR_DATE, for
+// adr's DATE.
+func variable(tool, setting string) string {
+	return strings.ToUpper(tool) + "_" + setting
 }
 
 // cwd is the directory commands run in.
@@ -82,6 +87,12 @@ func (w *workspace) rfc(args ...string) {
 	w.run("rfc", args...)
 }
 
+// sty runs the sty command.
+func (w *workspace) sty(args ...string) {
+	w.t.Helper()
+	w.run("sty", args...)
+}
+
 // run runs a tool, recording its output — on both streams, in the order it was
 // written — in the transcript.
 func (w *workspace) run(tool string, args ...string) {
@@ -116,8 +127,14 @@ func (w *workspace) output(tool string, args ...string) string {
 	return out.String()
 }
 
+// environ is the environment commands run in: the test's own, without any
+// template a tool might be pointed at, with help that is not paged, and with
+// the variables the test has set.
 func (w *workspace) environ() []string {
-	env := append(os.Environ(), "ADR_TEMPLATE=", "ADR_PAGER=cat", "RFC_TEMPLATE=", "RFC_PAGER=cat")
+	env := os.Environ()
+	for _, tool := range names {
+		env = append(env, variable(tool, "TEMPLATE")+"=", variable(tool, "PAGER")+"=cat")
+	}
 	for name, value := range w.env {
 		env = append(env, name+"="+value)
 	}

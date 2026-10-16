@@ -87,10 +87,8 @@ func (l *Log) Resolve(ctx context.Context, ref string) (record.Record, error) {
 	if err != nil {
 		return record.Record{}, err
 	}
-	for _, r := range records {
-		if strings.Contains(r.File, ref) {
-			return r, nil
-		}
+	if r, ok := record.Find(records, ref); ok {
+		return r, nil
 	}
 	return record.Record{}, fmt.Errorf("no record matches %q", ref)
 }

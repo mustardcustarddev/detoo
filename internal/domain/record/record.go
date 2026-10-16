@@ -23,6 +23,9 @@ var recordName = regexp.MustCompile(`^[0-9]+-[^/]*\.md`)
 // leadingNumber matches the number a record's file name starts with.
 var leadingNumber = regexp.MustCompile(`^[0-9]+`)
 
+// digits matches a reference that is a record's number.
+var digits = regexp.MustCompile(`^[0-9]+$`)
+
 // Record identifies one record in a log.
 //
 // It carries no content: the title and status live in the file, and a slice
@@ -70,6 +73,32 @@ func Number(file string) int {
 		return 0
 	}
 	return number
+}
+
+// Find returns the record that ref refers to, and whether there is one.  A
+// reference is a record's number, its path, or part of its file name, and the
+// first record that matches wins.
+//
+// A reference in digits alone is a number, and finds that record or none,
+// rather than the first whose name happens to contain the digits.  Only the
+// file name is searched, never the directory, so that a reference such as
+// "adr" does not match every record in docs/adr.
+func Find(records []Record, ref string) (Record, bool) {
+	if digits.MatchString(ref) {
+		number, err := strconv.Atoi(ref)
+		for _, r := range records {
+			if err == nil && r.Number == number {
+				return r, true
+			}
+		}
+		return Record{}, false
+	}
+	for _, r := range records {
+		if r.File == path.Clean(ref) || strings.Contains(path.Base(r.File), ref) {
+			return r, true
+		}
+	}
+	return Record{}, false
 }
 
 // Slug converts a title into the part of a record's file name that follows its

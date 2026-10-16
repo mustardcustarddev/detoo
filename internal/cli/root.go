@@ -24,7 +24,7 @@ import (
 
 // NewRootCommand returns the command tree of the tool that keeps logs of kind,
 // whose help is in files, wired to run against application.  The caller
-// executes it: see cmd/adr and cmd/rfc.
+// executes it: see package tool.
 func NewRootCommand(kind record.Kind, files fs.FS, application *app.Application, stdout, stderr io.Writer, getenv func(string) string) *cobra.Command {
 	t := tool{Kind: kind, files: files}
 	root := &cobra.Command{

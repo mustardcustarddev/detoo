@@ -238,3 +238,55 @@ func write(t *testing.T, file, content string) {
 		t.Fatal(err)
 	}
 }
+
+// TestAbsoluteDirectory covers a log kept at an absolute path, given to SetDir
+// or found in a marker file: it is used where it is, and not under the working
+// directory, wherever in the project the store is opened.
+func TestAbsoluteDirectory(t *testing.T) {
+	root := t.TempDir()
+	project := filepath.Join(root, "project")
+	deep := filepath.Join(project, "src", "main")
+	mkdirAll(t, deep)
+	log := filepath.ToSlash(filepath.Join(root, "decisions"))
+
+	if err := New(project, kind).SetDir(context.Background(), log); err != nil {
+		t.Fatal(err)
+	}
+	for _, workdir := range []string{project, deep} {
+		s := New(workdir, kind)
+		dir, err := s.Dir(context.Background())
+		if err != nil {
+			t.Fatal(err)
+		}
+		if dir != log {
+			t.Errorf("from %s, Dir() = %q, want %q", workdir, dir, log)
+		}
+	}
+
+	s := New(project, kind)
+	file := log + "/0001-first.md"
+	if err := s.Write(context.Background(), file, "# 1. First\n"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.FromSlash(file)); err != nil {
+		t.Errorf("the record was not written at %s: %v", file, err)
+	}
+	records, err := s.Records(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := []record.Record{{Number: 1, File: file}}; !reflect.DeepEqual(records, want) {
+		t.Errorf("Records() = %v, want %v", records, want)
+	}
+
+	// Nothing is created under the project but its marker file.
+	entries, err := os.ReadDir(project)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range entries {
+		if name := entry.Name(); name != adrMarker && name != "src" {
+			t.Errorf("found %s in the project", name)
+		}
+	}
+}

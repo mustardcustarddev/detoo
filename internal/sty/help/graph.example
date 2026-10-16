@@ -1,0 +1,8 @@
+  # Draw the user stories as an SVG image, with Mermaid:
+  sty graph | mmdc -i - -o graph.svg
+
+  # Draw them with Graphviz instead:
+  sty graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each story links to a .pdf file:
+  sty graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

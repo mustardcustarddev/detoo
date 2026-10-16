@@ -1,0 +1,22 @@
+sty new "Export invoices for a month"
+docs/sty/0001-export-invoices-for-a-month.md
+cat docs/sty/0001-export-invoices-for-a-month.md
+# 1. Export invoices for a month
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+## Story
+
+As a [type of user], I [need/want/am required] to [do something], so that [reason or benefit].
+
+## Acceptance criteria
+
+What must be true for the story to be complete: the examples, rules and tests that will confirm it.
+
+## Notes
+
+What the conversation about the story has settled so far, and what it has still to settle.

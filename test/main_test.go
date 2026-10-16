@@ -15,6 +15,9 @@ import (
 
 var update = flag.Bool("update", false, "rewrite the golden files from the transcripts produced by this run")
 
+// names are the record tools, each built from cmd/NAME.
+var names = []string{"adr", "rfc", "sty"}
+
 // Paths of the binaries the tests drive, built once by TestMain: each tool, by
 // name, and the fake editor.
 var (
@@ -39,7 +42,7 @@ func runTests(m *testing.M) int {
 	binaries := map[string]string{
 		"github.com/mustardcustard/detoo/test/fakeeditor": fakeEditorBin,
 	}
-	for _, name := range []string{"adr", "rfc"} {
+	for _, name := range names {
 		tools[name] = filepath.Join(dir, name)
 		binaries["github.com/mustardcustard/detoo/cmd/"+name] = tools[name]
 	}

@@ -210,3 +210,37 @@ func TestRenderDoesNotRescanTheTitle(t *testing.T) {
 		t.Errorf("Render() = %q, want %q", got, want)
 	}
 }
+
+// TestFindMatchesTheNumberOrTheFileName covers what a reference to a record
+// may be: its number, its path, or part of its file name, but never part of
+// the directory the log is in.
+func TestFindMatchesTheNumberOrTheFileName(t *testing.T) {
+	records := []Record{
+		{Number: 1, File: "/home/x2/docs/adr/0001-first.md"},
+		{Number: 3, File: "/home/x2/docs/adr/0003-third.md"},
+		{Number: 12, File: "/home/x2/docs/adr/0012-twelfth.md"},
+	}
+	for _, test := range []struct {
+		ref  string
+		want int // the number of the record found, or 0 for none
+	}{
+		{"3", 3},
+		{"0003", 3},
+		{"12", 12},
+		{"2", 0}, // not record 12, whose name contains a 2, nor the directory x2
+		{"third", 3},
+		{"0012-tw", 12},
+		{"/home/x2/docs/adr/0001-first.md", 1},
+		{"adr", 0},
+		{"docs", 0},
+		{"nothing", 0},
+	} {
+		got, ok := Find(records, test.ref)
+		switch {
+		case test.want == 0 && ok:
+			t.Errorf("Find(%q) = %v, want none", test.ref, got.File)
+		case test.want != 0 && (!ok || got.Number != test.want):
+			t.Errorf("Find(%q) = %v, %t, want record %d", test.ref, got.File, ok, test.want)
+		}
+	}
+}

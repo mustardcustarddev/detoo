@@ -1,9 +1,9 @@
 # Skills
 
-[Agent Skills](https://agentskills.io/specification) for keeping an
-architecture decision log with the `adr` tool, and a log of requests for
-comments with the `rfc` tool. Each directory is one skill, and is
-self-contained, so it can be installed on its own.
+[Agent Skills](https://agentskills.io/specification) for keeping logs with
+the detoo tools: architecture decision records with `adr`, requests for
+comments with `rfc`, and user stories with `sty`. Each directory is one skill,
+and is self-contained, so it can be installed on its own.
 
 ## Catalogue
 
@@ -30,22 +30,32 @@ This needs the `rfc` tool.
   one-line request, by reading the template, gathering facts, and interviewing
   the user for their intent and reasons.
 
+### User stories
+
+This needs the `sty` tool.
+
+* [**create-user-story**](create-user-story/SKILL.md): write a user story with
+  `sty` from a one-line subject, by reading the template, gathering facts, and
+  interviewing the user for who it is for, what they need, why, and how they
+  will know it is done. Splits epics into smaller stories.
+
 ### What they share
 
 All of them share two principles. An agent writes nothing it cannot evidence,
 and asks the user rather than inventing context or reasons. And decisions are
 made at the right level, when they're needed: only architectural decisions
-belong in the ADR log, and only changes others would want a say in need an RFC.
+belong in the ADR log, only changes others would want a say in need an RFC,
+and a user story describes an outcome for someone, not a task.
 
-Every ADR and RFC an agent creates has the status `Draft`. Accepting one is for
-people to do.
+Every ADR, RFC and user story an agent creates has the status `Draft`.
+Accepting one is for people to do.
 
 ## Installing
 
 ### 1. Install the tools
 
-Each skill drives `adr` or `rfc`, which must be on the `PATH` of the machine
-the agent runs on. Build and install them as described in the
+Each skill drives `adr`, `rfc` or `sty`, which must be on the `PATH` of the
+machine the agent runs on. Build and install them as described in the
 [README](../README.md#install).
 
 ### 2. Make sure you can reach the repository
@@ -76,7 +86,8 @@ npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
 
 # Install all of them
 npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
-  --skill find-missing-adrs --skill check-adrs --skill create-rfc
+  --skill find-missing-adrs --skill check-adrs --skill create-rfc \
+  --skill create-user-story
 ```
 
 Name the skills you want, rather than using `--skill '*'`: the CLI also finds

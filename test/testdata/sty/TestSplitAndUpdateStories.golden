@@ -1,0 +1,57 @@
+sty new Reorder
+docs/sty/0001-reorder.md
+sty new "Save sessions"
+docs/sty/0002-save-sessions.md
+sty new -r 1 "Reorder a previous purchase"
+docs/sty/0003-reorder-a-previous-purchase.md
+sty new --replace 1 "Adjust quantities when reordering"
+docs/sty/0004-adjust-quantities-when-reordering.md
+sty new "Warn of clashing sessions"
+docs/sty/0005-warn-of-clashing-sessions.md
+sty link -u 5 2
+head -12 docs/sty/0001-reorder.md
+# 1. Reorder
+
+Date: 1992-01-12
+
+## Status
+
+Replaced by [3. Reorder a previous purchase](0003-reorder-a-previous-purchase.md)
+
+Replaced by [4. Adjust quantities when reordering](0004-adjust-quantities-when-reordering.md)
+
+## Story
+
+head -10 docs/sty/0002-save-sessions.md
+# 2. Save sessions
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [5. Warn of clashing sessions](0005-warn-of-clashing-sessions.md)
+
+head -10 docs/sty/0004-adjust-quantities-when-reordering.md
+# 4. Adjust quantities when reordering
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Replaces [1. Reorder](0001-reorder.md)
+
+head -10 docs/sty/0005-warn-of-clashing-sessions.md
+# 5. Warn of clashing sessions
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updates [2. Save sessions](0002-save-sessions.md)
+

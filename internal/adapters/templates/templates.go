@@ -44,8 +44,14 @@ func New(workdir string, getenv func(string) string, kind record.Kind, files fs.
 	return &Templates{workdir: workdir, getenv: getenv, kind: kind, files: files}
 }
 
-func (t *Templates) path(rel string) string {
-	return filepath.Join(t.workdir, filepath.FromSlash(rel))
+// path resolves a file named relative to the working directory, or by an
+// absolute path, which is kept as it is.
+func (t *Templates) path(name string) string {
+	name = filepath.FromSlash(name)
+	if filepath.IsAbs(name) {
+		return name
+	}
+	return filepath.Join(t.workdir, name)
 }
 
 // Record returns the template a new record in dir is created from: the one

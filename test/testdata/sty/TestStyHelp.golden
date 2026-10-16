@@ -1,0 +1,90 @@
+sty help
+Command-line tools for working with a log of user stories.
+
+User stories are stored as Markdown files in a subdirectory of the project, by
+default `docs/sty`.  Run "sty init" to start a log, and "sty new" to add to it.
+
+Usage:
+  sty [flags]
+  sty [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  config      Print the configuration in use
+  graph       Draw the links between records in Mermaid or Graphviz format
+  help        Help about any command
+  init        Start a log of user stories
+  link        Record that one user story replaces or updates another
+  list        List the user stories, or write a table of contents
+  new         Create the next numbered user story
+
+Flags:
+  -h, --help   help for sty
+
+Use "sty [command] --help" for more information about a command.
+sty help new
+Creates a new, numbered user story, in draft.  The title is a single argument,
+so it must be quoted if it contains spaces.  The story is opened for editing in
+the editor specified by the VISUAL or EDITOR environment variable (VISUAL is
+preferred; EDITOR is used if VISUAL is not set).  After editing, the file name
+of the story is output to stdout, so the command can be used in scripts.
+
+If the story directory contains a file `templates/template.md`, this is used
+as the template for the new story.  Otherwise a built-in template is used, with
+sections for the story, its acceptance criteria and notes, in the form
+described by Mike Cohn in this guide:
+
+  https://www.mountaingoatsoftware.com/agile/user-stories
+
+Multiple --replace and --update options can be given, so that the new story
+can replace or update multiple existing stories.  A replaced story loses its
+Draft status; an updated one keeps its status.
+
+Usage:
+  sty new TITLE [flags]
+
+Examples:
+  # Create a new story with the title "Export invoices for a month":
+  sty new "Export invoices for a month"
+
+  # Split story 4 in two, replacing it with two smaller stories:
+  sty new -r 4 "Reorder a previous purchase"
+  sty new -r 4 "Adjust quantities when reordering"
+
+  # Create a new story that updates story 7:
+  sty new -u 7 "Warn of clashing sessions"
+
+Flags:
+  -h, --help                help for new
+  -r, --replace REFERENCE   a REFERENCE (number or partial filename) to a record this one replaces
+  -u, --update REFERENCE    a REFERENCE (number or partial filename) to a record this one updates
+sty help link
+Records, in both stories, that SOURCE replaces or updates TARGET.
+
+SOURCE and TARGET are both a reference (number or partial filename) to a user
+story.  Exactly one of --replace and --update must be given.
+
+With --replace, SOURCE replaces TARGET, which is marked "Replaced by" SOURCE
+and loses its Draft status.  When a story is split, each of the smaller
+stories replaces it.
+
+With --update, SOURCE makes substantive changes to TARGET, which is marked
+"Updated by" SOURCE and keeps its status.
+
+Usage:
+  sty link (--replace | --update) SOURCE TARGET [flags]
+
+Examples:
+  # Record that story 3 updates story 2:
+  sty link --update 3 2
+
+  # Record that stories 11 and 12 replace story 10, which was split:
+  sty link -r 11 10
+  sty link -r 12 10
+
+Flags:
+  -h, --help      help for link
+  -r, --replace   SOURCE replaces TARGET, which loses its Draft status
+  -u, --update    SOURCE makes substantive changes to TARGET
+sty nonsense
+sty: unknown command "nonsense" for "sty"
