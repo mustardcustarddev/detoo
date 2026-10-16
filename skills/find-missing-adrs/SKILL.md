@@ -1,5 +1,5 @@
 ---
-name: adr-missing
+name: find-missing-adrs
 description: Surveys a whole codebase, thoroughly and in one pass, for architecture decisions that are embodied in the code but have no Architecture Decision Record (ADR), and proposes new ADRs based on the code as it really is - each one judged to be genuinely architectural rather than a local design choice or trivia, backed by cited evidence, and separating what the code shows from the rationale only the user can supply. Use when the user asks which ADRs are missing, wants to backfill or bootstrap an ADR log for an existing codebase, or asks what architectural decisions are undocumented.
 license: Apache-2.0
 compatibility: Requires the adr command-line tool on PATH, and read access to the whole repository.
@@ -78,7 +78,7 @@ Watch especially for:
 * **Decisions written down outside the log**: a README section, a design
   document, a comment that explains why. These are the best candidates, since
   someone has already stated the decision.
-* **Records that the code contradicts.** Note them for the `adr-check` skill,
+* **Records that the code contradicts.** Note them for the `check-adrs` skill,
   if available, rather than proposing a duplicate.
 
 ### 4. Judge every candidate
@@ -137,7 +137,7 @@ Ask the user which proposals to record, using your environment's question
 tool if it has one (such as `ask_question` or `AskUserQuestion`), allowing
 several choices; otherwise ask in the conversation.
 
-For each one chosen, follow the `adr-create` skill if it is available. If it
+For each one chosen, follow the `create-adr` skill if it is available. If it
 is not:
 
 * interview the user about the open questions; do not answer them yourself;

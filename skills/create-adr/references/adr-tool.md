@@ -19,15 +19,22 @@ Options come before operands. An operand that begins with a hyphen must follow
 
 ## Commands
 
-| Command | What it does |
-| --- | --- |
-| `adr config` | Prints `adr_dir="…"` and `adr_template="…"`: the log directory, relative to the working directory, and the project's template, or empty if the built-in template is used. |
-| `adr list` | Prints the path of every record, one a line, in order. Prints nothing if there are none. |
-| `adr init [DIRECTORY]` | Starts a log in `DIRECTORY`, default `docs/adr`, and writes record 1, "Record architecture decisions". Does nothing if the log already has records. |
-| `adr new [-s REF]... [-u REF]... TITLE` | Creates the next numbered record from the template and prints its path. |
-| `adr link (-s \| -u) SOURCE TARGET` | Records, in both records, that `SOURCE` supersedes or updates `TARGET`. Exactly one of `-s` and `-u`. |
-| `adr list --toc [-i INTRO] [-o OUTRO] [-p PREFIX]` | Writes a Markdown table of contents to stdout. |
-| `adr graph [--mermaid \| --graphviz] [-p PREFIX] [-e EXT]` | Draws the records and the links between them. |
+* `adr config`: prints `adr_dir="…"` and `adr_template="…"`: the log
+  directory, relative to the working directory, and the project's template, or
+  empty if the built-in template is used.
+* `adr list`: prints the path of every record, one a line, in order. Prints
+  nothing if there are none.
+* `adr init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/adr`, and
+  writes record 1, "Record architecture decisions". Does nothing if the log
+  already has records.
+* `adr new [-s REF]... [-u REF]... TITLE`: creates the next numbered record
+  from the template and prints its path.
+* `adr link (-s | -u) SOURCE TARGET`: records, in both records, that `SOURCE`
+  supersedes or updates `TARGET`. Exactly one of `-s` and `-u`.
+* `adr list --toc [-i INTRO] [-o OUTRO] [-p PREFIX]`: writes a Markdown table
+  of contents to stdout.
+* `adr graph [--mermaid | --graphviz] [-p PREFIX] [-e EXT]`: draws the records
+  and the links between them.
 
 A reference (`REF`, `SOURCE`, `TARGET`) is a record's number, or part of its
 file name.
@@ -53,15 +60,20 @@ Accepted
 Supercedes [2. Use MySQL](0002-use-mysql.md)
 ```
 
-| Option | Written in the new record | Written in the old record | Old record's `Accepted` line |
-| --- | --- | --- | --- |
-| `-s`, `--supercede` | `Supercedes [N. Title](file)` | `Superceded by [N. Title](file)` | Removed |
-| `-u`, `--update` | `Updates [N. Title](file)` | `Updated by [N. Title](file)` | Kept |
+| Option              | Written in the new record     | Written in the old record        | Old record's `Accepted` line |
+| ------------------- | ----------------------------- | -------------------------------- | ---------------------------- |
+| `-s`, `--supercede` | `Supercedes [N. Title](file)` | `Superceded by [N. Title](file)` | Removed                      |
+| `-u`, `--update`    | `Updates [N. Title](file)`    | `Updated by [N. Title](file)`    | Kept                         |
 
 Note the tool's spelling, "Supercedes" and "Superceded by", when searching
 records. Only a line reading exactly `Accepted` is removed. A status that has
-been edited to something else, such as `Proposed` or `Deprecated`, stays beside
-the link.
+been edited to something else, such as `Draft`, `Proposed` or `Deprecated`,
+stays beside the link.
+
+> **The link takes effect at once.** `adr new -s 4 "Title"` marks record 4
+> "Superceded by" the new record, and removes record 4's `Accepted` line, the
+> moment the new record is created, even though the new record will be a
+> draft. `-u` adds "Updated by" to the old record at once, too.
 
 Never write link lines by hand. Use `-s` and `-u` on `adr new`, or `adr link`
 afterwards, so that both records agree.
@@ -110,12 +122,12 @@ the highest-numbered record means the next `adr new` reuses its number.
 
 ## Environment
 
-| Variable | Effect |
-| --- | --- |
-| `VISUAL`, `EDITOR` | Editor opened on a new record. Clear both. |
-| `ADR_TEMPLATE` | Template for new records. |
-| `ADR_DATE` | Date written into a new record, as given. |
-| `ADR_PAGER`, `PAGER` | Pager for help. Set to `cat`. |
+| Variable             | Effect                                     |
+| -------------------- | ------------------------------------------ |
+| `VISUAL`, `EDITOR`   | Editor opened on a new record. Clear both. |
+| `ADR_TEMPLATE`       | Template for new records.                  |
+| `ADR_DATE`           | Date written into a new record, as given.  |
+| `ADR_PAGER`, `PAGER` | Pager for help. Set to `cat`.              |
 
 The log directory is `docs/adr`, unless a `.adr-dir` file in the project root
 names another. The working directory and each of its ancestors are searched in

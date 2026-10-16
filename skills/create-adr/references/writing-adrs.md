@@ -12,12 +12,12 @@ Before writing any prose, build a fact sheet: every claim the record will make,
 and where it came from. Keep it in your working notes. It is shown to the user
 with the draft, and is not written into the record.
 
-| # | Claim | Source |
-| --- | --- | --- |
-| 1 | Records are stored as Markdown in `docs/adr` | `adr config` output |
-| 2 | The team needs to run on air-gapped machines | User, in this conversation |
-| 3 | `internal/store` is imported by 14 packages | `grep -rl` count, run today |
-| 4 | Why SQLite was preferred to PostgreSQL | **Unknown — ask** |
+| #   | Claim                                        | Source                      |
+| --- | -------------------------------------------- | --------------------------- |
+| 1   | Records are stored as Markdown in `docs/adr` | `adr config` output         |
+| 2   | The team needs to run on air-gapped machines | User, in this conversation  |
+| 3   | `internal/store` is imported by 14 packages  | `grep -rl` count, run today |
+| 4   | Why SQLite was preferred to PostgreSQL       | **Unknown — ask**           |
 
 ### Acceptable sources
 
@@ -78,9 +78,9 @@ which it is.
 
 ### Status
 
-The tool writes `Accepted`. If the decision has not been agreed yet, ask
-whether it should be `Proposed`, and edit the line. Do not decide this
-yourself: whether something is agreed is a fact only the user knows.
+The tool writes `Accepted`. Change it to `Draft`, always, even when the user
+says the decision is agreed: accepting the record is for people to do, once
+they have reviewed it.
 
 ### Context
 
@@ -131,13 +131,21 @@ positive ones.
 
 ## Examples
 
-| Instead of | Write, if the evidence supports it |
-| --- | --- |
-| PostgreSQL is the industry-standard choice for scalable systems. | We already run PostgreSQL for the billing service, and the team knows how to operate it. |
-| This decision greatly improves maintainability. | Each tool is now a definition of about fifty lines; a fix to the engine fixes both. |
-| We evaluated several options. | We considered two alternatives: a full copy of each tool, and a shared domain with a stack for each tool. |
-| Performance will be better. | *(Ask: is there a measurement? If not, leave it out.)* |
-| The team decided after careful analysis. | *(Leave it out: it says nothing the reader can use.)* |
+Each pair shows what to write instead, if the evidence supports it.
+
+* Instead of "PostgreSQL is the industry-standard choice for scalable
+  systems", write "We already run PostgreSQL for the billing service, and the
+  team knows how to operate it."
+* Instead of "This decision greatly improves maintainability", write "Each
+  tool is now a definition of about fifty lines; a fix to the engine fixes
+  both."
+* Instead of "We evaluated several options", write "We considered two
+  alternatives: a full copy of each tool, and a shared domain with a stack for
+  each tool."
+* Instead of "Performance will be better", ask whether there is a
+  measurement. If not, leave it out.
+* Instead of "The team decided after careful analysis", write nothing: it says
+  nothing the reader can use.
 
 ## Before you finish
 
@@ -146,5 +154,6 @@ positive ones.
   as a gap, or left out by the user's choice.
 * Every section of the template in use is filled in, and no guidance text is
   left.
+* The status is `Draft`.
 * Links between records were made by the tool, not by hand.
 * The user has seen the draft with its sources, and approved it.

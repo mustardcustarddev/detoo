@@ -28,46 +28,46 @@ or `rfc help <command>` for the built-in documentation.
 
 ### Commands
 
-| Command | Description |
-| --- | --- |
-| `init [DIRECTORY]` | Start a log, and write its first record |
-| `new TITLE` | Create the next numbered record and open it in your editor |
-| `link (-s \| -u) SOURCE TARGET` | Record that one ADR supercedes or updates another |
-| `link (-o \| -u) SOURCE TARGET` | Record that one RFC obsoletes or updates another |
-| `list [--toc]` | List the records, or write a table of contents in Markdown |
+| Command                           | Description                                                  |
+| --------------------------------- | ------------------------------------------------------------ |
+| `init [DIRECTORY]`                | Start a log, and write its first record                      |
+| `new TITLE`                       | Create the next numbered record and open it in your editor   |
+| `link (-s \| -u) SOURCE TARGET`   | Record that one ADR supercedes or updates another            |
+| `link (-o \| -u) SOURCE TARGET`   | Record that one RFC obsoletes or updates another             |
+| `list [--toc]`                    | List the records, or write a table of contents in Markdown   |
 | `graph [--mermaid \| --graphviz]` | Draw the links between records in Mermaid or Graphviz format |
-| `config` | Print the configuration in use |
-| `help [COMMAND]` | Explain a command, or list them all |
-| `completion SHELL` | Write a shell completion script |
+| `config`                          | Print the configuration in use                               |
+| `help [COMMAND]`                  | Explain a command, or list them all                          |
+| `completion SHELL`                | Write a shell completion script                              |
 
 ### Options
 
-| Flag | Command | Description | Default |
-| --- | --- | --- | --- |
-| `-s, --supercede REFERENCE` | `adr new` | A record this one supercedes, by number or partial filename; repeatable | — |
-| `-o, --obsolete REFERENCE` | `rfc new` | A record this one obsoletes, by number or partial filename; repeatable | — |
-| `-u, --update REFERENCE` | `new` | A record this one updates, by number or partial filename; repeatable | — |
-| `-s, --supercede` | `adr link` | SOURCE supercedes TARGET, which loses its Accepted status | — |
-| `-o, --obsolete` | `rfc link` | SOURCE obsoletes TARGET, which loses its Draft status | — |
-| `-u, --update` | `link` | SOURCE makes substantive changes to TARGET | — |
-| `--toc` | `list` | Write a table of contents in Markdown | — |
-| `-i, --intro INTRO` | `list --toc` | Markdown file to precede the contents | — |
-| `-o, --outro OUTRO` | `list --toc` | Markdown file to follow the contents | — |
-| `-p, --prefix LINK_PREFIX` | `list --toc`, `graph` | Prefix each link to a record | — |
-| `--mermaid` | `graph` | Draw the graph in Mermaid format, the default | — |
-| `--graphviz` | `graph` | Draw the graph in Graphviz format | — |
-| `-e, --extension EXTENSION` | `graph` | File extension the generated links refer to | `.html` |
-| `-h, --help` | all | Show help for the command | `false` |
+| Flag                        | Command               | Description                                                             | Default |
+| --------------------------- | --------------------- | ----------------------------------------------------------------------- | ------- |
+| `-s, --supercede REFERENCE` | `adr new`             | A record this one supercedes, by number or partial filename; repeatable | —       |
+| `-o, --obsolete REFERENCE`  | `rfc new`             | A record this one obsoletes, by number or partial filename; repeatable  | —       |
+| `-u, --update REFERENCE`    | `new`                 | A record this one updates, by number or partial filename; repeatable    | —       |
+| `-s, --supercede`           | `adr link`            | SOURCE supercedes TARGET, which loses its Accepted status               | —       |
+| `-o, --obsolete`            | `rfc link`            | SOURCE obsoletes TARGET, which loses its Draft status                   | —       |
+| `-u, --update`              | `link`                | SOURCE makes substantive changes to TARGET                              | —       |
+| `--toc`                     | `list`                | Write a table of contents in Markdown                                   | —       |
+| `-i, --intro INTRO`         | `list --toc`          | Markdown file to precede the contents                                   | —       |
+| `-o, --outro OUTRO`         | `list --toc`          | Markdown file to follow the contents                                    | —       |
+| `-p, --prefix LINK_PREFIX`  | `list --toc`, `graph` | Prefix each link to a record                                            | —       |
+| `--mermaid`                 | `graph`               | Draw the graph in Mermaid format, the default                           | —       |
+| `--graphviz`                | `graph`               | Draw the graph in Graphviz format                                       | —       |
+| `-e, --extension EXTENSION` | `graph`               | File extension the generated links refer to                             | `.html` |
+| `-h, --help`                | all                   | Show help for the command                                               | `false` |
 
 ### How the tools differ
 
-| | adr | rfc |
-| --- | --- | --- |
-| Directory and marker file | `docs/adr`, `.adr-dir` | `docs/rfc`, `.rfc-dir` |
-| Status of a new record | Accepted | Draft |
-| Relations | Supercedes / Superceded by, Updates / Updated by | Obsoletes / Obsoleted by, Updates / Updated by |
-| Built-in template | Context, Decision, Consequences | Summary, Motivation, Design, Drawbacks, Alternatives, Unresolved questions |
-| Table of contents heading | Architecture Decision Records | Requests for Comments |
+|                           | adr                                              | rfc                                                                        |
+| ------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| Directory and marker file | `docs/adr`, `.adr-dir`                           | `docs/rfc`, `.rfc-dir`                                                     |
+| Status of a new record    | Accepted                                         | Draft                                                                      |
+| Relations                 | Supercedes / Superceded by, Updates / Updated by | Obsoletes / Obsoleted by, Updates / Updated by                             |
+| Built-in template         | Context, Decision, Consequences                  | Summary, Motivation, Design, Drawbacks, Alternatives, Unresolved questions |
+| Table of contents heading | Architecture Decision Records                    | Requests for Comments                                                      |
 
 Superceding an ADR removes its `Accepted` line, and obsoleting an RFC removes
 its `Draft` line. A record whose status has been edited to something else keeps
@@ -88,14 +88,14 @@ template. adr's follows the style described by Michael Nygard. The placeholders
 Each tool reads its own variables, named after it: rfc reads `RFC_DATE`, and
 ignores `ADR_DATE`.
 
-| Variable | Description | Default |
-| --- | --- | --- |
-| `VISUAL` | Editor opened on a new record; preferred over `EDITOR` | — |
-| `EDITOR` | Editor opened on a new record | — |
-| `ADR_TEMPLATE`, `RFC_TEMPLATE` | Template a new record is created from | project, else built-in |
-| `ADR_DATE`, `RFC_DATE` | Date written into a new record | today |
-| `ADR_PAGER`, `RFC_PAGER` | Pager help is shown in; preferred over `PAGER` | — |
-| `PAGER` | Pager help is shown in | `more` |
+| Variable                       | Description                                            | Default                |
+| ------------------------------ | ------------------------------------------------------ | ---------------------- |
+| `VISUAL`                       | Editor opened on a new record; preferred over `EDITOR` | —                      |
+| `EDITOR`                       | Editor opened on a new record                          | —                      |
+| `ADR_TEMPLATE`, `RFC_TEMPLATE` | Template a new record is created from                  | project, else built-in |
+| `ADR_DATE`, `RFC_DATE`         | Date written into a new record                         | today                  |
+| `ADR_PAGER`, `RFC_PAGER`       | Pager help is shown in; preferred over `PAGER`         | —                      |
+| `PAGER`                        | Pager help is shown in                                 | `more`                 |
 
 ## Examples
 
@@ -138,10 +138,17 @@ adr graph --graphviz | dot -Tpng -o docs/adr/graph.png
 
 ## Exit Codes
 
-| Code | Meaning |
-| --- | --- |
-| `0` | Success |
-| `1` | Any failure, reported on stderr and prefixed with the tool's name, such as `adr:` |
+| Code | Meaning                                                                           |
+| ---- | --------------------------------------------------------------------------------- |
+| `0`  | Success                                                                           |
+| `1`  | Any failure, reported on stderr and prefixed with the tool's name, such as `adr:` |
+
+## Agent skills
+
+[skills](skills/README.md) holds agent skills that drive `adr` and `rfc` for
+you: creating ADRs and RFCs by interviewing you for the reasons, reviewing the
+ADR log, finding missing ADRs, and checking the code against them. The
+catalogue there says how to install them.
 
 ## Architecture
 

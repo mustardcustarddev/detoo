@@ -1,6 +1,6 @@
 ---
-name: adr-create
-description: Creates Architecture Decision Records (ADRs) with the adr command-line tool, filling in the log's template strictly from evidence - what the user has said, the code, and documents in the repository - and interviewing the user for anything that cannot be evidenced, rather than inventing context, alternatives or justifications. Use when the user asks to record, write, document or add an architecture decision or ADR, to supersede or update an existing ADR, or to start an ADR log with adr init.
+name: create-adr
+description: Creates Architecture Decision Records (ADRs) with the adr command-line tool, filling in the log's template strictly from evidence - what the user has said, the code, and documents in the repository - and interviewing the user for anything that cannot be evidenced, rather than inventing context, alternatives or justifications. Every record it creates has the status Draft. Use when the user asks to record, write, document or add an architecture decision or ADR, to supersede or update an existing ADR, or to start an ADR log with adr init.
 license: Apache-2.0
 compatibility: Requires the adr command-line tool on PATH.
 ---
@@ -28,6 +28,13 @@ out; never fill it with something plausible.
 
 Read [writing-adrs.md](references/writing-adrs.md) before you draft. It
 explains what counts as evidence, and how to write each section.
+
+## Every record you create is a Draft
+
+The tool writes `Accepted`; change it to `Draft`, always. Whether a decision is
+accepted is for people to record, by editing the line themselves once they have
+reviewed the record, even when the user tells you the decision is already
+agreed.
 
 ## Workflow
 
@@ -82,11 +89,10 @@ order the record needs them:
    or was not chosen.
 4. Exactly what was decided.
 5. The consequences: what becomes easier, what harder, and what risks.
-6. The status (agreed, or only proposed), the date, and relations to
-   existing records.
+6. The date, and relations to existing records.
 
 Ask open questions about reasons. Offer choices only where the possible
-answers are known, such as status or which record is superseded. Do not offer
+answers are known, such as the date or which record is superseded. Do not offer
 guessed reasons as choices: a user picking the nearest option is not evidence.
 
 If an answer is vague, ask a follow-up rather than sharpening it yourself. If
@@ -106,24 +112,29 @@ with `-s` or `-u`, changes other records too.
 
 ```bash
 VISUAL= EDITOR= adr new "Title of the decision"
-VISUAL= EDITOR= adr new -s 4 "Title of the decision"   # supersedes record 4
-VISUAL= EDITOR= adr new -u 2 "Title of the decision"   # updates record 2
 ```
 
 Clearing `VISUAL` and `EDITOR` stops the tool waiting on an editor. It prints
 the path of the new file. Set `ADR_DATE=YYYY-MM-DD` if the user chose a date
 other than today.
 
+If the record supersedes or updates an existing one, tell the user that the
+tool records the link in **both** records at once. With `-s`, the old record
+is marked "Superceded by" the new one, and loses its `Accepted` line, although
+the new record is only a draft. Ask whether to:
+
+* **link now**: `VISUAL= EDITOR= adr new -s 4 "Title"` (or `-u 4`); or
+* **link on acceptance**: name the old record in the text of the new one, and
+  have whoever accepts it run `adr link -s NEW OLD` (or `-u`) then.
+
 Then edit that file:
 
-* Keep the lines the tool wrote: the title, the date, the status, and any link
-  lines in the Status section.
+* Change the status line from `Accepted` to `Draft`.
+* Keep the other lines the tool wrote: the title, the date, and any link lines
+  in the Status section.
 * Replace the guidance text under each heading with the approved content.
-* Change `Accepted` to `Proposed` only if the user said the decision is not
-  agreed.
 
-If a relation was agreed after the record was created, add it with the tool,
-never by hand:
+Never write link lines by hand; use the tool:
 
 ```bash
 adr link -s SOURCE TARGET   # SOURCE supersedes TARGET
@@ -140,8 +151,9 @@ See [adr-tool.md](references/adr-tool.md) for every command and its effects.
 * If the project keeps a generated table of contents (look for one made by
   `adr list --toc`, such as a `README.md` in the log directory), offer to
   regenerate it.
-* Tell the user the path, and any records the tool changed. Leave committing to
-  them.
+* Tell the user the path, that the record is a draft for them to accept by
+  changing `Draft` to `Accepted`, and any records the tool changed. Leave
+  committing to them.
 
 ## Changing an existing decision
 

@@ -1,5 +1,5 @@
 ---
-name: adr-check
+name: check-adrs
 description: Checks that the codebase adheres to one Architecture Decision Record (ADR) or to the whole ADR log - turning each decision into concrete, checkable rules, searching the code for evidence of compliance and of violation, and reporting a verdict per rule with cited evidence and remediation advice, either to bring the code back in line or to record a new decision that supersedes the old. Use when the user asks whether the code follows the ADRs, to verify, audit or enforce an ADR, to find architecture drift or violations, or before relying on an ADR as a description of the system.
 license: Apache-2.0
 compatibility: Requires the adr command-line tool on PATH, and read access to the whole repository.
@@ -47,8 +47,8 @@ Read each record's Status section:
 * **Superceded** (the tool's spelling), **Deprecated** or **Rejected** records
   are not in force: skip them, but check that the record replacing a
   superseded one is followed.
-* **Proposed** records are not yet in force: check them only if the user asks,
-  and report them separately.
+* **Draft** or **Proposed** records are not yet in force: check them only if
+  the user asks, and report them separately.
 
 ### 2. Turn each decision into rules
 
@@ -56,14 +56,14 @@ Read the Decision section, and the Consequences where they state something
 that must hold. Write each obligation as a rule that can be tested, with how
 you will test it:
 
-| Kind of rule | Example | How to check |
-| --- | --- | --- |
-| Structure | `features` must not import `cli` | List each package's imports |
-| Dependency | Cobra appears only in `cli` and `cmd` | Find every importer of the module |
-| Technology | All persistence uses PostgreSQL | Search for other database drivers and clients |
-| Convention | Every record type lives in `domain/record` | Search for the types defined elsewhere |
-| Contract | The API is versioned under `/v1` | Read the route definitions |
-| Technique | End-to-end tests compare golden transcripts | Read the tests, and look for others that do not |
+| Kind of rule | Example                                     | How to check                                    |
+| ------------ | ------------------------------------------- | ----------------------------------------------- |
+| Structure    | `features` must not import `cli`            | List each package's imports                     |
+| Dependency   | Cobra appears only in `cli` and `cmd`       | Find every importer of the module               |
+| Technology   | All persistence uses PostgreSQL             | Search for other database drivers and clients   |
+| Convention   | Every record type lives in `domain/record`  | Search for the types defined elsewhere          |
+| Contract     | The API is versioned under `/v1`            | Read the route definitions                      |
+| Technique    | End-to-end tests compare golden transcripts | Read the tests, and look for others that do not |
 
 Stay within what the record says. Do not add rules it does not state, however
 sensible. If the record is too vague to test, report that as a finding rather
@@ -88,14 +88,14 @@ cannot both be followed.
 
 ### 4. Give a verdict per rule
 
-| Verdict | Meaning |
-| --- | --- |
-| **Adheres** | Searched thoroughly; no violation found. Say what was searched. |
-| **Violates** | Code breaks the rule. List every instance, or the count and a sample if there are many. |
-| **Partial** | Followed in some places, broken in others, as in an unfinished migration. |
-| **Undetermined** | The evidence is inconclusive. Say what would settle it. |
-| **Not checkable** | The rule is not about code. |
-| **Obsolete** | The record concerns code that no longer exists. |
+| Verdict           | Meaning                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| **Adheres**       | Searched thoroughly; no violation found. Say what was searched.                         |
+| **Violates**      | Code breaks the rule. List every instance, or the count and a sample if there are many. |
+| **Partial**       | Followed in some places, broken in others, as in an unfinished migration.               |
+| **Undetermined**  | The evidence is inconclusive. Say what would settle it.                                 |
+| **Not checkable** | The rule is not about code.                                                             |
+| **Obsolete**      | The record concerns code that no longer exists.                                         |
 
 Give a record an overall verdict from its rules: the worst of them, apart from
 Not checkable.
@@ -110,7 +110,7 @@ directions, with what each would involve:
   such as a contract other code depends on.
 * **Change the decision.** If the code reflects a deliberate new direction,
   the record should not be edited to match. A new record should supersede it,
-  or update it if the change is partial. Suggest the `adr-create` skill, if
+  or update it if the change is partial. Suggest the `create-adr` skill, if
   available, which will ask the user why the direction changed.
 
 Where you can, also suggest a way to stop the drift recurring, such as a test,
@@ -119,7 +119,7 @@ it unasked.
 
 For a record too vague to test, suggest clarifying it with a new record that
 updates it. For an obsolete record, suggest deprecating or superseding it; the
-`adr-review` skill, if available, covers this.
+`review-adrs` skill, if available, covers this.
 
 ### 6. Report
 
