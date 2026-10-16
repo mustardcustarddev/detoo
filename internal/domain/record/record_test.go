@@ -61,51 +61,77 @@ func TestSlug(t *testing.T) {
 	}
 }
 
+// adr names its records by number alone, and sty begins each with a prefix.
+var (
+	unprefixed = Kind{Name: "adr"}
+	prefixed   = Kind{Name: "sty", Prefix: "story"}
+)
+
 func TestNumber(t *testing.T) {
 	for _, test := range []struct {
+		kind Kind
 		file string
 		want int
 	}{
-		{"docs/adr/0001-first.md", 1},
-		{"docs/adr/0009-ninth.md", 9},
-		{"docs/adr/0010-tenth.md", 10},
-		{"docs/adr/templates", 0},
+		{unprefixed, "docs/adr/0001-first.md", 1},
+		{unprefixed, "docs/adr/0009-ninth.md", 9},
+		{unprefixed, "docs/adr/0010-tenth.md", 10},
+		{unprefixed, "docs/adr/templates", 0},
+		{prefixed, "docs/userstory/story-0001-first.md", 1},
+		{prefixed, "docs/userstory/story-0010-tenth.md", 10},
+		{prefixed, "docs/userstory/0003-unprefixed.md", 0},
+		{prefixed, "docs/userstory/epic-0004-other-prefix.md", 0},
+		{prefixed, "story-0005/0006-in-a-prefixed-directory.md", 0},
 	} {
-		if got := Number(test.file); got != test.want {
-			t.Errorf("Number(%q) = %d, want %d", test.file, got, test.want)
+		if got := test.kind.Number(test.file); got != test.want {
+			t.Errorf("%s: Number(%q) = %d, want %d", test.kind.Name, test.file, got, test.want)
 		}
 	}
 }
 
 func TestFileNamePadsTheNumberToFourDigits(t *testing.T) {
 	for _, test := range []struct {
+		kind   Kind
+		dir    string
 		number int
 		title  string
 		want   string
 	}{
-		{1, "First Decision", "docs/adr/0001-first-decision.md"},
-		{10, "Tenth Decision", "docs/adr/0010-tenth-decision.md"},
-		{9, "Something About Node.JS", "docs/adr/0009-something-about-node-js.md"},
+		{unprefixed, "docs/adr", 1, "First Decision", "docs/adr/0001-first-decision.md"},
+		{unprefixed, "docs/adr", 10, "Tenth Decision", "docs/adr/0010-tenth-decision.md"},
+		{unprefixed, "docs/adr", 9, "Something About Node.JS", "docs/adr/0009-something-about-node-js.md"},
+		{prefixed, "docs/userstory", 1, "Export Invoices", "docs/userstory/story-0001-export-invoices.md"},
+		{prefixed, "docs/userstory", 12, "Reorder", "docs/userstory/story-0012-reorder.md"},
 	} {
-		if got := FileName("docs/adr", test.number, test.title); got != test.want {
-			t.Errorf("FileName(%d, %q) = %q, want %q", test.number, test.title, got, test.want)
+		if got := test.kind.FileName(test.dir, test.number, test.title); got != test.want {
+			t.Errorf("%s: FileName(%d, %q) = %q, want %q", test.kind.Name, test.number, test.title, got, test.want)
 		}
 	}
 }
 
+// A record's name is recognised only with its kind's prefix, so that a log of
+// prefixed records ignores files that merely begin with a number.
 func TestIsRecordName(t *testing.T) {
 	for _, test := range []struct {
+		kind Kind
 		name string
 		want bool
 	}{
-		{"0001-first.md", true},
-		{"0010-tenth-decision.md", true},
-		{"README.md", false},
-		{"templates", false},
-		{"template.md", false},
+		{unprefixed, "0001-first.md", true},
+		{unprefixed, "0010-tenth-decision.md", true},
+		{unprefixed, "story-0001-first.md", false},
+		{unprefixed, "README.md", false},
+		{unprefixed, "templates", false},
+		{unprefixed, "template.md", false},
+		{prefixed, "story-0001-first.md", true},
+		{prefixed, "story-0010-tenth.md", true},
+		{prefixed, "0001-first.md", false},
+		{prefixed, "story-first.md", false},
+		{prefixed, "storyline-0001-first.md", false},
+		{prefixed, "README.md", false},
 	} {
-		if got := IsRecordName(test.name); got != test.want {
-			t.Errorf("IsRecordName(%q) = %v, want %v", test.name, got, test.want)
+		if got := test.kind.IsRecordName(test.name); got != test.want {
+			t.Errorf("%s: IsRecordName(%q) = %v, want %v", test.kind.Name, test.name, got, test.want)
 		}
 	}
 }
@@ -151,7 +177,30 @@ func TestStatusReadsTheStatusSection(t *testing.T) {
 
 func TestLinksReadsLinksFromTheStatusSection(t *testing.T) {
 	want := []Link{{Type: "Supercedes", Target: 1}, {Type: "Updated by", Target: 4}}
-	if got := Links(recordWithLinks); !reflect.DeepEqual(got, want) {
+	if got := unprefixed.Links(recordWithLinks); !reflect.DeepEqual(got, want) {
+		t.Errorf("Links() = %v, want %v", got, want)
+	}
+}
+
+// A link's target is numbered by its file name, read as its kind names files,
+// so that a link to a prefixed record is found, and one to a file that is not
+// a record of the kind is not.
+func TestLinksReadTheTargetsNumberAfterThePrefix(t *testing.T) {
+	lines := []string{
+		"# 3. Third Story",
+		"",
+		"## Status",
+		"",
+		"Draft",
+		"",
+		"Replaces [1. First Story](story-0001-first-story.md)",
+		"",
+		"Updates [2. Second Story](0002-second-story.md)",
+		"",
+		"## Story",
+	}
+	want := []Link{{Type: "Replaces", Target: 1}}
+	if got := prefixed.Links(lines); !reflect.DeepEqual(got, want) {
 		t.Errorf("Links() = %v, want %v", got, want)
 	}
 }

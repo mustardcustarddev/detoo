@@ -6,15 +6,24 @@ import "strings"
 // status a new one is given, and the words for how one bears on another.
 //
 // A tool is a Kind and the files it ships with.  Everything that differs
-// between adr and rfc is a value here or a file there, so that the slices, the
-// adapters and the commands are written once and serve both.
+// between the tools is a value here or a file there, so that the slices, the
+// adapters and the commands are written once and serve them all.
 type Kind struct {
 	// Name is the tool's name, in lower case.  It names everything that
 	// belongs to the tool, each by one convention applied where the thing is
 	// used: the command, the NAME_DATE, NAME_TEMPLATE and NAME_PAGER
-	// variables, the .NAME-dir marker file, the docs/NAME directory, and the
-	// nodes of a graph.
+	// variables, the .NAME-dir marker file, and the nodes of a graph.
 	Name string
+
+	// Dir names the directory, under docs, that a project keeps its log in
+	// unless it chooses another: "adr", for docs/adr.  It need not be the
+	// tool's name.
+	Dir string
+
+	// Prefix begins the file name of every record, followed by a hyphen and
+	// the record's number: "story", for story-0001-reorder.md.  It is empty
+	// for a tool whose records begin with their number.
+	Prefix string
 
 	// Noun and Plural are what one record, and several, are called in prose.
 	Noun, Plural string

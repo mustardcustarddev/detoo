@@ -22,10 +22,9 @@ to do where code and record disagree.
 * **Read-only.** Do not change code or records while checking. Remediation is
   advice, carried out only if the user asks.
 * **Do not decide which side is right.** When code and record disagree, either
-  may be wrong. Lay out both remedies; the user chooses. If you need facts only
-  they have, such as whether a change was deliberate, ask them, using your
-  environment's question tool if it has one (such as `ask_question` or
-  `AskUserQuestion`), or in the conversation.
+  may be wrong. Lay out both remedies; the user chooses. If you need facts
+  only they have, such as whether a change was deliberate, ask them, through
+  your question tool, as [asking.md](references/asking.md) describes.
 
 ## Workflow
 

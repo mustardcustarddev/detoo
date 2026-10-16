@@ -26,9 +26,8 @@ kept.
 * **Change nothing without confirmation.** This skill proposes; the user
   decides, record by record.
 * **Do not invent history.** If a verdict depends on something only the user
-  knows, such as whether a decision was contested at the time, ask them using
-  your environment's question tool if it has one (such as `ask_question` or
-  `AskUserQuestion`), or in the conversation.
+  knows, such as whether a decision was contested at the time, ask them,
+  through your question tool, as [asking.md](references/asking.md) describes.
 
 ## Workflow
 

@@ -93,6 +93,12 @@ func (w *workspace) sty(args ...string) {
 	w.run("sty", args...)
 }
 
+// pse runs the pse command.
+func (w *workspace) pse(args ...string) {
+	w.t.Helper()
+	w.run("pse", args...)
+}
+
 // run runs a tool, recording its output — on both streams, in the order it was
 // written — in the transcript.
 func (w *workspace) run(tool string, args ...string) {

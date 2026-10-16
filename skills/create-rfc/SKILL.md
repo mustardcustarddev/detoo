@@ -30,10 +30,10 @@ author.
    comment process, and is recorded by people.
 
 When you want to make a claim and have no evidence for it, **stop and ask the
-user**. Use your environment's tool for asking the user structured questions,
-if it has one (such as `ask_question` or `AskUserQuestion`); otherwise ask in
-the conversation, and wait for the answer. Do not carry on with an assumed
-answer.
+user**. Ask through your question tool (`AskUserQuestion` in Claude Code), and
+wait for the answer. [asking.md](references/asking.md) says how to ask an open
+question with a tool that needs options, and when to ask in the chat instead.
+Do not carry on with an assumed answer.
 
 Before you start, read:
 
@@ -117,7 +117,8 @@ in your working notes, and revise it as answers come in.
 ### 6. Interview the user
 
 Ask in rounds, a few related questions at a time, in an order where each
-builds on the last. For the built-in template:
+builds on the last. Each round is one call to your question tool. For the
+built-in template:
 
 1. Intent and scope: what exactly is proposed, what the theme's terms mean
    here, the end state, what is in and out, and who should comment.
@@ -130,10 +131,12 @@ builds on the last. For the built-in template:
 6. Unresolved questions: what reviewers should settle, before acceptance or
    later; and relations to existing RFCs.
 
-Ask open questions about intent and reasons. Offer choices only where the
-possible answers are known. Never offer guessed reasons as choices: a user
-picking the nearest option is not evidence. You may put an observation from
-the code to the user and ask whether it matters; their answer is the evidence.
+Ask open questions about intent and reasons. Offer as options only answers you
+have evidence for; an open question still goes through the question tool, with
+the answer typed in, as [asking.md](references/asking.md) describes. Never
+offer guessed reasons as choices: a user picking the nearest option is not
+evidence. You may put an observation from the code to the user and ask whether
+it matters; their answer is the evidence.
 
 After each round, play back in two or three sentences what you understood, so
 the user can correct it. If an answer is vague, ask a follow-up rather than

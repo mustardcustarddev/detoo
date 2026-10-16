@@ -19,9 +19,10 @@ in the user's head. This is how to get it out, without leading them.
   that you ask only what you could not read, and can ask precisely: "Nine of
   the twelve modules call the database directly. Are all nine in scope?"
 * **Open before closed.** Ask about intent and reasons with open questions.
-  Offer choices only where the possible answers are known: which RFC is
+  Offer options only where the possible answers are known: which RFC is
   obsoleted, which of the modules you found are in scope, whether to defer a
-  point to reviewers.
+  point to reviewers. An open question still goes through the question tool,
+  with its answer typed in.
 * **Never offer guessed reasons as choices.** A user picking the nearest
   option from a list you invented is not evidence. "Is it for testability,
   performance or team autonomy?" puts words in their mouth; "What would this
@@ -41,9 +42,10 @@ in the user's head. This is how to get it out, without leading them.
   the user's choice, stop asking and draft. A draft is for comment; it does not
   need every answer.
 
-Use your environment's tool for asking the user structured questions, if it
-has one (such as `ask_question` or `AskUserQuestion`), with a free-text answer
-always available. Otherwise ask in the conversation, and wait.
+Ask every question through your question tool, as [asking.md](asking.md)
+describes: the open question in the question itself, options only for answers
+with evidence and for the choices when a fact is missing, and the answer typed
+in as free text. Ask in the chat only if you have no such tool.
 
 ## Planning the interview
 

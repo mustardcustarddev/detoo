@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
@@ -11,7 +12,7 @@ import (
 
 // kind is the kind of log the other tests store: adr's, whose marker file and
 // default directory are these.
-var kind = record.Kind{Name: "adr", Noun: "decision record"}
+var kind = record.Kind{Name: "adr", Dir: "adr", Noun: "decision record"}
 
 const (
 	adrMarker = ".adr-dir"
@@ -20,16 +21,17 @@ const (
 
 // The kind of log names its marker file and its default directory, so that one
 // project can keep the logs of several tools without either finding the other.
+// The directory need not be named after the tool.
 func TestTheKindNamesTheLogsFiles(t *testing.T) {
 	root := t.TempDir()
 	mkdirAll(t, filepath.Join(root, "docs", "adr"))
-	s := New(root, record.Kind{Name: "rfc", Noun: "RFC"})
+	s := New(root, record.Kind{Name: "rfc", Dir: "requests", Noun: "RFC"})
 
 	dir, err := s.Dir(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
-	if want := "docs/rfc"; dir != want {
+	if want := "docs/requests"; dir != want {
 		t.Errorf("Dir() = %q, want %q", dir, want)
 	}
 
@@ -38,5 +40,30 @@ func TestTheKindNamesTheLogsFiles(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(root, ".rfc-dir")); err != nil {
 		t.Errorf("SetDir did not write .rfc-dir: %v", err)
+	}
+}
+
+// A kind whose records are prefixed sees only the files that carry its prefix,
+// and numbers its records after them alone.
+func TestAPrefixedKindSeesOnlyItsOwnRecords(t *testing.T) {
+	s := New(t.TempDir(), record.Kind{Name: "sty", Dir: "userstory", Prefix: "story", Noun: "user story"})
+	writeRecord(t, s, "docs/userstory/story-0001-first.md", "# 1. First\n")
+	writeRecord(t, s, "docs/userstory/story-0002-second.md", "# 2. Second\n")
+	writeRecord(t, s, "docs/userstory/0007-unprefixed.md", "# 7. Unprefixed\n")
+	writeRecord(t, s, "docs/userstory/README.md", "# User Stories\n")
+
+	records, err := s.Records(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []record.Record{
+		{Number: 1, File: "docs/userstory/story-0001-first.md"},
+		{Number: 2, File: "docs/userstory/story-0002-second.md"},
+	}
+	if !reflect.DeepEqual(records, want) {
+		t.Errorf("Records() = %v, want %v", records, want)
+	}
+	if got, err := s.NextNumber(context.Background(), "docs/userstory"); err != nil || got != 3 {
+		t.Errorf("NextNumber() = %d, %v, want 3, nil", got, err)
 	}
 }

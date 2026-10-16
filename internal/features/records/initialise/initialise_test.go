@@ -9,6 +9,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/adapters/memlog"
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/sty"
 )
 
 const firstTemplate = "# 1. Record architecture decisions\n\nDate: DATE\n\n## Status\n\nAccepted\n"
@@ -35,6 +36,21 @@ func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 	if want := "docs/rfc/0001-use-requests-for-comments.md"; result.File != want {
+		t.Errorf("File = %q, want %q", result.File, want)
+	}
+}
+
+// The kind of log names the default directory of the first record, and the
+// prefix of its file name.
+func TestHandleFilesTheFirstRecordInTheKindsDirectory(t *testing.T) {
+	handler := newHandler(memlog.Of(sty.Kind))
+	handler.Kind = sty.Kind
+
+	result, err := handler.Handle(context.Background(), Command{})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	if want := "docs/userstory/story-0001-describe-work-in-user-stories.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 }

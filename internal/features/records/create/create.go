@@ -87,7 +87,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 		return Result{}, err
 	}
 
-	created := record.Record{Number: number, File: record.FileName(dir, number, cmd.Title)}
+	created := record.Record{Number: number, File: h.Kind.FileName(dir, number, cmd.Title)}
 	content := record.Render(template, number, cmd.Title, h.Clock.Today(ctx), h.Kind.Status)
 	if err := h.Log.Write(ctx, created.File, content); err != nil {
 		return Result{}, err

@@ -25,9 +25,9 @@ Options come before operands. An operand that begins with a hyphen must follow
   `$STY_TEMPLATE`. Works before the log exists.
 * `sty list`: prints the path of every story, one a line, in order. Prints
   nothing if there are none. Fails with
-  `sty: the docs/sty directory does not exist` if there is no log.
-* `sty init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/sty`, and
-  writes story 1, "Describe work in user stories". Does nothing if the log
+  `sty: the docs/userstory directory does not exist` if there is no log.
+* `sty init [DIRECTORY]`: starts a log in `DIRECTORY`, default
+  `docs/userstory`, and writes story 1, "Describe work in user stories". Does nothing if the log
   already has stories.
 * `sty new [-r REF]... [-u REF]... TITLE`: creates the next numbered story
   from the template, in draft, and prints its path.
@@ -45,13 +45,17 @@ never story 12.
 ## What the tool writes
 
 `sty new` copies the template and replaces the first `NUMBER`, `TITLE`, `DATE`
-and `STATUS` on each line. The file name is the four-digit number and a slug of
-the title, such as `docs/sty/0004-reorder-a-previous-purchase.md`.
+and `STATUS` on each line. The file name is `story-`, the four-digit number and
+a slug of the title, such as
+`docs/userstory/story-0004-reorder-a-previous-purchase.md`.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$STY_DATE` exactly as given.
 * `STATUS` is `Draft`.
 * Everything else in the template, including its guidance text, is copied as
   it is. The guidance text must be replaced by the story's content.
+
+Only files named `story-NNNN-….md` are stories. Anything else in the log
+directory, such as a `README.md`, is ignored.
 
 ## Links
 
@@ -62,7 +66,7 @@ Links are lines in the `## Status` section, written in both stories:
 
 Draft
 
-Replaces [4. Manage saved sessions](0004-manage-saved-sessions.md)
+Replaces [4. Manage saved sessions](story-0004-manage-saved-sessions.md)
 ```
 
 | Option            | Written in the new story    | Written in the old story       | Old story's `Draft` line |
@@ -138,10 +142,10 @@ the highest-numbered story means the next `sty new` reuses its number.
 | `STY_DATE`           | Date written into a new story, as given.  |
 | `STY_PAGER`, `PAGER` | Pager for help. Set to `cat`.             |
 
-The log directory is `docs/sty`, unless a `.sty-dir` file in the project root
-names another. The working directory and each of its ancestors are searched in
-turn for a `.sty-dir` file, then for a `docs/sty` directory, so the tool works
-from anywhere in the project. Run `sty config` rather than assuming.
+The log directory is `docs/userstory`, unless a `.sty-dir` file in the project
+root names another. The working directory and each of its ancestors are
+searched in turn for a `.sty-dir` file, then for a `docs/userstory` directory,
+so the tool works from anywhere in the project. Run `sty config` rather than assuming.
 
 ## Errors
 

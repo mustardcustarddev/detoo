@@ -17,10 +17,12 @@ import (
 	"unicode"
 )
 
-// recordName matches the file name of a record: a number, a hyphen and a slug.
+// recordName matches the file name of a record, after any prefix: a number, a
+// hyphen and a slug.
 var recordName = regexp.MustCompile(`^[0-9]+-[^/]*\.md`)
 
-// leadingNumber matches the number a record's file name starts with.
+// leadingNumber matches the number a record's file name starts with, after any
+// prefix.
 var leadingNumber = regexp.MustCompile(`^[0-9]+`)
 
 // digits matches a reference that is a record's number.
@@ -53,26 +55,44 @@ func (e *MissingDirError) Error() string {
 	return fmt.Sprintf("the %s directory does not exist", e.Dir)
 }
 
-// IsRecordName reports whether a file name is that of a record, so
-// that a README or a template directory is not mistaken for one.
-func IsRecordName(name string) bool {
-	return recordName.MatchString(name)
+// IsRecordName reports whether a file name is that of a record of this kind,
+// so that a README or a template directory is not mistaken for one.
+func (k Kind) IsRecordName(name string) bool {
+	rest, ok := k.unprefixed(name)
+	return ok && recordName.MatchString(rest)
 }
 
 // FileName returns the path of the record numbered number, with the given
 // title, in dir.
-func FileName(dir string, number int, title string) string {
-	return path.Join(dir, fmt.Sprintf("%04d-%s.md", number, Slug(title)))
+func (k Kind) FileName(dir string, number int, title string) string {
+	name := fmt.Sprintf("%04d-%s.md", number, Slug(title))
+	if k.Prefix != "" {
+		name = k.Prefix + "-" + name
+	}
+	return path.Join(dir, name)
 }
 
-// Number returns the number a record's file name starts with.
-func Number(file string) int {
-	digits := leadingNumber.FindString(path.Base(file))
-	number, err := strconv.Atoi(digits)
+// Number returns the number a record's file name starts with, after its
+// kind's prefix, or 0 if the file is not named as a record of this kind.
+func (k Kind) Number(file string) int {
+	rest, ok := k.unprefixed(path.Base(file))
+	if !ok {
+		return 0
+	}
+	number, err := strconv.Atoi(leadingNumber.FindString(rest))
 	if err != nil {
 		return 0
 	}
 	return number
+}
+
+// unprefixed returns a file name without this kind's prefix and the hyphen
+// after it, and whether the name had them.
+func (k Kind) unprefixed(name string) (string, bool) {
+	if k.Prefix == "" {
+		return name, true
+	}
+	return strings.CutPrefix(name, k.Prefix+"-")
 }
 
 // Find returns the record that ref refers to, and whether there is one.  A

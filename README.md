@@ -1,5 +1,7 @@
 # detoo
 
+<img src="assets/detoo-avatar.png" alt="Detoo robot drawing with a set square" width="320">
+
 Command-line tools that keep logs of numbered, linked Markdown documents in
 your repository, so they are versioned alongside the code they describe:
 
@@ -9,6 +11,9 @@ your repository, so they are versioned alongside the code they describe:
   comment before they are made.
 * `sty` keeps [user stories][stories]: who wants something of the software,
   what, and why, with the acceptance criteria that say when it is done.
+* `pse` keeps decisions made with [PIOSEE][piosee]: the Problem, the
+  Information, the Options, the one Selected, how it was Executed, and an
+  Evaluation of whether it worked.
 
 ## Install
 
@@ -22,7 +27,7 @@ make deploy                 # install into /usr/local (override with PREFIX=)
 ## Usage
 
 Each tool works the same way. Start a log, which by default lives in
-`docs/adr`, `docs/rfc` or `docs/sty`, then add to it:
+`docs/adr`, `docs/rfc`, `docs/userstory` or `docs/piosee`, then add to it:
 
 ```bash
 adr init
@@ -30,7 +35,11 @@ adr new "Use PostgreSQL for persistence"
 ```
 
 `new` creates the next numbered document from a template, opens it in
-`$VISUAL` or `$EDITOR`, and prints its path. A project can provide its own
+`$VISUAL` or `$EDITOR`, and prints its path. Its file name is the number and a
+slug of the title, such as `0002-use-postgresql-for-persistence.md`; user
+stories and PIOSEE records begin with a prefix as well, as in
+`story-0012-reorder-a-previous-purchase.md` and
+`piosee-0004-roll-back-release-2-3.md`. A project can provide its own
 template in `templates/template.md` inside the log directory.
 
 A new document can replace or update earlier ones, and the link is recorded
@@ -40,6 +49,7 @@ in both:
 adr new -s 9 "Use Rust for performance-critical functionality"
 rfc new -o 4 "Adopt Connect for internal services"
 sty new -r 12 "Reorder a previous purchase"
+pse new -r 4 "Restore release 2.3 with the fix"
 ```
 
 Publish a table of contents, or draw the links between documents with Mermaid
@@ -47,7 +57,7 @@ or Graphviz:
 
 ```bash
 adr list --toc > docs/adr/README.md
-sty graph | mmdc -i - -o docs/sty/graph.svg
+sty graph | mmdc -i - -o docs/userstory/graph.svg
 ```
 
 Run `adr help`, or `sty help new`, for each tool's commands and options.
@@ -55,26 +65,11 @@ Run `adr help`, or `sty help new`, for each tool's commands and options.
 ## Agent skills
 
 [skills](skills/README.md) holds agent skills that drive the tools for you:
-writing ADRs, RFCs and user stories by interviewing you for the reasons rather
-than guessing them, and reviewing and checking an ADR log. The catalogue there
+writing ADRs, RFCs and user stories, and working decisions through PIOSEE, by
+interviewing you for the reasons rather than guessing them, and reviewing and checking an ADR log. The catalogue there
 says how to install them.
 
-## Architecture
-
-The tools are one program. Each tool is a definition, in
-[internal/adr](internal/adr), [internal/rfc](internal/rfc) or
-[internal/sty](internal/sty), of the vocabulary of its log, with the templates
-and help it ships with; everything else is shared.
-[ADR 3](docs/adr/0003-share-one-engine-between-the-record-tools.md) records
-why.
-
-The application is organised in vertical slices, under
-[internal/features](internal/features), and knows nothing of the command line:
-Cobra is an adapter. The layout is described by the
-`feature-driven-vertical-slices` skill in [.claude/skills](.claude/skills).
-The end-to-end tests in [test](test) compare terminal transcripts against
-golden files, which `go test ./test -update` rewrites. Run `make` to list the
-build targets.
+## Thanks
 
 With thanks to Nat Pryce for [adr-tools][], which inspired this project.
 
@@ -84,4 +79,5 @@ Apache License, Version 2.0. See [LICENSE.md](LICENSE.md).
 
 [ADRs]: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 [stories]: https://www.mountaingoatsoftware.com/agile/user-stories
+[piosee]: https://en.wikipedia.org/wiki/Pilot_decision_making
 [adr-tools]: https://github.com/npryce/adr-tools

@@ -8,6 +8,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/adapters/memlog"
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/sty"
 )
 
 // Nothing here builds a binary, parses a flag or writes a file.  The slice's
@@ -150,6 +151,33 @@ func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
 	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nDraft\n\nObsoletes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content(result.File); got != wantNew {
 		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
+	}
+}
+
+// A kind with a prefix begins each record's file name with it, numbers its
+// records from those that carry it, and links them by those names.
+func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
+	log := memlog.Of(sty.Kind)
+	if err := log.Write(context.Background(), "docs/userstory/story-0001-first.md", "# 1. First\n\n## Status\n\nDraft\n\n## Story\n\nStory.\n"); err != nil {
+		t.Fatal(err)
+	}
+	if err := log.Write(context.Background(), "docs/userstory/0009-not-a-story.md", "# Not a story\n"); err != nil {
+		t.Fatal(err)
+	}
+	handler := newHandler(log, &spyEditor{})
+	handler.Kind = sty.Kind
+
+	result, err := handler.Handle(context.Background(), Command{Title: "Second", Updates: []string{"1"}})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+
+	if want := "docs/userstory/story-0002-second.md"; result.File != want {
+		t.Errorf("File = %q, want %q", result.File, want)
+	}
+	wantOld := "# 1. First\n\n## Status\n\nDraft\n\nUpdated by [2. Second](story-0002-second.md)\n\n## Story\n\nStory.\n"
+	if got := log.Content("docs/userstory/story-0001-first.md"); got != wantOld {
+		t.Errorf("updated record is\n%s\nwant\n%s", got, wantOld)
 	}
 }
 

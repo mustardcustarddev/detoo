@@ -45,7 +45,7 @@ func (s *Store) markerFile() string {
 // defaultDir is the directory a project without a marker file keeps its log in:
 // docs/adr for adr's.
 func (s *Store) defaultDir() string {
-	return path.Join("docs", s.kind.Name)
+	return path.Join("docs", s.kind.Dir)
 }
 
 // path resolves a path reported by this package to a path on disk.  An
@@ -118,7 +118,7 @@ func (s *Store) Records(ctx context.Context) ([]record.Record, error) {
 
 	var files []string
 	for _, entry := range entries {
-		if !entry.IsDir() && record.IsRecordName(entry.Name()) {
+		if !entry.IsDir() && s.kind.IsRecordName(entry.Name()) {
 			files = append(files, path.Join(dir, entry.Name()))
 		}
 	}
@@ -126,7 +126,7 @@ func (s *Store) Records(ctx context.Context) ([]record.Record, error) {
 
 	records := make([]record.Record, 0, len(files))
 	for _, file := range files {
-		records = append(records, record.Record{Number: record.Number(file), File: file})
+		records = append(records, record.Record{Number: s.kind.Number(file), File: file})
 	}
 	return records, nil
 }
@@ -154,7 +154,7 @@ func (s *Store) NextNumber(_ context.Context, dir string) (int, error) {
 	}
 	highest := 0
 	for _, entry := range entries {
-		if number := record.Number(entry.Name()); number > highest {
+		if number := s.kind.Number(entry.Name()); number > highest {
 			highest = number
 		}
 	}

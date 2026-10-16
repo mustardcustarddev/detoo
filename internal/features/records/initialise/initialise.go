@@ -116,7 +116,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 	}
 
 	// The title only names the file: the record's heading is in the template.
-	file := record.FileName(dir, number, h.Kind.FirstRecord)
+	file := h.Kind.FileName(dir, number, h.Kind.FirstRecord)
 	content := record.Render(template, number, h.Kind.FirstRecord, h.Clock.Today(ctx), h.Kind.Status)
 	if err := h.Log.Write(ctx, file, content); err != nil {
 		return Result{}, err

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"path"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -12,8 +11,8 @@ import (
 const statusHeading = "## Status"
 
 // linkPattern matches a link in a status section, capturing its description and
-// the number of the record it points at.
-var linkPattern = regexp.MustCompile(`^(.+) \[.*\]\(0*([1-9][0-9]*).*\)`)
+// the file of the record it points at.
+var linkPattern = regexp.MustCompile(`^(.+) \[.*\]\((.*)\)`)
 
 // Link is a reference from one record to another.
 type Link struct {
@@ -42,19 +41,19 @@ func Status(lines []string) []string {
 	return status
 }
 
-// Links returns the links recorded in a record's status section.
-func Links(lines []string) []Link {
+// Links returns the links recorded in a record's status section.  A link's
+// target is numbered by its file name, as this kind names its records, and a
+// link to any other file is not one.
+func (k Kind) Links(lines []string) []Link {
 	var links []Link
 	for _, line := range Status(lines) {
 		match := linkPattern.FindStringSubmatch(line)
 		if match == nil {
 			continue
 		}
-		target, err := strconv.Atoi(match[2])
-		if err != nil {
-			continue
+		if target := k.Number(match[2]); target > 0 {
+			links = append(links, Link{Type: match[1], Target: target})
 		}
-		links = append(links, Link{Type: match[1], Target: target})
 	}
 	return links
 }

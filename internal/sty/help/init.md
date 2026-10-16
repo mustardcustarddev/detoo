@@ -5,7 +5,7 @@ Initialises the directory of user stories:
    keeping the work in user stories.
 
 If the DIRECTORY is not given, the stories are stored in the directory
-`docs/sty`.
+`docs/userstory`.
 
 If the log already has stories, init does nothing, and giving it a different
 DIRECTORY is an error.

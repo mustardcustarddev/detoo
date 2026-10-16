@@ -31,10 +31,10 @@ are the interviewer and scribe, not the product owner.
    the team to record.
 
 When you want to make a claim and have no evidence for it, **stop and ask the
-user**. Use your environment's tool for asking the user structured questions,
-if it has one (such as `ask_question` or `AskUserQuestion`); otherwise ask in
-the conversation, and wait for the answer. Do not carry on with an assumed
-answer.
+user**. Ask through your question tool (`AskUserQuestion` in Claude Code), and
+wait for the answer. [asking.md](references/asking.md) says how to ask an open
+question with a tool that needs options, and when to ask in the chat instead.
+Do not carry on with an assumed answer.
 
 Before you start, read:
 
@@ -55,10 +55,10 @@ sty config        # sty_dir and sty_template
 sty list          # existing stories
 ```
 
-If there is no log yet (`sty list` fails with `the docs/sty directory does not
-exist`, or names another missing directory), ask the user whether to start
-one, and where. `sty init [DIR]` creates the directory and writes story 1,
-which describes the practice of keeping stories.
+If there is no log yet (`sty list` fails with `the docs/userstory directory
+does not exist`, or names another missing directory), ask the user whether to
+start one, and where. `sty init [DIR]` creates the directory and writes story
+1, which describes the practice of keeping stories.
 
 Read story 1, and any story or document that sets out the project's
 conventions. Read the titles of the existing stories, and in full any whose
@@ -121,7 +121,8 @@ the plan in your working notes, and revise it as answers come in.
 ### 6. Interview the user
 
 Ask in rounds, a few related questions at a time, in an order where each
-builds on the last. For the built-in template:
+builds on the last. Each round is one call to your question tool. For the
+built-in template:
 
 1. Who and what: the type of user, and what they need to do.
 2. Why: what they do with it, the decision it helps them make, why now.
@@ -131,11 +132,13 @@ builds on the last. For the built-in template:
 5. Notes and links: scope, dependencies, open questions, and existing stories
    it replaces or updates.
 
-Ask open questions about users and reasons. Offer choices only where the
-possible answers are known, such as the roles you found in the code. Never
-offer guessed reasons as choices: a user picking the nearest option is not
-evidence. You may put an observation from the code to the user and ask
-whether it matters; their answer is the evidence.
+Ask open questions about users and reasons. Offer as options only answers you
+have evidence for, such as the roles you found in the code; an open question
+still goes through the question tool, with the answer typed in, as
+[asking.md](references/asking.md) describes. Never offer guessed reasons as
+choices: a user picking the nearest option is not evidence. You may put an
+observation from the code to the user and ask whether it matters; their answer
+is the evidence.
 
 After each round, play the story back in its one sentence, with the criteria
 so far, so the user can correct it. If an answer is vague, ask a follow-up

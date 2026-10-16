@@ -20,11 +20,11 @@ numbers, dates and consequences are not to be invented, inferred as if known,
 or embellished.
 
 When you want to make a claim and have no evidence for it, **stop and ask the
-user**. Use your environment's tool for asking the user structured questions,
-if it has one (such as `ask_question` or `AskUserQuestion`); otherwise ask in
-the conversation, and wait for the answer. Do not carry on with an assumed
-answer. If the user does not know, state the gap plainly, or leave the point
-out; never fill it with something plausible.
+user**. Ask through your question tool (`AskUserQuestion` in Claude Code), and
+wait for the answer. [asking.md](references/asking.md) says how to ask an open
+question with a tool that needs options, and when to ask in the chat instead.
+Do not carry on with an assumed answer. If the user does not know, state the
+gap plainly, or leave the point out; never fill it with something plausible.
 
 Read [writing-adrs.md](references/writing-adrs.md) before you draft. It
 explains what counts as evidence, and how to write each section.
@@ -80,8 +80,8 @@ Mark everything the template needs that you do not have as **Unknown**.
 
 ### 4. Interview the user
 
-Ask about every Unknown. Batch related questions, a few at a time, in the
-order the record needs them:
+Ask about every Unknown. Each round is one call to your question tool, of a
+few related questions, in the order the record needs them:
 
 1. The problem: what made a decision necessary, and why then.
 2. The constraints, and the forces in tension.
@@ -91,9 +91,11 @@ order the record needs them:
 5. The consequences: what becomes easier, what harder, and what risks.
 6. The date, and relations to existing records.
 
-Ask open questions about reasons. Offer choices only where the possible
-answers are known, such as the date or which record is superseded. Do not offer
-guessed reasons as choices: a user picking the nearest option is not evidence.
+Ask open questions about reasons. Offer as options only answers you have
+evidence for, such as the date or which record is superseded; an open question
+still goes through the question tool, with the answer typed in, as
+[asking.md](references/asking.md) describes. Do not offer guessed reasons as
+choices: a user picking the nearest option is not evidence.
 
 If an answer is vague, ask a follow-up rather than sharpening it yourself. If
 the user asks you to fill the gaps yourself, explain that the record must be

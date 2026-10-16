@@ -107,7 +107,7 @@ func (h Handler) Handle(ctx context.Context, query Query) (Result, error) {
 			title:  record.Title(lines),
 			url:    query.LinkPrefix + name + query.LinkExtension,
 		})
-		for _, link := range record.Links(lines) {
+		for _, link := range h.Kind.Links(lines) {
 			// Reverse links duplicate a link recorded by the other record.
 			if strings.HasSuffix(link.Type, " by") {
 				continue

@@ -1,0 +1,69 @@
+pse init
+docs/piosee/piosee-0001-make-decisions-with-piosee.md
+ls docs/piosee
+piosee-0001-make-decisions-with-piosee.md
+cat docs/piosee/piosee-0001-make-decisions-with-piosee.md
+# 1. Make decisions with PIOSEE
+
+Date: 1992-01-12
+
+## Status
+
+Accepted
+
+## Problem
+
+Some of our decisions are made under pressure: what to do about an incident,
+a failed release, a missed deadline or a supplier who has let us down. Made in
+a hurry, in a call or a chat thread, such a decision is easily made on part
+of the facts, by whoever spoke first, and is soon forgotten, along with what
+was learned from it.
+
+## Information
+
+PIOSEE is a method of making a decision in six steps, taught to airline
+pilots: Problem, Information, Options, Select, Execute and Evaluate. The
+steps make the crew state the problem and the facts, stop them jumping to a
+conclusion, give everyone a way to be heard, and make it normal to reverse a
+decision that has not worked.
+
+Its known weaknesses are that it can delay a quick, obvious action, that it
+can be used to justify a decision rather than to make one, and that it does
+not capture intuition.
+
+See https://en.wikipedia.org/wiki/Pilot_decision_making
+
+## Options
+
+* Carry on deciding as each situation demands, and recording nothing.
+* Work through such decisions with PIOSEE, and record each one in this
+  directory.
+* Use a similar method, such as T-DODAR or FOR-DEC, which differ mostly in
+  their words.
+
+## Select
+
+We will work through such decisions with PIOSEE, and record each one here,
+so that the people making it see the same facts and options, and those who
+come later can see what was known, what was weighed, what was done, and how
+it turned out.
+
+## Execute
+
+* Each decision is a Markdown file in this directory, numbered in sequence.
+  Numbers are not reused.
+* Each has a section for each step of PIOSEE.
+* A new record is a draft. Its status records what becomes of it.
+* When harm is happening and the action that stops it is obvious, we act
+  first, and record the decision afterwards.
+* A record written after the event records the options considered at the
+  time. What was seen only in hindsight belongs under Evaluate.
+* A decision is evaluated once it has been carried out, in its own record. A
+  decision that reverses an earlier one says so, and so does the decision it
+  reverses. A decision that builds on an earlier one updates it, and both say
+  so.
+
+## Evaluate
+
+To be evaluated once we have made a few decisions this way: whether the
+records helped us decide, and whether anyone read them afterwards.

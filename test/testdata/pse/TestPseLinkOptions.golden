@@ -1,0 +1,22 @@
+pse new "First Decision"
+docs/piosee/piosee-0001-first-decision.md
+pse new "Second Decision"
+docs/piosee/piosee-0002-second-decision.md
+pse link 2 1
+pse: give either --reverse or --update
+pse link -s 2 1
+pse: unknown shorthand flag: 's' in -s
+pse new --replace 1 "Third Decision"
+pse: unknown flag: --replace
+ls docs/piosee
+piosee-0001-first-decision.md
+piosee-0002-second-decision.md
+head -8 docs/piosee/piosee-0001-first-decision.md
+# 1. First Decision
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+

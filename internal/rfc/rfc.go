@@ -15,6 +15,7 @@ import (
 // relations are the ones the IETF uses between RFCs.
 var Kind = record.Kind{
 	Name:        "rfc",
+	Dir:         "rfc",
 	Noun:        "RFC",
 	Plural:      "RFCs",
 	Heading:     "Requests for Comments",

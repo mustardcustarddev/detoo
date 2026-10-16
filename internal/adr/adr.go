@@ -14,6 +14,7 @@ import (
 // Kind is the vocabulary of an architecture decision record log.
 var Kind = record.Kind{
 	Name:        "adr",
+	Dir:         "adr",
 	Noun:        "decision record",
 	Plural:      "decision records",
 	Heading:     "Architecture Decision Records",

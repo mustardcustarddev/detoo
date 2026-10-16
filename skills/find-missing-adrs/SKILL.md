@@ -133,9 +133,8 @@ If the report is long, offer to save it to a file as well.
 
 ### 6. Offer to write the records
 
-Ask the user which proposals to record, using your environment's question
-tool if it has one (such as `ask_question` or `AskUserQuestion`), allowing
-several choices; otherwise ask in the conversation.
+Ask the user which proposals to record, through your question tool, allowing
+several choices, as [asking.md](references/asking.md) describes.
 
 For each one chosen, follow the `create-adr` skill if it is available. If it
 is not:

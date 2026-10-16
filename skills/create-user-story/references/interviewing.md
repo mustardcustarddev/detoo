@@ -27,9 +27,10 @@ leading them.
   a screen or a button, ask what it is for; keep the design if they have
   decided it, but write the story around the outcome.
 * **Open before closed.** Ask about users and reasons with open questions.
-  Offer choices only where the possible answers are known: which of the roles
+  Offer options only where the possible answers are known: which of the roles
   you found, which existing story this replaces, whether to leave a point to
-  refinement.
+  refinement. An open question still goes through the question tool, with its
+  answer typed in.
 * **Never offer guessed reasons as choices.** A user picking the nearest
   option from a list you invented is not evidence. "Is it to save time, reduce
   errors or meet an audit?" puts words in their mouth; "What do they do with
@@ -50,9 +51,10 @@ leading them.
   each gap left as an open question by the user's choice, stop asking and
   draft.
 
-Use your environment's tool for asking the user structured questions, if it
-has one (such as `ask_question` or `AskUserQuestion`), with a free-text answer
-always available. Otherwise ask in the conversation, and wait.
+Ask every question through your question tool, as [asking.md](asking.md)
+describes: the open question in the question itself, options only for answers
+with evidence and for the choices when a fact is missing, and the answer typed
+in as free text. Ask in the chat only if you have no such tool.
 
 ## Planning the interview
 

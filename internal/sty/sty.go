@@ -11,10 +11,13 @@ import (
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
-// Kind is the vocabulary of a user story log.  A story that is split is
+// Kind is the vocabulary of a user story log, which is kept in docs/userstory,
+// with each story's file name beginning "story-".  A story that is split is
 // replaced by each of the smaller stories it is split into.
 var Kind = record.Kind{
 	Name:        "sty",
+	Dir:         "userstory",
+	Prefix:      "story",
 	Noun:        "user story",
 	Plural:      "user stories",
 	Heading:     "User Stories",

@@ -2,8 +2,9 @@
 
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
-comments with `rfc`, and user stories with `sty`. Each directory is one skill,
-and is self-contained, so it can be installed on its own.
+comments with `rfc`, user stories with `sty`, and decisions made with PIOSEE
+with `pse`. Each directory is one skill, and is self-contained, so it can be
+installed on its own.
 
 ## Catalogue
 
@@ -39,23 +40,34 @@ This needs the `sty` tool.
   interviewing the user for who it is for, what they need, why, and how they
   will know it is done. Splits epics into smaller stories.
 
+### PIOSEE decisions
+
+This needs the `pse` tool.
+
+* [**create-piosee**](create-piosee/SKILL.md): work a decision through
+  PIOSEE (Problem, Information, Options, Select, Execute, Evaluate) and record
+  it with `pse`: asking first how much time there is, gathering the facts,
+  laying out the options, and leaving the choice to the user. Evaluates a
+  recorded decision once it has been carried out.
+
 ### What they share
 
 All of them share two principles. An agent writes nothing it cannot evidence,
 and asks the user rather than inventing context or reasons. And decisions are
 made at the right level, when they're needed: only architectural decisions
 belong in the ADR log, only changes others would want a say in need an RFC,
-and a user story describes an outcome for someone, not a task.
+a user story describes an outcome for someone, not a task, and a PIOSEE
+record is one decision about one problem, chosen by the people it belongs to.
 
-Every ADR, RFC and user story an agent creates has the status `Draft`.
-Accepting one is for people to do.
+Every ADR, RFC, user story and PIOSEE record an agent creates has the status
+`Draft`. Accepting one is for people to do.
 
 ## Installing
 
 ### 1. Install the tools
 
-Each skill drives `adr`, `rfc` or `sty`, which must be on the `PATH` of the
-machine the agent runs on. Build and install them as described in the
+Each skill drives `adr`, `rfc`, `sty` or `pse`, which must be on the `PATH` of
+the machine the agent runs on. Build and install them as described in the
 [README](../README.md#install).
 
 ### 2. Make sure you can reach the repository
@@ -87,7 +99,7 @@ npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
 # Install all of them
 npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
   --skill find-missing-adrs --skill check-adrs --skill create-rfc \
-  --skill create-user-story
+  --skill create-user-story --skill create-piosee
 ```
 
 Name the skills you want, rather than using `--skill '*'`: the CLI also finds
@@ -132,6 +144,16 @@ skill works on its own. Keep the copies identical:
 ```bash
 diff skills/review-adrs/references/significance.md skills/create-adr/references/significance.md
 diff skills/review-adrs/references/significance.md skills/find-missing-adrs/references/significance.md
+```
+
+`references/asking.md`, which says how to put every question to the user
+through the agent's question tool, is copied into every skill. Keep the copies
+identical:
+
+```bash
+for f in skills/*/references/asking.md; do
+  diff -q skills/create-user-story/references/asking.md "$f"
+done
 ```
 
 A skill's directory and the `name` in its `SKILL.md` must be the same verb

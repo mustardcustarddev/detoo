@@ -24,15 +24,23 @@ import (
 // Log is an in-memory log of records.  Its zero value is not usable: call
 // New.
 type Log struct {
+	kind    record.Kind
 	dir     string
 	created bool
 	files   map[string]string
 }
 
-// New returns an empty log that has not been initialised, so that Records
-// reports a missing directory exactly as a store on an empty project would.
+// New returns an empty log of records named by their number alone, in
+// docs/adr.  It has not been initialised, so that Records reports a missing
+// directory exactly as a store on an empty project would.
 func New() *Log {
-	return &Log{dir: "docs/adr", files: map[string]string{}}
+	return Of(record.Kind{Dir: "adr"})
+}
+
+// Of returns an empty log of the given kind, in the kind's default directory,
+// which sees only the records named as that kind names them.
+func Of(kind record.Kind) *Log {
+	return &Log{kind: kind, dir: path.Join("docs", kind.Dir), files: map[string]string{}}
 }
 
 // WithRecords returns a log holding the given records, keyed by path.
@@ -69,7 +77,7 @@ func (l *Log) Records(context.Context) ([]record.Record, error) {
 	}
 	var files []string
 	for file := range l.files {
-		if path.Dir(file) == l.dir && record.IsRecordName(path.Base(file)) {
+		if path.Dir(file) == l.dir && l.kind.IsRecordName(path.Base(file)) {
 			files = append(files, file)
 		}
 	}
@@ -77,7 +85,7 @@ func (l *Log) Records(context.Context) ([]record.Record, error) {
 
 	records := make([]record.Record, 0, len(files))
 	for _, file := range files {
-		records = append(records, record.Record{Number: record.Number(file), File: file})
+		records = append(records, record.Record{Number: l.kind.Number(file), File: file})
 	}
 	return records, nil
 }
@@ -97,7 +105,7 @@ func (l *Log) NextNumber(_ context.Context, dir string) (int, error) {
 	highest := 0
 	for file := range l.files {
 		if path.Dir(file) == dir {
-			if number := record.Number(file); number > highest {
+			if number := l.kind.Number(file); number > highest {
 				highest = number
 			}
 		}

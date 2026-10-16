@@ -1,0 +1,5 @@
+  # Publish a table of contents beside the records:
+  pse list --toc > docs/piosee/README.md
+
+  # Publish one elsewhere, with an introduction, linking back to the records:
+  pse list --toc -i intro.md -p ../docs/piosee/ > site/decisions.md

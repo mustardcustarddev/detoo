@@ -1,0 +1,5 @@
+  # Record that decision 3 updates decision 2:
+  pse link --update 3 2
+
+  # Record that decision 5 reverses decision 4, which did not work:
+  pse link -r 5 4

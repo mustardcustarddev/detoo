@@ -16,7 +16,7 @@ import (
 var update = flag.Bool("update", false, "rewrite the golden files from the transcripts produced by this run")
 
 // names are the record tools, each built from cmd/NAME.
-var names = []string{"adr", "rfc", "sty"}
+var names = []string{"adr", "rfc", "sty", "pse"}
 
 // Paths of the binaries the tests drive, built once by TestMain: each tool, by
 // name, and the fake editor.

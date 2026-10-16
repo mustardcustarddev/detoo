@@ -15,8 +15,8 @@ import (
 func TestInitStyRepository(t *testing.T) {
 	w := newWorkspace(t, "sty")
 	w.sty("init")
-	w.ls("docs/sty")
-	w.cat("docs/sty/0001-describe-work-in-user-stories.md")
+	w.ls("docs/userstory")
+	w.cat("docs/userstory/story-0001-describe-work-in-user-stories.md")
 	w.check()
 }
 
@@ -24,7 +24,7 @@ func TestInitStyRepository(t *testing.T) {
 func TestCreateStory(t *testing.T) {
 	w := newWorkspace(t, "sty")
 	w.sty("new", "Export invoices for a month")
-	w.cat("docs/sty/0001-export-invoices-for-a-month.md")
+	w.cat("docs/userstory/story-0001-export-invoices-for-a-month.md")
 	w.check()
 }
 
@@ -38,10 +38,10 @@ func TestSplitAndUpdateStories(t *testing.T) {
 	w.sty("new", "--replace", "1", "Adjust quantities when reordering")
 	w.sty("new", "Warn of clashing sessions")
 	w.sty("link", "-u", "5", "2")
-	w.head(12, "docs/sty/0001-reorder.md")
-	w.head(10, "docs/sty/0002-save-sessions.md")
-	w.head(10, "docs/sty/0004-adjust-quantities-when-reordering.md")
-	w.head(10, "docs/sty/0005-warn-of-clashing-sessions.md")
+	w.head(12, "docs/userstory/story-0001-reorder.md")
+	w.head(10, "docs/userstory/story-0002-save-sessions.md")
+	w.head(10, "docs/userstory/story-0004-adjust-quantities-when-reordering.md")
+	w.head(10, "docs/userstory/story-0005-warn-of-clashing-sessions.md")
 	w.check()
 }
 
@@ -54,8 +54,8 @@ func TestStyLinkOptions(t *testing.T) {
 	w.sty("link", "2", "1")
 	w.sty("link", "-o", "2", "1")
 	w.sty("new", "--supercede", "1", "Third Story")
-	w.ls("docs/sty")
-	w.head(8, "docs/sty/0001-first-story.md")
+	w.ls("docs/userstory")
+	w.head(8, "docs/userstory/story-0001-first-story.md")
 	w.check()
 }
 

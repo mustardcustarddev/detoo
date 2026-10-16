@@ -1,0 +1,8 @@
+  # Create a new record with the title "Roll back release 2.3":
+  pse new "Roll back release 2.3"
+
+  # Create a new record that reverses decision 4, which did not work:
+  pse new -r 4 "Restore release 2.3 with the fix"
+
+  # Create a new record that updates decision 7, after evaluating it:
+  pse new -u 7 "Move the launch to April"
