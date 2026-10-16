@@ -35,7 +35,7 @@ func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	if want := "docs/rfc/0001-use-requests-for-comments.md"; result.File != want {
+	if want := "docs/rfc/RFC-0001-use-requests-for-comments.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 }
@@ -50,7 +50,7 @@ func TestHandleFilesTheFirstRecordInTheKindsDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	if want := "docs/userstory/story-0001-describe-work-in-user-stories.md"; result.File != want {
+	if want := "docs/userstory/STORY-0001-describe-work-in-user-stories.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 }
@@ -63,7 +63,7 @@ func TestHandleWritesTheFirstRecordInTheDefaultDirectory(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	if want := "docs/adr/0001-record-architecture-decisions.md"; result.File != want {
+	if want := "docs/adr/ADR-0001-record-architecture-decisions.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 	want := "# 1. Record architecture decisions\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n"
@@ -80,7 +80,7 @@ func TestHandleMovesTheLogWhenGivenADirectory(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	if want := "architecture-log/0001-record-architecture-decisions.md"; result.File != want {
+	if want := "architecture-log/ADR-0001-record-architecture-decisions.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 	dir, err := log.Dir(context.Background())
@@ -104,7 +104,7 @@ func TestHandleLeavesTheDirectoryAloneWhenNoneIsGiven(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	if want := "architecture-log/0001-record-architecture-decisions.md"; result.File != want {
+	if want := "architecture-log/ADR-0001-record-architecture-decisions.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 }
@@ -174,7 +174,7 @@ func TestHandleStartsALogInAnEmptyDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	if want := "docs/adr/0001-record-architecture-decisions.md"; result.File != want {
+	if want := "docs/adr/ADR-0001-record-architecture-decisions.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 }

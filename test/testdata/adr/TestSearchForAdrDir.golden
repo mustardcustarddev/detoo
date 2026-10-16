@@ -1,13 +1,13 @@
 adr new "First Record"
-docs/adr/0001-first-record.md
+docs/adr/ADR-0001-first-record.md
 mkdir -p subdir
 cd subdir
 adr new "Second Record"
-../docs/adr/0002-second-record.md
+../docs/adr/ADR-0002-second-record.md
 adr list
-../docs/adr/0001-first-record.md
-../docs/adr/0002-second-record.md
+../docs/adr/ADR-0001-first-record.md
+../docs/adr/ADR-0002-second-record.md
 cd ..
 adr list
-docs/adr/0001-first-record.md
-docs/adr/0002-second-record.md
+docs/adr/ADR-0001-first-record.md
+docs/adr/ADR-0002-second-record.md

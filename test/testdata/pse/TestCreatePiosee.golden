@@ -1,6 +1,6 @@
 pse new "Roll back release 2.3"
-docs/piosee/piosee-0001-roll-back-release-2-3.md
-cat docs/piosee/piosee-0001-roll-back-release-2-3.md
+docs/piosee/PIOSEE-0001-roll-back-release-2-3.md
+cat docs/piosee/PIOSEE-0001-roll-back-release-2-3.md
 # 1. Roll back release 2.3
 
 Date: 1992-01-12

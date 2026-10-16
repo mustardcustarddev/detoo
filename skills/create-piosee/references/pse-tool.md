@@ -46,17 +46,19 @@ nothing, never record 12.
 ## What the tool writes
 
 `pse new` copies the template and replaces the first `NUMBER`, `TITLE`,
-`DATE` and `STATUS` on each line. The file name is `piosee-`, the four-digit
+`DATE` and `STATUS` on each line. The file name is `PIOSEE-`, the four-digit
 number and a slug of the title, such as
-`docs/piosee/piosee-0004-roll-back-release-2-3.md`.
+`docs/piosee/PIOSEE-0004-roll-back-release-2-3.md`.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$PSE_DATE` exactly as given.
 * `STATUS` is `Draft`.
 * Everything else in the template, including its guidance text, is copied as
   it is. The guidance text must be replaced by the record's content.
 
-Only files named `piosee-NNNN-….md` are records. Anything else in the log
-directory, such as a `README.md`, is ignored.
+Only files named `PIOSEE-NNNN-….md` are records, along with records named
+before the prefix was upper case (`piosee-NNNN-….md`). Anything else in the
+log directory, such as a `README.md`, is ignored. `detoo doctor` reports
+records with the older names.
 
 ## Links
 
@@ -67,7 +69,7 @@ Links are lines in the `## Status` section, written in both records:
 
 Draft
 
-Reverses [4. Roll back release 2.3](piosee-0004-roll-back-release-2-3.md)
+Reverses [4. Roll back release 2.3](PIOSEE-0004-roll-back-release-2-3.md)
 ```
 
 | Option            | Written in the new record   | Written in the old record      | Old record's `Draft` line |

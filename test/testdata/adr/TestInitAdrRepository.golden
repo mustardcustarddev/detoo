@@ -1,8 +1,8 @@
 adr init
-docs/adr/0001-record-architecture-decisions.md
+docs/adr/ADR-0001-record-architecture-decisions.md
 ls docs/adr
-0001-record-architecture-decisions.md
-cat docs/adr/0001-record-architecture-decisions.md
+ADR-0001-record-architecture-decisions.md
+cat docs/adr/ADR-0001-record-architecture-decisions.md
 # 1. Record architecture decisions
 
 Date: 1992-01-12

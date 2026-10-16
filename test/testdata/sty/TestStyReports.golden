@@ -1,17 +1,17 @@
 sty new "First Story"
-docs/userstory/story-0001-first-story.md
+docs/userstory/STORY-0001-first-story.md
 sty new -r 1 "Second Story"
-docs/userstory/story-0002-second-story.md
+docs/userstory/STORY-0002-second-story.md
 sty list --toc
 # User Stories
 
-* [1. First Story](story-0001-first-story.md)
-* [2. Second Story](story-0002-second-story.md)
+* [1. First Story](STORY-0001-first-story.md)
+* [2. Second Story](STORY-0002-second-story.md)
 sty graph
 flowchart TD
   sty1["1. First Story"]
   sty2["2. Second Story"]
   sty1 -.-> sty2
   sty2 -->|"Replaces"| sty1
-  click sty1 "story-0001-first-story.html"
-  click sty2 "story-0002-second-story.html"
+  click sty1 "STORY-0001-first-story.html"
+  click sty2 "STORY-0002-second-story.html"

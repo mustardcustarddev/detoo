@@ -2,7 +2,7 @@ pse config
 pse_dir="docs/piosee"
 pse_template=""
 pse init decisions
-decisions/piosee-0001-make-decisions-with-piosee.md
+decisions/PIOSEE-0001-make-decisions-with-piosee.md
 pse config
 pse_dir="decisions"
 pse_template=""
@@ -22,12 +22,12 @@ EOF
 STY_TEMPLATE=custom.md
 STY_DATE=2000-01-01
 pse new "Ignores the sty settings"
-decisions/piosee-0002-ignores-the-sty-settings.md
+decisions/PIOSEE-0002-ignores-the-sty-settings.md
 PSE_TEMPLATE=custom.md
 PSE_DATE=2026-10-16
 pse new "Uses the pse settings"
-decisions/piosee-0003-uses-the-pse-settings.md
-cat decisions/piosee-0002-ignores-the-sty-settings.md
+decisions/PIOSEE-0003-uses-the-pse-settings.md
+cat decisions/PIOSEE-0002-ignores-the-sty-settings.md
 # 2. Ignores the sty settings
 
 Date: 1992-01-12
@@ -59,7 +59,7 @@ How the option is carried out: the actions, who takes each, in what order, and w
 ## Evaluate
 
 Whether the action solved the problem, what was learned, and whether the decision must be revisited. Until it is evaluated: how and when it will be.
-cat decisions/piosee-0003-uses-the-pse-settings.md
+cat decisions/PIOSEE-0003-uses-the-pse-settings.md
 # 3. Uses the pse settings, from custom.md
 
 Date: 2026-10-16

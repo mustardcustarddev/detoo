@@ -16,6 +16,7 @@ import (
 var Kind = record.Kind{
 	Name:        "rfc",
 	Dir:         "rfc",
+	Prefix:      "RFC",
 	Noun:        "RFC",
 	Plural:      "RFCs",
 	Heading:     "Requests for Comments",

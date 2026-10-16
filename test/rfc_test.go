@@ -15,7 +15,7 @@ func TestInitRfcRepository(t *testing.T) {
 	w := newWorkspace(t, "rfc")
 	w.rfc("init")
 	w.ls("docs/rfc")
-	w.cat("docs/rfc/0001-use-requests-for-comments.md")
+	w.cat("docs/rfc/RFC-0001-use-requests-for-comments.md")
 	w.check()
 }
 
@@ -23,7 +23,7 @@ func TestInitRfcRepository(t *testing.T) {
 func TestCreateRfc(t *testing.T) {
 	w := newWorkspace(t, "rfc")
 	w.rfc("new", "Adopt gRPC for internal services")
-	w.cat("docs/rfc/0001-adopt-grpc-for-internal-services.md")
+	w.cat("docs/rfc/RFC-0001-adopt-grpc-for-internal-services.md")
 	w.check()
 }
 
@@ -35,9 +35,9 @@ func TestRfcLinking(t *testing.T) {
 	w.rfc("new", "Third Proposal")
 	w.rfc("link", "--update", "3", "1")
 	w.rfc("link", "-o", "3", "2")
-	w.head(12, "docs/rfc/0001-first-proposal.md")
-	w.head(10, "docs/rfc/0002-second-proposal.md")
-	w.head(14, "docs/rfc/0003-third-proposal.md")
+	w.head(12, "docs/rfc/RFC-0001-first-proposal.md")
+	w.head(10, "docs/rfc/RFC-0002-second-proposal.md")
+	w.head(14, "docs/rfc/RFC-0003-third-proposal.md")
 	w.check()
 }
 
@@ -46,9 +46,9 @@ func TestObsoleteAndUpdateNewRfcs(t *testing.T) {
 	w.rfc("new", "First Proposal")
 	w.rfc("new", "Second Proposal")
 	w.rfc("new", "-o", "1", "--update", "2", "Third Proposal")
-	w.head(10, "docs/rfc/0001-first-proposal.md")
-	w.head(12, "docs/rfc/0002-second-proposal.md")
-	w.head(14, "docs/rfc/0003-third-proposal.md")
+	w.head(10, "docs/rfc/RFC-0001-first-proposal.md")
+	w.head(12, "docs/rfc/RFC-0002-second-proposal.md")
+	w.head(14, "docs/rfc/RFC-0003-third-proposal.md")
 	w.check()
 }
 
@@ -62,7 +62,7 @@ func TestRfcLinkOptions(t *testing.T) {
 	w.rfc("link", "-s", "2", "1")
 	w.rfc("new", "--supersede", "1", "Third Proposal")
 	w.ls("docs/rfc")
-	w.head(8, "docs/rfc/0001-first-proposal.md")
+	w.head(8, "docs/rfc/RFC-0001-first-proposal.md")
 	w.check()
 }
 
@@ -97,8 +97,8 @@ func TestRfcConfiguration(t *testing.T) {
 	w.setenv("RFC_TEMPLATE", "custom.md")
 	w.setenv("RFC_DATE", "2026-09-10")
 	w.rfc("new", "Uses the RFC settings")
-	w.cat("proposals/0002-ignores-the-adr-settings.md")
-	w.cat("proposals/0003-uses-the-rfc-settings.md")
+	w.cat("proposals/RFC-0002-ignores-the-adr-settings.md")
+	w.cat("proposals/RFC-0003-uses-the-rfc-settings.md")
 	w.check()
 }
 

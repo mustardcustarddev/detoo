@@ -1,6 +1,6 @@
 adr new "The First Decision"
-docs/adr/0001-the-first-decision.md
-cat docs/adr/0001-the-first-decision.md
+docs/adr/ADR-0001-the-first-decision.md
+cat docs/adr/ADR-0001-the-first-decision.md
 # 1. The First Decision
 
 Date: 1992-01-12

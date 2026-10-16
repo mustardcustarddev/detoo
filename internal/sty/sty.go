@@ -12,12 +12,14 @@ import (
 )
 
 // Kind is the vocabulary of a user story log, which is kept in docs/userstory,
-// with each story's file name beginning "story-".  A story that is split is
+// with each story's file name beginning "STORY-".  Logs were kept in docs/sty
+// before.  A story that is split is
 // replaced by each of the smaller stories it is split into.
 var Kind = record.Kind{
 	Name:        "sty",
 	Dir:         "userstory",
-	Prefix:      "story",
+	Prefix:      "STORY",
+	Former:      []string{"sty"},
 	Noun:        "user story",
 	Plural:      "user stories",
 	Heading:     "User Stories",

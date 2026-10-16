@@ -1,8 +1,8 @@
 pse init
-docs/piosee/piosee-0001-make-decisions-with-piosee.md
+docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
 ls docs/piosee
-piosee-0001-make-decisions-with-piosee.md
-cat docs/piosee/piosee-0001-make-decisions-with-piosee.md
+PIOSEE-0001-make-decisions-with-piosee.md
+cat docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
 # 1. Make decisions with PIOSEE
 
 Date: 1992-01-12

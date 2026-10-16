@@ -12,12 +12,12 @@ import (
 )
 
 // Kind is the vocabulary of a PIOSEE log, which is kept in docs/piosee, with
-// each record's file name beginning "piosee-".  A decision whose evaluation
+// each record's file name beginning "PIOSEE-".  A decision whose evaluation
 // shows it did not work is reversed by the decision that undoes it.
 var Kind = record.Kind{
 	Name:        "pse",
 	Dir:         "piosee",
-	Prefix:      "piosee",
+	Prefix:      "PIOSEE",
 	Noun:        "PIOSEE record",
 	Plural:      "PIOSEE records",
 	Heading:     "PIOSEE Decisions",

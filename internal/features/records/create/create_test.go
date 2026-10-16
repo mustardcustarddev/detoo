@@ -59,7 +59,7 @@ func TestHandleCreatesTheNextNumberedRecord(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	if want := "docs/adr/0002-use-mysql-database.md"; result.File != want {
+	if want := "docs/adr/ADR-0002-use-mysql-database.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
 	want := "# 2. Use MySQL Database\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\n## Context\n\nContext.\n"
@@ -92,7 +92,7 @@ func TestHandleSupersedesAnExistingRecord(t *testing.T) {
 	}
 
 	// The superseded record gains the link and loses its accepted status.
-	wantOld := "# 1. First\n\n## Status\n\nSuperseded by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	wantOld := "# 1. First\n\n## Status\n\nSuperseded by [2. Second](ADR-0002-second.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
 		t.Errorf("superseded record is\n%s\nwant\n%s", got, wantOld)
 	}
@@ -117,7 +117,7 @@ func TestHandleUpdatesAnExistingRecord(t *testing.T) {
 	}
 
 	// The updated record gains the link, and is still accepted.
-	wantOld := "# 1. First\n\n## Status\n\nAccepted\n\nUpdated by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	wantOld := "# 1. First\n\n## Status\n\nAccepted\n\nUpdated by [2. Second](ADR-0002-second.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
 		t.Errorf("updated record is\n%s\nwant\n%s", got, wantOld)
 	}
@@ -144,7 +144,7 @@ func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	wantOld := "# 1. First\n\n## Status\n\nObsoleted by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	wantOld := "# 1. First\n\n## Status\n\nObsoleted by [2. Second](RFC-0002-second.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/rfc/0001-first.md"); got != wantOld {
 		t.Errorf("obsoleted record is\n%s\nwant\n%s", got, wantOld)
 	}
@@ -154,14 +154,15 @@ func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
 	}
 }
 
-// A kind with a prefix begins each record's file name with it, numbers its
-// records from those that carry it, and links them by those names.
+// A kind with a prefix begins each new record's file name with it, in upper
+// case, numbers its records from those named in any of its ways, such as the
+// lower-case story-0001-first.md, and links them by those names.
 func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
 	log := memlog.Of(sty.Kind)
 	if err := log.Write(context.Background(), "docs/userstory/story-0001-first.md", "# 1. First\n\n## Status\n\nDraft\n\n## Story\n\nStory.\n"); err != nil {
 		t.Fatal(err)
 	}
-	if err := log.Write(context.Background(), "docs/userstory/0009-not-a-story.md", "# Not a story\n"); err != nil {
+	if err := log.Write(context.Background(), "docs/userstory/epic-0009-not-a-story.md", "# Not a story\n"); err != nil {
 		t.Fatal(err)
 	}
 	handler := newHandler(log, &spyEditor{})
@@ -172,10 +173,10 @@ func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	if want := "docs/userstory/story-0002-second.md"; result.File != want {
+	if want := "docs/userstory/STORY-0002-second.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
-	wantOld := "# 1. First\n\n## Status\n\nDraft\n\nUpdated by [2. Second](story-0002-second.md)\n\n## Story\n\nStory.\n"
+	wantOld := "# 1. First\n\n## Status\n\nDraft\n\nUpdated by [2. Second](STORY-0002-second.md)\n\n## Story\n\nStory.\n"
 	if got := log.Content("docs/userstory/story-0001-first.md"); got != wantOld {
 		t.Errorf("updated record is\n%s\nwant\n%s", got, wantOld)
 	}

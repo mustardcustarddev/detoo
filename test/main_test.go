@@ -15,7 +15,8 @@ import (
 
 var update = flag.Bool("update", false, "rewrite the golden files from the transcripts produced by this run")
 
-// names are the record tools, each built from cmd/NAME.
+// names are the record tools, each built from cmd/NAME.  detoo, which looks
+// across their logs, is built from cmd/detoo beside them.
 var names = []string{"adr", "rfc", "sty", "pse"}
 
 // Paths of the binaries the tests drive, built once by TestMain: each tool, by
@@ -42,12 +43,14 @@ func runTests(m *testing.M) int {
 	binaries := map[string]string{
 		"github.com/mustardcustard/detoo/test/fakeeditor": fakeEditorBin,
 	}
-	for _, name := range names {
+	for _, name := range append(names, "detoo") {
 		tools[name] = filepath.Join(dir, name)
 		binaries["github.com/mustardcustard/detoo/cmd/"+name] = tools[name]
 	}
 	for pkg, bin := range binaries {
-		build := exec.Command("go", "build", "-o", bin, pkg)
+		// Without the commit stamped in, detoo's version is "dev", whichever
+		// commit the tests run at.
+		build := exec.Command("go", "build", "-buildvcs=false", "-o", bin, pkg)
 		build.Stdout, build.Stderr = os.Stderr, os.Stderr
 		if err := build.Run(); err != nil {
 			fmt.Fprintf(os.Stderr, "building %s: %v\n", pkg, err)

@@ -1,0 +1,34 @@
+cat > .sty-dir <<EOF
+docs/sty
+EOF
+touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/STORY-0003-third.md doc/adr/ADR-0001-record-architecture-decisions.md
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   4 documents in 4 directories
+
+╭─ ✗ adr  doc/adr ───────────────────────────── 1 decision record · 1 problem ─╮
+│ ✗ Kept under doc/ instead of docs/                                           │
+│   doc/adr  →  docs/adr                                                       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ! sty  doc/userstory   BY HAND  ────────────── 3 user stories · 3 problems ─╮
+│ ✗ Kept under doc/ instead of docs/                                           │
+│   doc/userstory  →  docs/userstory                                           │
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│ ! Needs fixing by hand: .sty-dir names docs/sty, so sty still looks there.   │
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│   sty no longer finds the user story in doc/sty.                             │
+│ ! Needs fixing by hand: doc/userstory moves to docs/userstory too, so moving │
+│ both would clash.                                                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc or pse log found.
+
+ DOCTOR  ✗ 4 problems in 2 logs  ! 2 need fixing by hand                 EXIT 1 
+echo $?
+1

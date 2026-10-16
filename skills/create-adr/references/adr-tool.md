@@ -43,8 +43,10 @@ never record 12.
 ## What the tool writes
 
 `adr new` copies the template and replaces the first `NUMBER`, `TITLE`, `DATE`
-and `STATUS` on each line. The file name is the four-digit number and a slug of
-the title, such as `docs/adr/0004-use-postgresql.md`.
+and `STATUS` on each line. The file name is `ADR-`, the four-digit number and a
+slug of the title, such as `docs/adr/ADR-0004-use-postgresql.md`. Records named
+before the prefix (`NNNN-….md`), as adr-tools names them, are still read;
+`detoo doctor` reports them.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$ADR_DATE` exactly as given.
 * `STATUS` is `Accepted`.
@@ -58,7 +60,7 @@ Links are lines in the `## Status` section, written in both records:
 
 Accepted
 
-Supersedes [2. Use MySQL](0002-use-mysql.md)
+Supersedes [2. Use MySQL](ADR-0002-use-mysql.md)
 ```
 
 | Option              | Written in the new record     | Written in the old record        | Old record's `Accepted` line |

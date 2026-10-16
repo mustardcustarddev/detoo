@@ -20,10 +20,17 @@ type Kind struct {
 	// tool's name.
 	Dir string
 
-	// Prefix begins the file name of every record, followed by a hyphen and
-	// the record's number: "story", for story-0001-reorder.md.  It is empty
-	// for a tool whose records begin with their number.
+	// Prefix begins the file name of every record, in upper case, followed by
+	// a hyphen and the record's number: "STORY", for STORY-0001-reorder.md.
+	//
+	// Records named before the prefixes were upper case, such as
+	// story-0001-reorder.md, or before there was a prefix, such as
+	// 0001-reorder.md, are still records of the kind: see CanonicalName.
 	Prefix string
+
+	// Former names the directories, under docs, that the log was kept in by
+	// default before Dir: "sty", for docs/sty.  A tool no longer looks there.
+	Former []string
 
 	// Noun and Plural are what one record, and several, are called in prose.
 	Noun, Plural string

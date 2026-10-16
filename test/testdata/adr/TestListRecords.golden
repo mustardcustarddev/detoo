@@ -1,17 +1,17 @@
 adr list
 adr: the docs/adr directory does not exist
 adr new first
-docs/adr/0001-first.md
+docs/adr/ADR-0001-first.md
 adr list
-docs/adr/0001-first.md
+docs/adr/ADR-0001-first.md
 adr new second
-docs/adr/0002-second.md
+docs/adr/ADR-0002-second.md
 adr list
-docs/adr/0001-first.md
-docs/adr/0002-second.md
+docs/adr/ADR-0001-first.md
+docs/adr/ADR-0002-second.md
 adr new third
-docs/adr/0003-third.md
+docs/adr/ADR-0003-third.md
 adr list
-docs/adr/0001-first.md
-docs/adr/0002-second.md
-docs/adr/0003-third.md
+docs/adr/ADR-0001-first.md
+docs/adr/ADR-0002-second.md
+docs/adr/ADR-0003-third.md

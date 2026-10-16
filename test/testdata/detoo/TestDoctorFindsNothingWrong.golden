@@ -1,0 +1,25 @@
+adr init
+docs/adr/ADR-0001-record-architecture-decisions.md
+adr new "Use PostgreSQL for persistence"
+docs/adr/ADR-0002-use-postgresql-for-persistence.md
+sty init
+docs/userstory/STORY-0001-describe-work-in-user-stories.md
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   3 documents in 2 directories
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ ✓  adr  docs/adr        2 decision records  ADR-0001 … ADR-0002              │
+│ –  rfc  docs/rfc        no log                                               │
+│ ✓  sty  docs/userstory  1 user story        STORY-0001                       │
+│ –  pse  docs/piosee     no log                                               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ DOCTOR  ✓ The 2 logs found are in place and named with their prefix.    EXIT 0 
+echo $?
+0

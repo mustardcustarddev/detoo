@@ -1,29 +1,29 @@
 rfc new "First Proposal"
-docs/rfc/0001-first-proposal.md
+docs/rfc/RFC-0001-first-proposal.md
 rfc new -o 1 "Second Proposal"
-docs/rfc/0002-second-proposal.md
+docs/rfc/RFC-0002-second-proposal.md
 rfc list
-docs/rfc/0001-first-proposal.md
-docs/rfc/0002-second-proposal.md
+docs/rfc/RFC-0001-first-proposal.md
+docs/rfc/RFC-0002-second-proposal.md
 rfc list --toc
 # Requests for Comments
 
-* [1. First Proposal](0001-first-proposal.md)
-* [2. Second Proposal](0002-second-proposal.md)
+* [1. First Proposal](RFC-0001-first-proposal.md)
+* [2. Second Proposal](RFC-0002-second-proposal.md)
 rfc graph
 flowchart TD
   rfc1["1. First Proposal"]
   rfc2["2. Second Proposal"]
   rfc1 -.-> rfc2
   rfc2 -->|"Obsoletes"| rfc1
-  click rfc1 "0001-first-proposal.html"
-  click rfc2 "0002-second-proposal.html"
+  click rfc1 "RFC-0001-first-proposal.html"
+  click rfc2 "RFC-0002-second-proposal.html"
 rfc graph --graphviz
 digraph {
   node [shape=plaintext];
   subgraph {
-    _1 [label="1. First Proposal"; URL="0001-first-proposal.html"];
-    _2 [label="2. Second Proposal"; URL="0002-second-proposal.html"];
+    _1 [label="1. First Proposal"; URL="RFC-0001-first-proposal.html"];
+    _2 [label="2. Second Proposal"; URL="RFC-0002-second-proposal.html"];
     _1 -> _2 [style="dotted", weight=1];
   }
   _2 -> _1 [label="Obsoletes", weight=0]

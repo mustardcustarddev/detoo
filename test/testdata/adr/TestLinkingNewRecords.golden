@@ -1,10 +1,10 @@
 adr new "First Record"
-docs/adr/0001-first-record.md
+docs/adr/ADR-0001-first-record.md
 adr new "Second Record"
-docs/adr/0002-second-record.md
+docs/adr/ADR-0002-second-record.md
 adr new -u 1 -u 2 "Third Record"
-docs/adr/0003-third-record.md
-head -12 docs/adr/0001-first-record.md
+docs/adr/ADR-0003-third-record.md
+head -12 docs/adr/ADR-0001-first-record.md
 # 1. First Record
 
 Date: 1992-01-12
@@ -13,11 +13,11 @@ Date: 1992-01-12
 
 Accepted
 
-Updated by [3. Third Record](0003-third-record.md)
+Updated by [3. Third Record](ADR-0003-third-record.md)
 
 ## Context
 
-head -12 docs/adr/0002-second-record.md
+head -12 docs/adr/ADR-0002-second-record.md
 # 2. Second Record
 
 Date: 1992-01-12
@@ -26,11 +26,11 @@ Date: 1992-01-12
 
 Accepted
 
-Updated by [3. Third Record](0003-third-record.md)
+Updated by [3. Third Record](ADR-0003-third-record.md)
 
 ## Context
 
-head -14 docs/adr/0003-third-record.md
+head -14 docs/adr/ADR-0003-third-record.md
 # 3. Third Record
 
 Date: 1992-01-12
@@ -39,9 +39,9 @@ Date: 1992-01-12
 
 Accepted
 
-Updates [1. First Record](0001-first-record.md)
+Updates [1. First Record](ADR-0001-first-record.md)
 
-Updates [2. Second Record](0002-second-record.md)
+Updates [2. Second Record](ADR-0002-second-record.md)
 
 ## Context
 

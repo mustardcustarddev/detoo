@@ -46,8 +46,10 @@ never RFC 12.
 ## What the tool writes
 
 `rfc new` copies the template and replaces the first `NUMBER`, `TITLE`, `DATE`
-and `STATUS` on each line. The file name is the four-digit number and a slug of
-the title, such as `docs/rfc/0002-migrate-to-hexagonal-architecture.md`.
+and `STATUS` on each line. The file name is `RFC-`, the four-digit number and a
+slug of the title, such as
+`docs/rfc/RFC-0002-migrate-to-hexagonal-architecture.md`. RFCs named before
+the prefix (`NNNN-….md`) are still read; `detoo doctor` reports them.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$RFC_DATE` exactly as given.
 * `STATUS` is `Draft`.
@@ -63,7 +65,7 @@ Links are lines in the `## Status` section, written in both RFCs:
 
 Draft
 
-Obsoletes [2. Migrate to hexagonal architecture](0002-migrate-to-hexagonal-architecture.md)
+Obsoletes [2. Migrate to hexagonal architecture](RFC-0002-migrate-to-hexagonal-architecture.md)
 ```
 
 | Option             | Written in the new RFC       | Written in the old RFC          | Old RFC's `Draft` line |

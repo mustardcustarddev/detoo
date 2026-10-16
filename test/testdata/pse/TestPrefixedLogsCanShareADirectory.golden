@@ -1,21 +1,21 @@
 pse init docs/work
-docs/work/piosee-0001-make-decisions-with-piosee.md
+docs/work/PIOSEE-0001-make-decisions-with-piosee.md
 sty init docs/work
-docs/work/story-0001-describe-work-in-user-stories.md
+docs/work/STORY-0001-describe-work-in-user-stories.md
 pse new "A Decision"
-docs/work/piosee-0002-a-decision.md
+docs/work/PIOSEE-0002-a-decision.md
 sty new "A Story"
-docs/work/story-0002-a-story.md
+docs/work/STORY-0002-a-story.md
 ls docs/work
-piosee-0001-make-decisions-with-piosee.md
-piosee-0002-a-decision.md
-story-0001-describe-work-in-user-stories.md
-story-0002-a-story.md
+PIOSEE-0001-make-decisions-with-piosee.md
+PIOSEE-0002-a-decision.md
+STORY-0001-describe-work-in-user-stories.md
+STORY-0002-a-story.md
 pse list
-docs/work/piosee-0001-make-decisions-with-piosee.md
-docs/work/piosee-0002-a-decision.md
+docs/work/PIOSEE-0001-make-decisions-with-piosee.md
+docs/work/PIOSEE-0002-a-decision.md
 sty list
-docs/work/story-0001-describe-work-in-user-stories.md
-docs/work/story-0002-a-story.md
+docs/work/STORY-0001-describe-work-in-user-stories.md
+docs/work/STORY-0002-a-story.md
 pse link -u 2 a-story
 pse: no PIOSEE record matches "a-story"

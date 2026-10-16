@@ -1,10 +1,10 @@
 adr init -- -docs
--docs/0001-record-architecture-decisions.md
+-docs/ADR-0001-record-architecture-decisions.md
 adr new "First Record"
--docs/0002-first-record.md
+-docs/ADR-0002-first-record.md
 ls .
 -docs
-head -10 -docs/0002-first-record.md
+head -10 -docs/ADR-0002-first-record.md
 # 2. First Record
 
 Date: 1992-01-12

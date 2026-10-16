@@ -16,7 +16,7 @@ func TestInitStyRepository(t *testing.T) {
 	w := newWorkspace(t, "sty")
 	w.sty("init")
 	w.ls("docs/userstory")
-	w.cat("docs/userstory/story-0001-describe-work-in-user-stories.md")
+	w.cat("docs/userstory/STORY-0001-describe-work-in-user-stories.md")
 	w.check()
 }
 
@@ -24,7 +24,7 @@ func TestInitStyRepository(t *testing.T) {
 func TestCreateStory(t *testing.T) {
 	w := newWorkspace(t, "sty")
 	w.sty("new", "Export invoices for a month")
-	w.cat("docs/userstory/story-0001-export-invoices-for-a-month.md")
+	w.cat("docs/userstory/STORY-0001-export-invoices-for-a-month.md")
 	w.check()
 }
 
@@ -38,10 +38,10 @@ func TestSplitAndUpdateStories(t *testing.T) {
 	w.sty("new", "--replace", "1", "Adjust quantities when reordering")
 	w.sty("new", "Warn of clashing sessions")
 	w.sty("link", "-u", "5", "2")
-	w.head(12, "docs/userstory/story-0001-reorder.md")
-	w.head(10, "docs/userstory/story-0002-save-sessions.md")
-	w.head(10, "docs/userstory/story-0004-adjust-quantities-when-reordering.md")
-	w.head(10, "docs/userstory/story-0005-warn-of-clashing-sessions.md")
+	w.head(12, "docs/userstory/STORY-0001-reorder.md")
+	w.head(10, "docs/userstory/STORY-0002-save-sessions.md")
+	w.head(10, "docs/userstory/STORY-0004-adjust-quantities-when-reordering.md")
+	w.head(10, "docs/userstory/STORY-0005-warn-of-clashing-sessions.md")
 	w.check()
 }
 
@@ -55,7 +55,7 @@ func TestStyLinkOptions(t *testing.T) {
 	w.sty("link", "-o", "2", "1")
 	w.sty("new", "--supersede", "1", "Third Story")
 	w.ls("docs/userstory")
-	w.head(8, "docs/userstory/story-0001-first-story.md")
+	w.head(8, "docs/userstory/STORY-0001-first-story.md")
 	w.check()
 }
 
@@ -65,6 +65,19 @@ func TestStyReports(t *testing.T) {
 	w.sty("new", "-r", "1", "Second Story")
 	w.sty("list", "--toc")
 	w.sty("graph")
+	w.check()
+}
+
+// Stories named before the prefix was upper case are still found, in order of
+// their numbers, and a new story takes the next number and today's prefix.
+func TestStyReadsStoriesNamedInOlderWays(t *testing.T) {
+	w := newWorkspace(t, "sty")
+	w.mkdir("docs/userstory")
+	w.write("docs/userstory/story-0001-reorder.md", "# 1. Reorder\n\n## Status\n\nDraft\n\n## Story\n\nStory.\n")
+	w.write("docs/userstory/0002-save-sessions.md", "# 2. Save sessions\n\n## Status\n\nDraft\n\n## Story\n\nStory.\n")
+	w.sty("new", "--replace", "1", "Reorder a previous purchase")
+	w.sty("list")
+	w.head(6, "docs/userstory/story-0001-reorder.md")
 	w.check()
 }
 

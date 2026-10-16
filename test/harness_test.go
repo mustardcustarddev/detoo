@@ -99,9 +99,20 @@ func (w *workspace) pse(args ...string) {
 	w.run("pse", args...)
 }
 
+// detoo runs the detoo command, and records its exit status, as echo $? would
+// show it.  The user's home directory is the project's, so that the project
+// is shown as ~ whichever temporary directory it is in.
+func (w *workspace) detoo(args ...string) {
+	w.t.Helper()
+	w.env["HOME"] = w.root
+	code := w.run("detoo", args...)
+	w.echo("echo $?")
+	w.printf("%d\n", code)
+}
+
 // run runs a tool, recording its output — on both streams, in the order it was
-// written — in the transcript.
-func (w *workspace) run(tool string, args ...string) {
+// written — in the transcript, and returns its exit status.
+func (w *workspace) run(tool string, args ...string) int {
 	w.t.Helper()
 	w.echo(tool, args...)
 
@@ -114,7 +125,9 @@ func (w *workspace) run(tool string, args ...string) {
 		if !errors.As(err, &exit) {
 			w.t.Fatalf("running %s %s: %v", tool, strings.Join(args, " "), err)
 		}
+		return exit.ExitCode()
 	}
+	return 0
 }
 
 // output runs a tool and returns everything it wrote, leaving the transcript
@@ -134,13 +147,15 @@ func (w *workspace) output(tool string, args ...string) string {
 }
 
 // environ is the environment commands run in: the test's own, without any
-// template a tool might be pointed at, with help that is not paged, and with
-// the variables the test has set.
+// template a tool might be pointed at, with help that is not paged, with
+// reports drawn 80 columns wide and without colour, and with the variables
+// the test has set.
 func (w *workspace) environ() []string {
 	env := os.Environ()
 	for _, tool := range names {
 		env = append(env, variable(tool, "TEMPLATE")+"=", variable(tool, "PAGER")+"=cat")
 	}
+	env = append(env, variable("detoo", "PAGER")+"=cat", "COLUMNS=", "CLICOLOR_FORCE=")
 	for name, value := range w.env {
 		env = append(env, name+"="+value)
 	}
@@ -196,6 +211,20 @@ func (w *workspace) ls(dir string) {
 	for _, entry := range entries {
 		if !strings.HasPrefix(entry.Name(), ".") {
 			w.printf("%s\n", entry.Name())
+		}
+	}
+}
+
+// touch creates empty files, and any directory they need.
+func (w *workspace) touch(names ...string) {
+	w.t.Helper()
+	w.echo("touch", names...)
+	for _, name := range names {
+		if err := os.MkdirAll(filepath.Dir(w.path(name)), 0o755); err != nil {
+			w.t.Fatal(err)
+		}
+		if err := os.WriteFile(w.path(name), nil, 0o644); err != nil {
+			w.t.Fatal(err)
 		}
 	}
 }

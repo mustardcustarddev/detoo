@@ -1,6 +1,6 @@
 sty new "Export invoices for a month"
-docs/userstory/story-0001-export-invoices-for-a-month.md
-cat docs/userstory/story-0001-export-invoices-for-a-month.md
+docs/userstory/STORY-0001-export-invoices-for-a-month.md
+cat docs/userstory/STORY-0001-export-invoices-for-a-month.md
 # 1. Export invoices for a month
 
 Date: 1992-01-12

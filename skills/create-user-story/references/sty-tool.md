@@ -45,17 +45,20 @@ never story 12.
 ## What the tool writes
 
 `sty new` copies the template and replaces the first `NUMBER`, `TITLE`, `DATE`
-and `STATUS` on each line. The file name is `story-`, the four-digit number and
+and `STATUS` on each line. The file name is `STORY-`, the four-digit number and
 a slug of the title, such as
-`docs/userstory/story-0004-reorder-a-previous-purchase.md`.
+`docs/userstory/STORY-0004-reorder-a-previous-purchase.md`.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$STY_DATE` exactly as given.
 * `STATUS` is `Draft`.
 * Everything else in the template, including its guidance text, is copied as
   it is. The guidance text must be replaced by the story's content.
 
-Only files named `story-NNNN-….md` are stories. Anything else in the log
-directory, such as a `README.md`, is ignored.
+Only files named `STORY-NNNN-….md` are stories, along with stories named
+before the prefix was upper case (`story-NNNN-….md`) or before there was one
+(`NNNN-….md`). Anything else in the log directory, such as a `README.md`, is
+ignored. `detoo doctor` reports stories with the older names, and stories
+left in `docs/sty`, where sty no longer looks.
 
 ## Links
 
@@ -66,7 +69,7 @@ Links are lines in the `## Status` section, written in both stories:
 
 Draft
 
-Replaces [4. Manage saved sessions](story-0004-manage-saved-sessions.md)
+Replaces [4. Manage saved sessions](STORY-0004-manage-saved-sessions.md)
 ```
 
 | Option            | Written in the new story    | Written in the old story       | Old story's `Draft` line |

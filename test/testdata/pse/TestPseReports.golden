@@ -1,26 +1,26 @@
 pse new "First Decision"
-docs/piosee/piosee-0001-first-decision.md
+docs/piosee/PIOSEE-0001-first-decision.md
 pse new -r 1 "Second Decision"
-docs/piosee/piosee-0002-second-decision.md
+docs/piosee/PIOSEE-0002-second-decision.md
 pse list --toc
 # PIOSEE Decisions
 
-* [1. First Decision](piosee-0001-first-decision.md)
-* [2. Second Decision](piosee-0002-second-decision.md)
+* [1. First Decision](PIOSEE-0001-first-decision.md)
+* [2. Second Decision](PIOSEE-0002-second-decision.md)
 pse graph
 flowchart TD
   pse1["1. First Decision"]
   pse2["2. Second Decision"]
   pse1 -.-> pse2
   pse2 -->|"Reverses"| pse1
-  click pse1 "piosee-0001-first-decision.html"
-  click pse2 "piosee-0002-second-decision.html"
+  click pse1 "PIOSEE-0001-first-decision.html"
+  click pse2 "PIOSEE-0002-second-decision.html"
 pse graph --graphviz
 digraph {
   node [shape=plaintext];
   subgraph {
-    _1 [label="1. First Decision"; URL="piosee-0001-first-decision.html"];
-    _2 [label="2. Second Decision"; URL="piosee-0002-second-decision.html"];
+    _1 [label="1. First Decision"; URL="PIOSEE-0001-first-decision.html"];
+    _2 [label="2. Second Decision"; URL="PIOSEE-0002-second-decision.html"];
     _1 -> _2 [style="dotted", weight=1];
   }
   _2 -> _1 [label="Reverses", weight=0]

@@ -58,8 +58,8 @@ func (e *MissingDirError) Error() string {
 // IsRecordName reports whether a file name is that of a record of this kind,
 // so that a README or a template directory is not mistaken for one.
 func (k Kind) IsRecordName(name string) bool {
-	rest, ok := k.unprefixed(name)
-	return ok && recordName.MatchString(rest)
+	_, ok := k.CanonicalName(name)
+	return ok
 }
 
 // FileName returns the path of the record numbered number, with the given
@@ -75,10 +75,10 @@ func (k Kind) FileName(dir string, number int, title string) string {
 // Number returns the number a record's file name starts with, after its
 // kind's prefix, or 0 if the file is not named as a record of this kind.
 func (k Kind) Number(file string) int {
-	rest, ok := k.unprefixed(path.Base(file))
-	if !ok {
+	if !k.IsRecordName(path.Base(file)) {
 		return 0
 	}
+	rest, _ := k.unprefixed(path.Base(file))
 	number, err := strconv.Atoi(leadingNumber.FindString(rest))
 	if err != nil {
 		return 0
@@ -86,13 +86,34 @@ func (k Kind) Number(file string) int {
 	return number
 }
 
+// CanonicalName returns the file name a record of this kind is given today,
+// and whether name is a record's at all.  A record named in an older way,
+// story-0001-reorder.md or 0001-reorder.md, has the canonical name
+// STORY-0001-reorder.md.
+func (k Kind) CanonicalName(name string) (string, bool) {
+	rest, _ := k.unprefixed(name)
+	if !recordName.MatchString(rest) {
+		return "", false
+	}
+	if k.Prefix == "" {
+		return rest, true
+	}
+	return k.Prefix + "-" + rest, true
+}
+
 // unprefixed returns a file name without this kind's prefix and the hyphen
-// after it, and whether the name had them.
+// after it, and whether the name had them.  The prefix is matched in any
+// case, and a name without one is returned whole, so that records named
+// before today's prefixes are still found.
 func (k Kind) unprefixed(name string) (string, bool) {
 	if k.Prefix == "" {
 		return name, true
 	}
-	return strings.CutPrefix(name, k.Prefix+"-")
+	n := len(k.Prefix) + 1
+	if len(name) >= n && strings.EqualFold(name[:n], k.Prefix+"-") {
+		return name[n:], true
+	}
+	return name, false
 }
 
 // Find returns the record that ref refers to, and whether there is one.  A

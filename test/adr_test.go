@@ -9,7 +9,7 @@ func TestInitAdrRepository(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("init")
 	w.ls("docs/adr")
-	w.cat("docs/adr/0001-record-architecture-decisions.md")
+	w.cat("docs/adr/ADR-0001-record-architecture-decisions.md")
 	w.check()
 }
 
@@ -29,7 +29,7 @@ func TestInitIsIdempotent(t *testing.T) {
 func TestCreateFirstRecord(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("new", "The First Decision")
-	w.cat("docs/adr/0001-the-first-decision.md")
+	w.cat("docs/adr/ADR-0001-the-first-decision.md")
 	w.check()
 }
 
@@ -39,8 +39,8 @@ func TestCreateMultipleRecords(t *testing.T) {
 	w.adr("new", "Second Decision")
 	w.adr("new", "Third Decision")
 	w.ls("docs/adr")
-	w.head(7, "docs/adr/0002-second-decision.md")
-	w.head(7, "docs/adr/0003-third-decision.md")
+	w.head(7, "docs/adr/ADR-0002-second-decision.md")
+	w.head(7, "docs/adr/ADR-0003-third-decision.md")
 	w.check()
 }
 
@@ -79,7 +79,7 @@ func TestAvoidOctalNumbers(t *testing.T) {
 		w.adr("new", title)
 	}
 	w.ls("docs/adr")
-	w.head(7, "docs/adr/0009-ninth-decision.md")
+	w.head(7, "docs/adr/ADR-0009-ninth-decision.md")
 	w.check()
 }
 
@@ -163,8 +163,8 @@ Date: DATE
 `)
 	w.adr("new", "Aaa Bbb")
 	w.adr("new", "Ccc Ddd")
-	w.cat("adrs/0002-aaa-bbb.md")
-	w.cat("adrs/0003-ccc-ddd.md")
+	w.cat("adrs/ADR-0002-aaa-bbb.md")
+	w.cat("adrs/ADR-0003-ccc-ddd.md")
 	w.check()
 }
 
@@ -175,9 +175,9 @@ func TestLinking(t *testing.T) {
 	w.adr("new", "Third Record")
 	w.adr("link", "--update", "3", "1")
 	w.adr("link", "-s", "3", "2")
-	w.head(12, "docs/adr/0001-first-record.md")
-	w.head(10, "docs/adr/0002-second-record.md")
-	w.head(14, "docs/adr/0003-third-record.md")
+	w.head(12, "docs/adr/ADR-0001-first-record.md")
+	w.head(10, "docs/adr/ADR-0002-second-record.md")
+	w.head(14, "docs/adr/ADR-0003-third-record.md")
 	w.check()
 }
 
@@ -190,7 +190,7 @@ func TestLinkNeedsExactlyOneRelation(t *testing.T) {
 	w.adr("new", "Second Record")
 	w.adr("link", "2", "1")
 	w.adr("link", "-s", "-u", "2", "1")
-	w.head(9, "docs/adr/0001-first-record.md")
+	w.head(9, "docs/adr/ADR-0001-first-record.md")
 	w.check()
 }
 
@@ -199,9 +199,9 @@ func TestLinkingNewRecords(t *testing.T) {
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-u", "1", "-u", "2", "Third Record")
-	w.head(12, "docs/adr/0001-first-record.md")
-	w.head(12, "docs/adr/0002-second-record.md")
-	w.head(14, "docs/adr/0003-third-record.md")
+	w.head(12, "docs/adr/ADR-0001-first-record.md")
+	w.head(12, "docs/adr/ADR-0002-second-record.md")
+	w.head(14, "docs/adr/ADR-0003-third-record.md")
 	w.check()
 }
 
@@ -209,8 +209,8 @@ func TestSupersedeExistingAdr(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "-s", "1", "Second Record")
-	w.head(10, "docs/adr/0001-first-record.md")
-	w.head(12, "docs/adr/0002-second-record.md")
+	w.head(10, "docs/adr/ADR-0001-first-record.md")
+	w.head(12, "docs/adr/ADR-0002-second-record.md")
 	w.check()
 }
 
@@ -219,9 +219,9 @@ func TestSupersedeMultipleAdrs(t *testing.T) {
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
 	w.adr("new", "-s", "1", "-s", "2", "Third Record")
-	w.head(8, "docs/adr/0001-first-record.md")
-	w.head(8, "docs/adr/0002-second-record.md")
-	w.head(12, "docs/adr/0003-third-record.md")
+	w.head(8, "docs/adr/ADR-0001-first-record.md")
+	w.head(8, "docs/adr/ADR-0002-second-record.md")
+	w.head(12, "docs/adr/ADR-0003-third-record.md")
 	w.check()
 }
 
@@ -321,7 +321,7 @@ func TestOperandsMayBeginWithAHyphen(t *testing.T) {
 	w.adr("init", "--", "-docs")
 	w.adr("new", "First Record")
 	w.ls(".")
-	w.head(10, "-docs/0002-first-record.md")
+	w.head(10, "-docs/ADR-0002-first-record.md")
 	w.check()
 }
 

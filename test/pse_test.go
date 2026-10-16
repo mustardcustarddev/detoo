@@ -16,7 +16,7 @@ func TestInitPseRepository(t *testing.T) {
 	w := newWorkspace(t, "pse")
 	w.pse("init")
 	w.ls("docs/piosee")
-	w.cat("docs/piosee/piosee-0001-make-decisions-with-piosee.md")
+	w.cat("docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md")
 	w.check()
 }
 
@@ -24,7 +24,7 @@ func TestInitPseRepository(t *testing.T) {
 func TestCreatePiosee(t *testing.T) {
 	w := newWorkspace(t, "pse")
 	w.pse("new", "Roll back release 2.3")
-	w.cat("docs/piosee/piosee-0001-roll-back-release-2-3.md")
+	w.cat("docs/piosee/PIOSEE-0001-roll-back-release-2-3.md")
 	w.check()
 }
 
@@ -37,10 +37,10 @@ func TestReverseAndUpdatePiosees(t *testing.T) {
 	w.pse("new", "-r", "1", "Roll back release 2.3")
 	w.pse("new", "--update", "2", "Move the launch to April")
 	w.pse("link", "-u", "3", "2")
-	w.head(10, "docs/piosee/piosee-0001-turn-off-tax-codes.md")
-	w.head(12, "docs/piosee/piosee-0002-move-the-launch-to-march.md")
-	w.head(12, "docs/piosee/piosee-0003-roll-back-release-2-3.md")
-	w.head(10, "docs/piosee/piosee-0004-move-the-launch-to-april.md")
+	w.head(10, "docs/piosee/PIOSEE-0001-turn-off-tax-codes.md")
+	w.head(12, "docs/piosee/PIOSEE-0002-move-the-launch-to-march.md")
+	w.head(12, "docs/piosee/PIOSEE-0003-roll-back-release-2-3.md")
+	w.head(10, "docs/piosee/PIOSEE-0004-move-the-launch-to-april.md")
 	w.pse("list")
 	w.check()
 }
@@ -55,7 +55,7 @@ func TestPseLinkOptions(t *testing.T) {
 	w.pse("link", "-s", "2", "1")
 	w.pse("new", "--replace", "1", "Third Decision")
 	w.ls("docs/piosee")
-	w.head(8, "docs/piosee/piosee-0001-first-decision.md")
+	w.head(8, "docs/piosee/PIOSEE-0001-first-decision.md")
 	w.check()
 }
 
@@ -84,8 +84,8 @@ func TestPseConfiguration(t *testing.T) {
 	w.setenv("PSE_TEMPLATE", "custom.md")
 	w.setenv("PSE_DATE", "2026-10-16")
 	w.pse("new", "Uses the pse settings")
-	w.cat("decisions/piosee-0002-ignores-the-sty-settings.md")
-	w.cat("decisions/piosee-0003-uses-the-pse-settings.md")
+	w.cat("decisions/PIOSEE-0002-ignores-the-sty-settings.md")
+	w.cat("decisions/PIOSEE-0003-uses-the-pse-settings.md")
 	w.check()
 }
 

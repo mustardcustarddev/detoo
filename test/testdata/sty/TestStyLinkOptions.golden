@@ -1,7 +1,7 @@
 sty new "First Story"
-docs/userstory/story-0001-first-story.md
+docs/userstory/STORY-0001-first-story.md
 sty new "Second Story"
-docs/userstory/story-0002-second-story.md
+docs/userstory/STORY-0002-second-story.md
 sty link 2 1
 sty: give either --replace or --update
 sty link -o 2 1
@@ -9,9 +9,9 @@ sty: unknown shorthand flag: 'o' in -o
 sty new --supersede 1 "Third Story"
 sty: unknown flag: --supersede
 ls docs/userstory
-story-0001-first-story.md
-story-0002-second-story.md
-head -8 docs/userstory/story-0001-first-story.md
+STORY-0001-first-story.md
+STORY-0002-second-story.md
+head -8 docs/userstory/STORY-0001-first-story.md
 # 1. First Story
 
 Date: 1992-01-12

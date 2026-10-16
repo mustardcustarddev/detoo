@@ -1,0 +1,64 @@
+detoo help
+Looks after a project's logs as a whole: the logs that adr, rfc, sty and pse
+keep.
+
+Run "detoo doctor" to check that each log is where its tool looks for it, and
+named as its tool names documents today.
+
+Usage:
+  detoo [flags]
+  detoo [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  doctor      Check that each log is where its tool looks, and named as it names documents
+  help        Help about any command
+
+Flags:
+  -h, --help   help for detoo
+
+Use "detoo [command] --help" for more information about a command.
+echo $?
+0
+detoo help doctor
+Checks the project's adr, rfc, sty and pse logs together, and reports any log
+the tools would not find, or whose file names are out of date:
+
+* a log kept under `doc/` instead of `docs/`;
+* a log kept in a directory its tool no longer looks in, such as user stories
+  in `docs/sty` instead of `docs/userstory`;
+* documents whose file names do not begin with their log's prefix in upper
+  case: `ADR-`, `RFC-`, `STORY-` or `PIOSEE-`.
+
+When moving or renaming would clash, such as when both `docs/sty` and
+`docs/userstory` exist, or `.sty-dir` names the old directory, the problem is
+reported as needing fixing by hand.
+
+The project is the nearest of the current directory and its parents that
+holds a `docs` or `doc` directory, or a tool's marker file such as `.adr-dir`.
+
+Nothing is changed.  When nothing is wrong, doctor says so and exits 0; when
+it finds problems, it exits 1.
+
+Usage:
+  detoo doctor [flags]
+
+Examples:
+  # Check the project's logs:
+  detoo doctor
+
+  # In a script, stop when a log is in the wrong place or misnamed:
+  detoo doctor > /dev/null || exit 1
+
+Flags:
+  -h, --help   help for doctor
+echo $?
+0
+detoo doctor extra
+detoo: unknown command "extra" for "detoo doctor"
+echo $?
+1
+detoo nonsense
+detoo: unknown command "nonsense" for "detoo"
+echo $?
+1

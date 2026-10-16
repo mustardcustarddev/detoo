@@ -1,0 +1,36 @@
+mkdir -p docs/userstory
+cat > docs/userstory/story-0001-reorder.md <<EOF
+# 1. Reorder
+
+## Status
+
+Draft
+
+## Story
+
+Story.
+EOF
+cat > docs/userstory/0002-save-sessions.md <<EOF
+# 2. Save sessions
+
+## Status
+
+Draft
+
+## Story
+
+Story.
+EOF
+sty new --replace 1 "Reorder a previous purchase"
+docs/userstory/STORY-0003-reorder-a-previous-purchase.md
+sty list
+docs/userstory/story-0001-reorder.md
+docs/userstory/0002-save-sessions.md
+docs/userstory/STORY-0003-reorder-a-previous-purchase.md
+head -6 docs/userstory/story-0001-reorder.md
+# 1. Reorder
+
+## Status
+
+Replaced by [3. Reorder a previous purchase](STORY-0003-reorder-a-previous-purchase.md)
+

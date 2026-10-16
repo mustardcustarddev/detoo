@@ -1,8 +1,8 @@
 sty init
-docs/userstory/story-0001-describe-work-in-user-stories.md
+docs/userstory/STORY-0001-describe-work-in-user-stories.md
 ls docs/userstory
-story-0001-describe-work-in-user-stories.md
-cat docs/userstory/story-0001-describe-work-in-user-stories.md
+STORY-0001-describe-work-in-user-stories.md
+cat docs/userstory/STORY-0001-describe-work-in-user-stories.md
 # 1. Describe work in user stories
 
 Date: 1992-01-12

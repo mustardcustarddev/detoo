@@ -1,6 +1,6 @@
 rfc new "Adopt gRPC for internal services"
-docs/rfc/0001-adopt-grpc-for-internal-services.md
-cat docs/rfc/0001-adopt-grpc-for-internal-services.md
+docs/rfc/RFC-0001-adopt-grpc-for-internal-services.md
+cat docs/rfc/RFC-0001-adopt-grpc-for-internal-services.md
 # 1. Adopt gRPC for internal services
 
 Date: 1992-01-12

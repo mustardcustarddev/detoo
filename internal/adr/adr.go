@@ -15,6 +15,7 @@ import (
 var Kind = record.Kind{
 	Name:        "adr",
 	Dir:         "adr",
+	Prefix:      "ADR",
 	Noun:        "decision record",
 	Plural:      "decision records",
 	Heading:     "Architecture Decision Records",

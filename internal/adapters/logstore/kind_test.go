@@ -43,13 +43,14 @@ func TestTheKindNamesTheLogsFiles(t *testing.T) {
 	}
 }
 
-// A kind whose records are prefixed sees only the files that carry its prefix,
-// and numbers its records after them alone.
+// A kind whose records are prefixed sees the files named in any of its ways,
+// in order of their numbers, and none that carry another prefix.
 func TestAPrefixedKindSeesOnlyItsOwnRecords(t *testing.T) {
-	s := New(t.TempDir(), record.Kind{Name: "sty", Dir: "userstory", Prefix: "story", Noun: "user story"})
+	s := New(t.TempDir(), record.Kind{Name: "sty", Dir: "userstory", Prefix: "STORY", Noun: "user story"})
 	writeRecord(t, s, "docs/userstory/story-0001-first.md", "# 1. First\n")
-	writeRecord(t, s, "docs/userstory/story-0002-second.md", "# 2. Second\n")
-	writeRecord(t, s, "docs/userstory/0007-unprefixed.md", "# 7. Unprefixed\n")
+	writeRecord(t, s, "docs/userstory/STORY-0002-second.md", "# 2. Second\n")
+	writeRecord(t, s, "docs/userstory/0003-unprefixed.md", "# 3. Unprefixed\n")
+	writeRecord(t, s, "docs/userstory/epic-0007-an-epic.md", "# 7. An epic\n")
 	writeRecord(t, s, "docs/userstory/README.md", "# User Stories\n")
 
 	records, err := s.Records(context.Background())
@@ -58,12 +59,13 @@ func TestAPrefixedKindSeesOnlyItsOwnRecords(t *testing.T) {
 	}
 	want := []record.Record{
 		{Number: 1, File: "docs/userstory/story-0001-first.md"},
-		{Number: 2, File: "docs/userstory/story-0002-second.md"},
+		{Number: 2, File: "docs/userstory/STORY-0002-second.md"},
+		{Number: 3, File: "docs/userstory/0003-unprefixed.md"},
 	}
 	if !reflect.DeepEqual(records, want) {
 		t.Errorf("Records() = %v, want %v", records, want)
 	}
-	if got, err := s.NextNumber(context.Background(), "docs/userstory"); err != nil || got != 3 {
-		t.Errorf("NextNumber() = %d, %v, want 3, nil", got, err)
+	if got, err := s.NextNumber(context.Background(), "docs/userstory"); err != nil || got != 4 {
+		t.Errorf("NextNumber() = %d, %v, want 4, nil", got, err)
 	}
 }

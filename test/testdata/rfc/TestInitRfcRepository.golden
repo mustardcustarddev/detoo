@@ -1,8 +1,8 @@
 rfc init
-docs/rfc/0001-use-requests-for-comments.md
+docs/rfc/RFC-0001-use-requests-for-comments.md
 ls docs/rfc
-0001-use-requests-for-comments.md
-cat docs/rfc/0001-use-requests-for-comments.md
+RFC-0001-use-requests-for-comments.md
+cat docs/rfc/RFC-0001-use-requests-for-comments.md
 # 1. Use requests for comments
 
 Date: 1992-01-12

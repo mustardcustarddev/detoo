@@ -1,26 +1,26 @@
 adr init
-docs/adr/0001-record-architecture-decisions.md
+docs/adr/ADR-0001-record-architecture-decisions.md
 adr new "An idea that seems good at the time"
-docs/adr/0002-an-idea-that-seems-good-at-the-time.md
+docs/adr/ADR-0002-an-idea-that-seems-good-at-the-time.md
 adr new -s 2 "A better idea"
-docs/adr/0003-a-better-idea.md
+docs/adr/ADR-0003-a-better-idea.md
 adr new "This will work"
-docs/adr/0004-this-will-work.md
+docs/adr/ADR-0004-this-will-work.md
 adr new -s 3 "The end"
-docs/adr/0005-the-end.md
+docs/adr/ADR-0005-the-end.md
 adr link -u 5 4
 adr graph --graphviz
 digraph {
   node [shape=plaintext];
   subgraph {
-    _1 [label="1. Record architecture decisions"; URL="0001-record-architecture-decisions.html"];
-    _2 [label="2. An idea that seems good at the time"; URL="0002-an-idea-that-seems-good-at-the-time.html"];
+    _1 [label="1. Record architecture decisions"; URL="ADR-0001-record-architecture-decisions.html"];
+    _2 [label="2. An idea that seems good at the time"; URL="ADR-0002-an-idea-that-seems-good-at-the-time.html"];
     _1 -> _2 [style="dotted", weight=1];
-    _3 [label="3. A better idea"; URL="0003-a-better-idea.html"];
+    _3 [label="3. A better idea"; URL="ADR-0003-a-better-idea.html"];
     _2 -> _3 [style="dotted", weight=1];
-    _4 [label="4. This will work"; URL="0004-this-will-work.html"];
+    _4 [label="4. This will work"; URL="ADR-0004-this-will-work.html"];
     _3 -> _4 [style="dotted", weight=1];
-    _5 [label="5. The end"; URL="0005-the-end.html"];
+    _5 [label="5. The end"; URL="ADR-0005-the-end.html"];
     _4 -> _5 [style="dotted", weight=1];
   }
   _3 -> _2 [label="Supersedes", weight=0]
@@ -31,14 +31,14 @@ adr graph --graphviz -p http://example.com/ -e .xxx
 digraph {
   node [shape=plaintext];
   subgraph {
-    _1 [label="1. Record architecture decisions"; URL="http://example.com/0001-record-architecture-decisions.xxx"];
-    _2 [label="2. An idea that seems good at the time"; URL="http://example.com/0002-an-idea-that-seems-good-at-the-time.xxx"];
+    _1 [label="1. Record architecture decisions"; URL="http://example.com/ADR-0001-record-architecture-decisions.xxx"];
+    _2 [label="2. An idea that seems good at the time"; URL="http://example.com/ADR-0002-an-idea-that-seems-good-at-the-time.xxx"];
     _1 -> _2 [style="dotted", weight=1];
-    _3 [label="3. A better idea"; URL="http://example.com/0003-a-better-idea.xxx"];
+    _3 [label="3. A better idea"; URL="http://example.com/ADR-0003-a-better-idea.xxx"];
     _2 -> _3 [style="dotted", weight=1];
-    _4 [label="4. This will work"; URL="http://example.com/0004-this-will-work.xxx"];
+    _4 [label="4. This will work"; URL="http://example.com/ADR-0004-this-will-work.xxx"];
     _3 -> _4 [style="dotted", weight=1];
-    _5 [label="5. The end"; URL="http://example.com/0005-the-end.xxx"];
+    _5 [label="5. The end"; URL="http://example.com/ADR-0005-the-end.xxx"];
     _4 -> _5 [style="dotted", weight=1];
   }
   _3 -> _2 [label="Supersedes", weight=0]

@@ -1,0 +1,23 @@
+touch docs/rfc/0001-use-requests-for-comments.md
+mkdir -p src/app
+cd src/app
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   1 document in 1 directory
+
+╭─ ✗ rfc  docs/rfc ──────────────────────────────────────── 1 RFC · 1 problem ─╮
+│ ✗ File names do not begin with RFC-                                          │
+│   0001-use-requests-for-comments.md                                          │
+│     → RFC-0001-use-requests-for-comments.md                                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, sty or pse log found.
+
+ DOCTOR  ✗ 1 problem in 1 log  Nothing was changed.                      EXIT 1 
+echo $?
+1

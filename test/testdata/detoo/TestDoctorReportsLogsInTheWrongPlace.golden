@@ -1,0 +1,50 @@
+touch docs/adr/0001-record-architecture-decisions.md docs/adr/0002-use-markdown-for-documents.md docs/adr/README.md doc/rfc/0001-adopt-a-single-detoo-command.md docs/userstory/story-0001-describe-work-in-user-stories.md docs/sty/0002-find-documents-in-the-wrong-place.md docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   6 documents in 5 directories
+
+╭─ ✗ adr  docs/adr ────────────────────────── 2 decision records · 2 problems ─╮
+│ ✗ File names do not begin with ADR-                                          │
+│   0001-record-architecture-decisions.md                                      │
+│     → ADR-0001-record-architecture-decisions.md                              │
+│   0002-use-markdown-for-documents.md                                         │
+│     → ADR-0002-use-markdown-for-documents.md                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✗ rfc  doc/rfc ──────────────────────────────────────── 1 RFC · 2 problems ─╮
+│ ✗ Kept under doc/ instead of docs/                                           │
+│   doc/rfc  →  docs/rfc                                                       │
+│ ✗ File names do not begin with RFC-                                          │
+│   0001-adopt-a-single-detoo-command.md                                       │
+│     → RFC-0001-adopt-a-single-detoo-command.md                               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ! sty  docs/sty   BY HAND  ─────────────────── 2 user stories · 3 problems ─╮
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│   sty no longer finds the user story in docs/sty.                            │
+│ ! Needs fixing by hand: both directories exist, so moving one would clash.   │
+│   docs/sty        1 user story  · former directory                           │
+│   docs/userstory  1 user story  · current directory, where sty looks         │
+│ ✗ File names do not begin with STORY-                                        │
+│   docs/userstory/story-0001-describe-work-in-user-stories.md                 │
+│     → STORY-0001-describe-work-in-user-stories.md                            │
+│   docs/sty/0002-find-documents-in-the-wrong-place.md                         │
+│     → STORY-0002-find-documents-in-the-wrong-place.md                        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ pse  docs/piosee ─────────────────────────────────────── 1 PIOSEE record ─╮
+│ ✓ In place. File names begin with PIOSEE-.                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ DOCTOR  ✗ 7 problems in 3 logs  ! 1 needs fixing by hand                EXIT 1 
+echo $?
+1
+ls docs/sty
+0002-find-documents-in-the-wrong-place.md
+ls doc/rfc
+0001-adopt-a-single-detoo-command.md

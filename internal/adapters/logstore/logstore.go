@@ -116,17 +116,25 @@ func (s *Store) Records(ctx context.Context) ([]record.Record, error) {
 		return nil, err
 	}
 
-	var files []string
+	var records []record.Record
 	for _, entry := range entries {
 		if !entry.IsDir() && s.kind.IsRecordName(entry.Name()) {
-			files = append(files, path.Join(dir, entry.Name()))
+			file := path.Join(dir, entry.Name())
+			records = append(records, record.Record{Number: s.kind.Number(file), File: file})
 		}
 	}
-	sort.Strings(files)
 
-	records := make([]record.Record, 0, len(files))
-	for _, file := range files {
-		records = append(records, record.Record{Number: s.kind.Number(file), File: file})
+	// Ordered by number rather than by name, because a log may hold records
+	// named before today's prefix, such as 0001-first.md beside
+	// ADR-0002-second.md.
+	sort.Slice(records, func(i, j int) bool {
+		if records[i].Number != records[j].Number {
+			return records[i].Number < records[j].Number
+		}
+		return records[i].File < records[j].File
+	})
+	if records == nil {
+		records = []record.Record{}
 	}
 	return records, nil
 }

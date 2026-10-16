@@ -35,11 +35,12 @@ adr new "Use PostgreSQL for persistence"
 ```
 
 `new` creates the next numbered document from a template, opens it in
-`$VISUAL` or `$EDITOR`, and prints its path. Its file name is the number and a
-slug of the title, such as `0002-use-postgresql-for-persistence.md`; user
-stories and PIOSEE records begin with a prefix as well, as in
-`story-0012-reorder-a-previous-purchase.md` and
-`piosee-0004-roll-back-release-2-3.md`. A project can provide its own
+`$VISUAL` or `$EDITOR`, and prints its path. Its file name is the log's prefix,
+the number and a slug of the title, such as
+`ADR-0002-use-postgresql-for-persistence.md`,
+`RFC-0004-adopt-connect-for-internal-services.md`,
+`STORY-0012-reorder-a-previous-purchase.md` or
+`PIOSEE-0004-roll-back-release-2-3.md`. A project can provide its own
 template in `templates/template.md` inside the log directory.
 
 A new document can replace or update earlier ones, and the link is recorded
@@ -61,6 +62,22 @@ sty graph | mmdc --input - --output docs/userstory/graph.svg
 ```
 
 Run `adr help`, or `sty help new`, for each tool's commands and options.
+
+## Checking the logs
+
+`detoo doctor` checks every log in the project together, and reports any the
+tools would no longer find, or whose file names are out of date:
+
+```bash
+detoo doctor
+```
+
+It reports a log kept under `doc/` instead of `docs/`, a log left in a
+directory its tool no longer looks in (such as user stories in `docs/sty`
+rather than `docs/userstory`), and documents named without their log's
+upper-case prefix (such as `0001-record-architecture-decisions.md`, or the
+older `story-0001-describe-work-in-user-stories.md`). It changes nothing, and
+exits 1 when it finds a problem, so it can run in CI.
 
 ## Agent skills
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/app"
+	"github.com/mustardcustard/detoo/internal/detoo"
 	"github.com/mustardcustard/detoo/internal/domain/record"
 	"github.com/mustardcustard/detoo/internal/features/reports/graph"
 	"github.com/mustardcustard/detoo/internal/rfc"
@@ -28,6 +29,7 @@ func testRoots(t *testing.T) []*cobra.Command {
 		NewRootCommand(adr.Kind, adr.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewRootCommand(rfc.Kind, rfc.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewRootCommand(sty.Kind, sty.Files, &app.Application{}, io.Discard, io.Discard, getenv),
+		NewDetooCommand(detoo.Files, &app.Detoo{}, nil, io.Discard, io.Discard, getenv),
 	}
 }
 
