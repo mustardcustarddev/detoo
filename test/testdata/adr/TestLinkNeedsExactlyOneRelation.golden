@@ -3,9 +3,9 @@ docs/adr/0001-first-record.md
 adr new "Second Record"
 docs/adr/0002-second-record.md
 adr link 2 1
-adr: give either --supercede or --update
+adr: give either --supersede or --update
 adr link -s -u 2 1
-adr: give either --supercede or --update
+adr: give either --supersede or --update
 head -9 docs/adr/0001-first-record.md
 # 1. First Record
 

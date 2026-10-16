@@ -46,7 +46,7 @@ A new document can replace or update earlier ones, and the link is recorded
 in both:
 
 ```bash
-adr new --supercede 9 "Use Rust for performance-critical functionality"
+adr new --supersede 9 "Use Rust for performance-critical functionality"
 rfc new --obsolete 4 "Adopt Connect for internal services"
 sty new --replace 12 "Reorder a previous purchase"
 pse new --reverse 4 "Restore release 2.3 with the fix"

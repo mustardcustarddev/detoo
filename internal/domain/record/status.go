@@ -16,7 +16,7 @@ var linkPattern = regexp.MustCompile(`^(.+) \[.*\]\((.*)\)`)
 
 // Link is a reference from one record to another.
 type Link struct {
-	Type   string // how the source record describes the link, e.g. "Supercedes"
+	Type   string // how the source record describes the link, e.g. "Supersedes"
 	Target int    // the number of the record linked to
 }
 

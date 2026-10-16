@@ -136,10 +136,10 @@ func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
 		want            record.Relation
 		wantErr         string
 	}{
-		{"supercede", adr.Kind, true, false, record.Replaces, ""},
+		{"supersede", adr.Kind, true, false, record.Replaces, ""},
 		{"update", adr.Kind, false, true, record.Updates, ""},
-		{"neither", adr.Kind, false, false, 0, "give either --supercede or --update"},
-		{"both", adr.Kind, true, true, 0, "give either --supercede or --update"},
+		{"neither", adr.Kind, false, false, 0, "give either --supersede or --update"},
+		{"both", adr.Kind, true, true, 0, "give either --supersede or --update"},
 		{"obsolete", rfc.Kind, true, false, record.Replaces, ""},
 		{"neither, for an RFC", rfc.Kind, false, false, 0, "give either --obsolete or --update"},
 		{"replace", sty.Kind, true, false, record.Replaces, ""},

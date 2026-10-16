@@ -40,7 +40,7 @@ adr graph         # how the records link to each other
 ```
 
 Read every record in full. Note each one's status, and its links: a record
-that is already `Superceded by` another is history, and is reviewed only for
+that is already `Superseded by` another is history, and is reviewed only for
 whether it has anything left to say.
 
 Read [significance.md](references/significance.md) before judging anything.

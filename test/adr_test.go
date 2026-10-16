@@ -182,7 +182,7 @@ func TestLinking(t *testing.T) {
 }
 
 // TestLinkNeedsExactlyOneRelation covers the CLI half of validating a link: it
-// must say whether it supercedes or updates, and cannot say both.  Nothing is
+// must say whether it supersedes or updates, and cannot say both.  Nothing is
 // written when it fails.
 func TestLinkNeedsExactlyOneRelation(t *testing.T) {
 	w := newWorkspace(t, "adr")
@@ -205,7 +205,7 @@ func TestLinkingNewRecords(t *testing.T) {
 	w.check()
 }
 
-func TestSupercedeExistingAdr(t *testing.T) {
+func TestSupersedeExistingAdr(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "-s", "1", "Second Record")
@@ -214,7 +214,7 @@ func TestSupercedeExistingAdr(t *testing.T) {
 	w.check()
 }
 
-func TestSupercedeMultipleAdrs(t *testing.T) {
+func TestSupersedeMultipleAdrs(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
 	w.adr("new", "Second Record")
@@ -276,7 +276,7 @@ func TestReportsOfAnEmptyLog(t *testing.T) {
 	w.check()
 }
 
-// graphedLog returns a workspace holding a log whose records supercede and
+// graphedLog returns a workspace holding a log whose records supersede and
 // update one another, for a graph to draw.
 func graphedLog(t *testing.T) *workspace {
 	w := newWorkspace(t, "adr")

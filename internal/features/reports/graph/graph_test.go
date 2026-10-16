@@ -13,9 +13,9 @@ import (
 
 func newLog() *memlog.Log {
 	return memlog.WithRecords(map[string]string{
-		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nSuperceded by [2. Second](0002-second.md)\n\n## Context\n\nC.\n",
+		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nSuperseded by [2. Second](0002-second.md)\n\n## Context\n\nC.\n",
 		"docs/adr/0002-second.md": "# 2. Second\n\n## Status\n\nAccepted\n\n" +
-			"Supercedes [1. First](0001-first.md)\n\n## Context\n\nC.\n",
+			"Supersedes [1. First](0001-first.md)\n\n## Context\n\nC.\n",
 	})
 }
 
@@ -30,7 +30,7 @@ func TestHandleDrawsTheLogInMermaidByDefault(t *testing.T) {
 		"  adr1[\"1. First\"]\n" +
 		"  adr2[\"2. Second\"]\n" +
 		"  adr1 -.-> adr2\n" +
-		"  adr2 -->|\"Supercedes\"| adr1\n" +
+		"  adr2 -->|\"Supersedes\"| adr1\n" +
 		"  click adr1 \"0001-first.html\"\n" +
 		"  click adr2 \"0002-second.html\"\n"
 	if result.Document != want {
@@ -44,7 +44,7 @@ func TestHandleNamesMermaidNodesAfterTheKind(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
-	for _, want := range []string{`rfc1["1. First"]`, "rfc1 -.-> rfc2", `rfc2 -->|"Supercedes"| rfc1`, "click rfc1"} {
+	for _, want := range []string{`rfc1["1. First"]`, "rfc1 -.-> rfc2", `rfc2 -->|"Supersedes"| rfc1`, "click rfc1"} {
 		if !strings.Contains(result.Document, want) {
 			t.Errorf("the graph does not contain %s:\n%s", want, result.Document)
 		}
@@ -64,7 +64,7 @@ func TestHandleWritesADigraphOfTheLog(t *testing.T) {
 		"    _2 [label=\"2. Second\"; URL=\"0002-second.html\"];\n" +
 		"    _1 -> _2 [style=\"dotted\", weight=1];\n" +
 		"  }\n" +
-		"  _2 -> _1 [label=\"Supercedes\", weight=0]\n" +
+		"  _2 -> _1 [label=\"Supersedes\", weight=0]\n" +
 		"}\n"
 	if result.Document != want {
 		t.Errorf("Document =\n%s\nwant\n%s", result.Document, want)
@@ -87,7 +87,7 @@ func TestHandleDrawsEachLinkOnce(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Handle: %v", err)
 			}
-			if strings.Contains(result.Document, "Superceded by") {
+			if strings.Contains(result.Document, "Superseded by") {
 				t.Errorf("the graph draws a reverse link:\n%s", result.Document)
 			}
 			if got := strings.Count(result.Document, test.arrow); got != 1 {

@@ -45,7 +45,7 @@ func TestSplitAndUpdateStories(t *testing.T) {
 	w.check()
 }
 
-// sty names its options after its own relations, and has neither --supercede
+// sty names its options after its own relations, and has neither --supersede
 // nor --obsolete.  Nothing is written when an option is wrong.
 func TestStyLinkOptions(t *testing.T) {
 	w := newWorkspace(t, "sty")
@@ -53,7 +53,7 @@ func TestStyLinkOptions(t *testing.T) {
 	w.sty("new", "Second Story")
 	w.sty("link", "2", "1")
 	w.sty("link", "-o", "2", "1")
-	w.sty("new", "--supercede", "1", "Third Story")
+	w.sty("new", "--supersede", "1", "Third Story")
 	w.ls("docs/userstory")
 	w.head(8, "docs/userstory/story-0001-first-story.md")
 	w.check()

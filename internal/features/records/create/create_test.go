@@ -78,7 +78,7 @@ func TestHandleRejectsARequestWithNoTitle(t *testing.T) {
 	}
 }
 
-func TestHandleSupercedesAnExistingRecord(t *testing.T) {
+func TestHandleSupersedesAnExistingRecord(t *testing.T) {
 	log := memlog.WithRecords(map[string]string{
 		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nAccepted\n\n## Context\n\nContext.\n",
 	})
@@ -91,13 +91,13 @@ func TestHandleSupercedesAnExistingRecord(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	// The superceded record gains the link and loses its accepted status.
-	wantOld := "# 1. First\n\n## Status\n\nSuperceded by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	// The superseded record gains the link and loses its accepted status.
+	wantOld := "# 1. First\n\n## Status\n\nSuperseded by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
-		t.Errorf("superceded record is\n%s\nwant\n%s", got, wantOld)
+		t.Errorf("superseded record is\n%s\nwant\n%s", got, wantOld)
 	}
 	// The new record records what it replaced.
-	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\nSupercedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\nSupersedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content(result.File); got != wantNew {
 		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
 	}
@@ -182,7 +182,7 @@ func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
 }
 
 // A record that cannot be found is reported rather than silently skipped.
-func TestHandleReportsAnUnknownRecordToSupercede(t *testing.T) {
+func TestHandleReportsAnUnknownRecordToSupersede(t *testing.T) {
 	log := memlog.WithRecords(map[string]string{
 		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nAccepted\n\n## Context\n\nContext.\n",
 	})

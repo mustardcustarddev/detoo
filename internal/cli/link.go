@@ -36,7 +36,7 @@ func newLinkCommand(t tool, application *app.Application) *cobra.Command {
 	}
 
 	// Each switch is named with the tool's verb for its relation, such as
-	// --supercede, and abbreviated to the verb's first letter.
+	// --supersede, and abbreviated to the verb's first letter.
 	cmd.Flags().BoolVarP(&replace, t.Replaces.Verb, t.Replaces.Verb[:1], false,
 		fmt.Sprintf("SOURCE %s TARGET, which loses its %s status", strings.ToLower(t.Replaces.Forward), t.Status))
 	cmd.Flags().BoolVarP(&update, t.Updates.Verb, t.Updates.Verb[:1], false,
@@ -45,7 +45,7 @@ func newLinkCommand(t tool, application *app.Application) *cobra.Command {
 }
 
 // relationFlag returns the relation named by the switches for replacing and
-// updating a record, such as --supercede and --update, exactly one of which
+// updating a record, such as --supersede and --update, exactly one of which
 // must be set.
 //
 // This is CLI validation: which switches were typed.  That a link must have a

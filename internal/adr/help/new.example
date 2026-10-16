@@ -1,8 +1,8 @@
   # Create a new ADR with the title "Use MySQL Database":
   adr new "Use MySQL Database"
 
-  # Create a new ADR that supercedes ADR 12:
+  # Create a new ADR that supersedes ADR 12:
   adr new -s 12 "Use PostgreSQL Database"
 
-  # Create a new ADR that supercedes ADRs 3 and 4, and updates ADR 5:
+  # Create a new ADR that supersedes ADRs 3 and 4, and updates ADR 5:
   adr new -s 3 -s 4 -u 5 "Use Riak CRDTs to cope with scale"

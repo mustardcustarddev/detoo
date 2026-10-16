@@ -52,7 +52,7 @@ func TestObsoleteAndUpdateNewRfcs(t *testing.T) {
 	w.check()
 }
 
-// rfc names its options after its own relations, and has no --supercede.
+// rfc names its options after its own relations, and has no --supersede.
 // Nothing is written when an option is wrong.
 func TestRfcLinkOptions(t *testing.T) {
 	w := newWorkspace(t, "rfc")
@@ -60,7 +60,7 @@ func TestRfcLinkOptions(t *testing.T) {
 	w.rfc("new", "Second Proposal")
 	w.rfc("link", "2", "1")
 	w.rfc("link", "-s", "2", "1")
-	w.rfc("new", "--supercede", "1", "Third Proposal")
+	w.rfc("new", "--supersede", "1", "Third Proposal")
 	w.ls("docs/rfc")
 	w.head(8, "docs/rfc/0001-first-proposal.md")
 	w.check()

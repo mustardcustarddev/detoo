@@ -20,7 +20,7 @@ var Kind = record.Kind{
 	Heading:     "Architecture Decision Records",
 	Status:      "Accepted",
 	FirstRecord: "record-architecture-decisions",
-	Replaces:    record.Words{Verb: "supercede", Forward: "Supercedes", Reverse: "Superceded by"},
+	Replaces:    record.Words{Verb: "supersede", Forward: "Supersedes", Reverse: "Superseded by"},
 	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
 }
 

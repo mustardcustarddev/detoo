@@ -58,21 +58,21 @@ Links are lines in the `## Status` section, written in both records:
 
 Accepted
 
-Supercedes [2. Use MySQL](0002-use-mysql.md)
+Supersedes [2. Use MySQL](0002-use-mysql.md)
 ```
 
 | Option              | Written in the new record     | Written in the old record        | Old record's `Accepted` line |
 | ------------------- | ----------------------------- | -------------------------------- | ---------------------------- |
-| `-s`, `--supercede` | `Supercedes [N. Title](file)` | `Superceded by [N. Title](file)` | Removed                      |
+| `-s`, `--supersede` | `Supersedes [N. Title](file)` | `Superseded by [N. Title](file)` | Removed                      |
 | `-u`, `--update`    | `Updates [N. Title](file)`    | `Updated by [N. Title](file)`    | Kept                         |
 
-Note the tool's spelling, "Supercedes" and "Superceded by", when searching
-records. Only a line reading exactly `Accepted` is removed. A status that has
-been edited to something else, such as `Draft`, `Proposed` or `Deprecated`,
-stays beside the link.
+Records written by adr-tools spell these "Supercedes" and "Superceded by", so
+search for both spellings. Only a line reading exactly `Accepted` is removed.
+A status that has been edited to something else, such as `Draft`, `Proposed`
+or `Deprecated`, stays beside the link.
 
 > **The link takes effect at once.** `adr new -s 4 "Title"` marks record 4
-> "Superceded by" the new record, and removes record 4's `Accepted` line, the
+> "Superseded by" the new record, and removes record 4's `Accepted` line, the
 > moment the new record is created, even though the new record will be a
 > draft. `-u` adds "Updated by" to the old record at once, too.
 

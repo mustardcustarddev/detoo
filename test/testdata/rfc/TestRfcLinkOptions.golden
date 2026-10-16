@@ -6,8 +6,8 @@ rfc link 2 1
 rfc: give either --obsolete or --update
 rfc link -s 2 1
 rfc: unknown shorthand flag: 's' in -s
-rfc new --supercede 1 "Third Proposal"
-rfc: unknown flag: --supercede
+rfc new --supersede 1 "Third Proposal"
+rfc: unknown flag: --supersede
 ls docs/rfc
 0001-first-proposal.md
 0002-second-proposal.md

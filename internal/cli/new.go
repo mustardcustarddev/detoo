@@ -35,7 +35,7 @@ func newNewCommand(t tool, application *app.Application) *cobra.Command {
 	}
 
 	// Each option is named with the tool's verb for its relation, such as
-	// --supercede, and abbreviated to the verb's first letter.
+	// --supersede, and abbreviated to the verb's first letter.
 	cmd.Flags().StringArrayVarP(&replaces, t.Replaces.Verb, t.Replaces.Verb[:1], nil,
 		"a `REFERENCE` (number or partial filename) to a record this one "+strings.ToLower(t.Replaces.Forward))
 	cmd.Flags().StringArrayVarP(&updates, t.Updates.Verb, t.Updates.Verb[:1], nil,

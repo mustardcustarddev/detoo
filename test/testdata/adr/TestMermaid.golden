@@ -20,8 +20,8 @@ flowchart TD
   adr3 -.-> adr4
   adr5["5. The end"]
   adr4 -.-> adr5
-  adr3 -->|"Supercedes"| adr2
-  adr5 -->|"Supercedes"| adr3
+  adr3 -->|"Supersedes"| adr2
+  adr5 -->|"Supersedes"| adr3
   adr5 -->|"Updates"| adr4
   click adr1 "0001-record-architecture-decisions.html"
   click adr2 "0002-an-idea-that-seems-good-at-the-time.html"
@@ -39,8 +39,8 @@ flowchart TD
   adr3 -.-> adr4
   adr5["5. The end"]
   adr4 -.-> adr5
-  adr3 -->|"Supercedes"| adr2
-  adr5 -->|"Supercedes"| adr3
+  adr3 -->|"Supersedes"| adr2
+  adr5 -->|"Supersedes"| adr3
   adr5 -->|"Updates"| adr4
   click adr1 "http://example.com/0001-record-architecture-decisions.xxx"
   click adr2 "http://example.com/0002-an-idea-that-seems-good-at-the-time.xxx"

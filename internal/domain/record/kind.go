@@ -45,13 +45,13 @@ type Kind struct {
 // Words are what one Relation is called.
 type Words struct {
 	// Verb names the relation as an option does, and its first letter is the
-	// option's shorthand: "supercede".
+	// option's shorthand: "supersede".
 	Verb string
 
-	// Forward is how the later record describes the relation: "Supercedes".
+	// Forward is how the later record describes the relation: "Supersedes".
 	Forward string
 
-	// Reverse is how the earlier record describes it: "Superceded by".  It
+	// Reverse is how the earlier record describes it: "Superseded by".  It
 	// ends in " by", which is how a graph tells a reverse link from the
 	// forward one it repeats.
 	Reverse string

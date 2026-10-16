@@ -43,9 +43,9 @@ Read each record's Status section:
 * **Accepted** records are in force: check them.
 * A record that is **Updated by** another is in force as amended: read both,
   and check them together.
-* **Superceded** (the tool's spelling), **Deprecated** or **Rejected** records
-  are not in force: skip them, but check that the record replacing a
-  superseded one is followed.
+* **Superseded** (or "Superceded", in records written by adr-tools),
+  **Deprecated** or **Rejected** records are not in force: skip them, but
+  check that the record replacing a superseded one is followed.
 * **Draft** or **Proposed** records are not yet in force: check them only if
   the user asks, and report them separately.
 

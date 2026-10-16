@@ -6,8 +6,8 @@ sty link 2 1
 sty: give either --replace or --update
 sty link -o 2 1
 sty: unknown shorthand flag: 'o' in -o
-sty new --supercede 1 "Third Story"
-sty: unknown flag: --supercede
+sty new --supersede 1 "Third Story"
+sty: unknown flag: --supersede
 ls docs/userstory
 story-0001-first-story.md
 story-0002-second-story.md

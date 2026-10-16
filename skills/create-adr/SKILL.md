@@ -122,7 +122,7 @@ other than today.
 
 If the record supersedes or updates an existing one, tell the user that the
 tool records the link in **both** records at once. With `-s`, the old record
-is marked "Superceded by" the new one, and loses its `Accepted` line, although
+is marked "Superseded by" the new one, and loses its `Accepted` line, although
 the new record is only a draft. Ask whether to:
 
 * **link now**: `VISUAL= EDITOR= adr new -s 4 "Title"` (or `-u 4`); or

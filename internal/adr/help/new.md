@@ -10,6 +10,6 @@ follows the style described by Michael Nygard in this article:
 
   http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 
-Multiple --supercede and --update options can be given, so that the new ADR can
-supercede or update multiple existing ADRs.  A superceded ADR is no longer
+Multiple --supersede and --update options can be given, so that the new ADR can
+supersede or update multiple existing ADRs.  A superseded ADR is no longer
 accepted; an updated one keeps its status.

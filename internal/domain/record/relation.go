@@ -3,7 +3,7 @@ package record
 // Relation is how a later record bears on an earlier one.
 //
 // There are only two, so that every log describes its history in the same
-// terms.  What each is called belongs to the Kind of log: an ADR supercedes the
+// terms.  What each is called belongs to the Kind of log: an ADR supersedes the
 // record it replaces, and an RFC obsoletes it.
 type Relation int
 

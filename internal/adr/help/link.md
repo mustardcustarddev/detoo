@@ -1,9 +1,9 @@
-Records, in both ADRs, that SOURCE supercedes or updates TARGET.
+Records, in both ADRs, that SOURCE supersedes or updates TARGET.
 
 SOURCE and TARGET are both a reference (number or partial filename) to an ADR.
-Exactly one of --supercede and --update must be given.
+Exactly one of --supersede and --update must be given.
 
-With --supercede, SOURCE replaces TARGET, which is marked "Superceded by"
+With --supersede, SOURCE replaces TARGET, which is marked "Superseded by"
 SOURCE and is no longer accepted.
 
 With --update, SOURCE makes substantive changes to TARGET, which is marked

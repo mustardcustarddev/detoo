@@ -155,7 +155,7 @@ var recordWithLinks = []string{
 	"",
 	"Accepted",
 	"",
-	"Supercedes [1. First Record](0001-first-record.md)",
+	"Supersedes [1. First Record](0001-first-record.md)",
 	"",
 	"Updated by [4. Fourth Record](0004-fourth-record.md)",
 	"",
@@ -167,7 +167,7 @@ var recordWithLinks = []string{
 func TestStatusReadsTheStatusSection(t *testing.T) {
 	want := []string{
 		"Accepted",
-		"Supercedes [1. First Record](0001-first-record.md)",
+		"Supersedes [1. First Record](0001-first-record.md)",
 		"Updated by [4. Fourth Record](0004-fourth-record.md)",
 	}
 	if got := Status(recordWithLinks); !reflect.DeepEqual(got, want) {
@@ -176,7 +176,7 @@ func TestStatusReadsTheStatusSection(t *testing.T) {
 }
 
 func TestLinksReadsLinksFromTheStatusSection(t *testing.T) {
-	want := []Link{{Type: "Supercedes", Target: 1}, {Type: "Updated by", Target: 4}}
+	want := []Link{{Type: "Supersedes", Target: 1}, {Type: "Updated by", Target: 4}}
 	if got := unprefixed.Links(recordWithLinks); !reflect.DeepEqual(got, want) {
 		t.Errorf("Links() = %v, want %v", got, want)
 	}
@@ -230,13 +230,13 @@ func TestAddLinkLeavesATrailingStatusSectionAlone(t *testing.T) {
 func TestRemoveStatusClosesTheGapItLeaves(t *testing.T) {
 	lines := []string{
 		"# 1. First", "", "## Status", "", "Accepted", "",
-		"Superceded by [2. Second](0002-second.md)", "",
+		"Superseded by [2. Second](0002-second.md)", "",
 		"## Context", "", "Accepted",
 	}
 	// Only the status section is touched: the "Accepted" in the context stays.
 	want := []string{
 		"# 1. First", "", "## Status", "",
-		"Superceded by [2. Second](0002-second.md)", "",
+		"Superseded by [2. Second](0002-second.md)", "",
 		"## Context", "", "Accepted",
 	}
 	if got := RemoveStatus(lines, "Accepted"); !reflect.DeepEqual(got, want) {

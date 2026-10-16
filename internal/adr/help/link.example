@@ -1,5 +1,5 @@
   # Record that ADR 3 updates ADR 2:
   adr link --update 3 2
 
-  # Record that ADR 12 supercedes ADR 10:
+  # Record that ADR 12 supersedes ADR 10:
   adr link -s 12 10

@@ -50,9 +50,9 @@ func TestHandleUpdateLinksBothRecords(t *testing.T) {
 	}
 }
 
-// A superceded record is no longer the decision, so it loses its accepted
-// status, just as it does when a new record supercedes it.
-func TestHandleSupercedeRetiresTheTarget(t *testing.T) {
+// A superseded record is no longer the decision, so it loses its accepted
+// status, just as it does when a new record supersedes it.
+func TestHandleSupersedeRetiresTheTarget(t *testing.T) {
 	log := newLog()
 
 	if _, err := (Handler{Kind: adr.Kind, Log: log}).Handle(context.Background(), Command{
@@ -63,11 +63,11 @@ func TestHandleSupercedeRetiresTheTarget(t *testing.T) {
 		t.Fatalf("Handle: %v", err)
 	}
 
-	wantSource := "# 2. Second\n\n## Status\n\nAccepted\n\nSupercedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	wantSource := "# 2. Second\n\n## Status\n\nAccepted\n\nSupersedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/adr/0002-second.md"); got != wantSource {
 		t.Errorf("source record is\n%s\nwant\n%s", got, wantSource)
 	}
-	wantTarget := "# 1. First\n\n## Status\n\nSuperceded by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
+	wantTarget := "# 1. First\n\n## Status\n\nSuperseded by [2. Second](0002-second.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content("docs/adr/0001-first.md"); got != wantTarget {
 		t.Errorf("target record is\n%s\nwant\n%s", got, wantTarget)
 	}
