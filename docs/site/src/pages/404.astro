@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { url } from '../lib/url';
+---
+
+<BaseLayout title="Page not found" description="The page you are looking for does not exist." noindex={true}>
+  <Header slot="header" />
+
+  <main class="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+    <p class="font-display text-base font-semibold text-[var(--color-primary-500)]">404</p>
+    <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Page not found</h1>
+    <p class="mt-6 text-[var(--text-secondary)]">There is no page here. It may have moved.</p>
+    <p class="mt-10 flex gap-6">
+      <a class="font-semibold text-[var(--color-primary-500)] hover:underline" href={url('docs/')}>Read the docs</a>
+      <a class="font-semibold text-[var(--color-primary-500)] hover:underline" href={url()}>Go home</a>
+    </p>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,102 @@
+---
+/**
+ * BlogPost.astro — a post, in a single column, with BlogPosting structured
+ * data for search engines.  Whatever is passed in the "after" slot follows
+ * the post, such as its call to action.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import { url, absolute } from '../lib/url';
+import { SITE } from '../lib/site';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags, noindex, canonicalUrl } = post.data;
+
+const author = await getEntry('authors', post.data.author);
+const authorName = author?.data.name ?? SITE.name;
+const articleUrl = new URL(Astro.url.pathname, Astro.site).toString();
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={heroImage && new URL(heroImage.src, Astro.site).toString()}
+  ogType="article"
+  noindex={noindex}
+  canonicalUrl={canonicalUrl}
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  author={authorName}
+>
+  <JsonLd
+    slot="head"
+    type="BlogPosting"
+    data={{
+      headline: title,
+      description,
+      url: articleUrl,
+      datePublished: pubDate.toISOString(),
+      dateModified: updatedDate?.toISOString(),
+      image: heroImage ? new URL(heroImage.src, Astro.site).toString() : absolute('og-default.png', Astro.site),
+      author: { name: authorName, url: author?.data.url },
+      publisher: { name: SITE.name, logo: absolute('detoo-logo.png', Astro.site) },
+    }}
+  />
+
+  <Header slot="header" />
+
+  <main>
+    <article class="mx-auto max-w-3xl px-4 py-12 md:px-6 md:py-16">
+      <header class="mb-10">
+        <Breadcrumbs items={[{ label: 'Home', href: url() }, { label: 'Blog', href: url('blog/') }, { label: title }]} />
+
+        <h1 class="mt-8 font-display text-4xl font-extrabold tracking-tight md:text-5xl">{title}</h1>
+        <p class="mt-4 text-lg text-[var(--text-secondary)]">{description}</p>
+
+        <p class="mt-6 text-sm text-[var(--text-tertiary)]">
+          <span class="font-semibold text-[var(--text-primary)]">{authorName}</span>
+          {" · "}
+          <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
+          {updatedDate && <span> (updated {dateFormatter.format(updatedDate)})</span>}
+        </p>
+
+        {
+          tags.length > 0 && (
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <li class="rounded-full bg-[var(--bg-secondary)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)]">{tag}</li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      {
+        heroImage && (
+          <figure class="mb-12 overflow-hidden rounded-2xl border border-[var(--border)]">
+            <img src={heroImage.src} alt="" width={heroImage.width} height={heroImage.height} class="w-full object-cover" />
+          </figure>
+        )
+      }
+
+      <div class="prose prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-headings:tracking-tight">
+        <slot />
+      </div>
+
+      <slot name="after" />
+    </article>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+/** PrevNext.astro — links to the pages either side, in the sidebar's order. */
+import type { Page } from '../../lib/sidebar';
+
+interface Props {
+  prev?: Page;
+  next?: Page;
+}
+
+const { prev, next } = Astro.props;
+const name = (p: Page) => p.entry.data.title;
+---
+
+<nav aria-label="Previous and next pages" class="mt-16 grid gap-4 border-t border-[var(--border)] pt-8 sm:grid-cols-2">
+  {
+    prev ? (
+      <a href={prev.href} rel="prev" class="rounded-xl border border-[var(--border)] p-4 transition-colors hover:border-[var(--color-primary-500)]">
+        <span class="block text-xs text-[var(--text-tertiary)]">← Previous</span>
+        <span class="mt-1 block font-semibold">{name(prev)}</span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+  {
+    next && (
+      <a href={next.href} rel="next" class="rounded-xl border border-[var(--border)] p-4 text-right transition-colors hover:border-[var(--color-primary-500)]">
+        <span class="block text-xs text-[var(--text-tertiary)]">Next →</span>
+        <span class="mt-1 block font-semibold">{name(next)}</span>
+      </a>
+    )
+  }
+</nav>

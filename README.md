@@ -3,6 +3,7 @@
 <img src="https://github.com/user-attachments/assets/43a08c20-05b9-4365-a7d7-ff14c3360a1d" alt="Detoo robot drawing with a set square" width="320">
 
 [![Apache License 2.0](https://img.shields.io/:license-Apache%20License%202.0-blue.svg?style=shield)](LICENSE.md)
+[![Documentation](https://img.shields.io/badge/docs-mustardcustarddev.github.io%2Fdetoo-6366f1.svg)](https://mustardcustarddev.github.io/detoo/)
 
 Command-line tools and agentic skills for working with decision records:
 
@@ -63,7 +64,8 @@ adr list --toc > docs/adr/README.md
 sty graph | mmdc --input - --output docs/userstory/graph.svg
 ```
 
-Run `adr help`, or `sty help new`, for each tool's commands and options.
+Run `adr help`, or `sty help new`, for each tool's commands and options, or
+read them all on the [documentation site](https://mustardcustarddev.github.io/detoo/).
 
 ## Agent skills
 

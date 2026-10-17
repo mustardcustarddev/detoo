@@ -2,6 +2,10 @@ module github.com/mustardcustard/detoo
 
 go 1.26
 
+// The documentation site is a Node project, and some npm packages ship .go
+// files of their own, which must not be taken for part of this module.
+ignore ./docs/site
+
 require (
 	charm.land/huh/v2 v2.0.3
 	charm.land/lipgloss/v2 v2.0.6

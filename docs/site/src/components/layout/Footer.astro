@@ -1,0 +1,23 @@
+---
+/**
+ * Footer.astro — the licence, the feed, and credit for the theme the site is
+ * built on.
+ */
+import { url } from '../../lib/url';
+import { SITE } from '../../lib/site';
+---
+
+<footer class="border-t border-[var(--border)] bg-[var(--bg)]">
+  <div class="mx-auto flex max-w-[90rem] flex-col gap-3 px-4 py-8 text-sm text-[var(--text-tertiary)] md:flex-row md:items-center md:justify-between md:px-6">
+    <p>
+      {SITE.name} is released under the{' '}
+      <a class="underline hover:text-[var(--text-primary)]" href={`${SITE.repo}/blob/main/LICENSE.md`}>Apache License 2.0</a>.
+    </p>
+    <p class="flex flex-wrap gap-x-4 gap-y-1">
+      <a class="hover:text-[var(--text-primary)]" href={url('docs/')}>Docs</a>
+      <a class="hover:text-[var(--text-primary)]" href={url('blog/')}>Blog</a>
+      <a class="hover:text-[var(--text-primary)]" href={url('rss.xml')}>RSS</a>
+      <a class="hover:text-[var(--text-primary)]" href={SITE.repo}>GitHub</a>
+    </p>
+  </div>
+</footer>

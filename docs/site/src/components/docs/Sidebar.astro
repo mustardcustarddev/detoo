@@ -1,0 +1,67 @@
+---
+/**
+ * Sidebar.astro — every page of the documentation, grouped, with the current
+ * page marked.
+ */
+import type { Group } from '../../lib/sidebar';
+import { url } from '../../lib/url';
+
+interface Props {
+  groups: Group[];
+  current: string;
+  label: string;
+}
+
+const { groups, current, label } = Astro.props;
+---
+
+<nav aria-label={label} class="text-sm">
+  {
+    groups.map((group) => (
+      <section class="mb-6">
+        <h2
+          class:list={[
+            'mb-2 px-3 font-semibold',
+            group.code
+              ? 'font-mono text-sm text-[var(--text-primary)]'
+              : 'text-xs uppercase tracking-wider text-[var(--text-tertiary)]',
+          ]}
+        >
+          {group.label}
+        </h2>
+        <ul class="space-y-0.5">
+          {group.pages.map((p) => (
+            <li>
+              <a
+                href={p.href}
+                aria-current={p.href === current ? 'page' : undefined}
+                class:list={[
+                  'block rounded-md px-3 py-1.5 transition-colors',
+                  group.code && p.label !== 'Overview' && 'font-mono',
+                  p.href === current
+                    ? 'bg-[var(--color-primary-500)]/10 font-semibold text-[var(--color-primary-600)] dark:text-[var(--color-primary-300)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]',
+                ]}
+              >
+                {p.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+  <p class="mt-2 border-t border-[var(--border)] px-3 pt-4">
+    <a
+      href={url('llms-full.txt')}
+      class="inline-flex items-center gap-2 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+      title="Every page of the docs in one Markdown file, for language models"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"></path>
+      </svg>
+      Docs as Markdown
+    </a>
+  </p>
+</nav>

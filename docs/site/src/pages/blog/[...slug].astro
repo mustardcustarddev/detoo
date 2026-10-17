@@ -1,0 +1,19 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import CallToAction from '../../components/blog/CallToAction.astro';
+
+export async function getStaticPaths() {
+  // Drafts are shown by `astro dev`, and left out of the built site.
+  const posts = await getCollection('blog', (post) => import.meta.env.DEV || !post.data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogPost post={post}>
+  <Content />
+  <CallToAction slot="after" tool={post.data.tool} />
+</BlogPost>

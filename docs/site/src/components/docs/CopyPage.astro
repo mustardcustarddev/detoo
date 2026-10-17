@@ -1,0 +1,180 @@
+---
+/**
+ * CopyPage.astro — a split button for taking a page of the docs to a language
+ * model: the button copies the page as Markdown, and the chevron beside it
+ * opens a menu that also offers the Markdown as plain text.
+ *
+ * The Markdown is fetched when it is asked for, not carried in the page.
+ */
+interface Props {
+  /** Where the page's Markdown is served. */
+  href: string;
+}
+
+const { href } = Astro.props;
+const menu = 'copy-page-menu';
+---
+
+<div class="copy-page relative shrink-0" data-copy-page data-href={href}>
+  <div class="inline-flex rounded-lg border border-[var(--border)] bg-[var(--bg)] text-sm font-medium shadow-sm">
+    <button
+      type="button"
+      data-copy
+      class="inline-flex items-center gap-2 rounded-l-lg px-3 py-1.5 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span data-label aria-live="polite">Copy page</span>
+    </button>
+    <button
+      type="button"
+      data-toggle
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls={menu}
+      aria-label="More ways to take this page"
+      class="inline-flex items-center rounded-r-lg border-l border-[var(--border)] px-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
+    >
+      <svg class="h-4 w-4 transition-transform" data-chevron viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id={menu}
+    role="menu"
+    hidden
+    class="absolute right-0 z-40 mt-2 w-72 rounded-xl border border-[var(--border)] bg-[var(--bg)] p-1.5 shadow-xl"
+  >
+    <button
+      type="button"
+      role="menuitem"
+      data-copy
+      class="flex w-full items-start gap-3 rounded-lg p-2.5 text-left hover:bg-[var(--bg-secondary)] focus:bg-[var(--bg-secondary)] focus:outline-none"
+    >
+      <svg class="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-secondary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span>
+        <span class="block text-sm font-semibold text-[var(--text-primary)]">Copy page</span>
+        <span class="block text-xs text-[var(--text-tertiary)]">Copy page as markdown for LLMs</span>
+      </span>
+    </button>
+    <a
+      role="menuitem"
+      href={href}
+      target="_blank"
+      rel="noopener"
+      class="flex w-full items-start gap-3 rounded-lg p-2.5 hover:bg-[var(--bg-secondary)] focus:bg-[var(--bg-secondary)] focus:outline-none"
+    >
+      <svg class="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-secondary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"></path>
+      </svg>
+      <span>
+        <span class="block text-sm font-semibold text-[var(--text-primary)]">View as markdown</span>
+        <span class="block text-xs text-[var(--text-tertiary)]">Open this page as plain text</span>
+      </span>
+    </a>
+  </div>
+</div>
+
+<script>
+  /**
+   * copyFrom puts the text at href on the clipboard.  Safari allows a write to
+   * the clipboard only while it is handling the click, so the fetch is handed
+   * to the clipboard as a promise rather than awaited first; browsers without
+   * ClipboardItem fetch, then write.
+   */
+  async function copyFrom(href: string): Promise<void> {
+    const text = fetch(href).then((response) => {
+      if (!response.ok) throw new Error(`${href}: ${response.status}`);
+      return response.text();
+    });
+    if (typeof ClipboardItem !== 'undefined' && navigator.clipboard?.write) {
+      try {
+        const blob = text.then((t) => new Blob([t], { type: 'text/plain' }));
+        await navigator.clipboard.write([new ClipboardItem({ 'text/plain': blob })]);
+        return;
+      } catch {
+        // Fall through: some browsers take only a Blob, not a promise of one.
+      }
+    }
+    await navigator.clipboard.writeText(await text);
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-copy-page]')) {
+    const href = root.dataset.href!;
+    const label = root.querySelector<HTMLElement>('[data-label]')!;
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]')!;
+    const chevron = root.querySelector<SVGElement>('[data-chevron]')!;
+    const menu = root.querySelector<HTMLElement>('[role="menu"]')!;
+    const items = [...menu.querySelectorAll<HTMLElement>('[role="menuitem"]')];
+    let reset: number | undefined;
+
+    const setOpen = (open: boolean, focus = false) => {
+      menu.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      chevron.classList.toggle('rotate-180', open);
+      if (open && focus) items[0].focus();
+    };
+
+    const show = (text: string) => {
+      label.textContent = text;
+      clearTimeout(reset);
+      reset = window.setTimeout(() => (label.textContent = 'Copy page'), 2000);
+    };
+
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+      button.addEventListener('click', async () => {
+        setOpen(false);
+        try {
+          await copyFrom(href);
+          show('Copied');
+        } catch {
+          show('Copy failed');
+        }
+      });
+    }
+
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true', true));
+    items.at(-1)!.addEventListener('click', () => setOpen(false));
+
+    // Close on Escape, returning to the chevron, and move between the items
+    // with the arrow keys, as a menu does.
+    menu.addEventListener('keydown', (event) => {
+      const i = items.indexOf(document.activeElement as HTMLElement);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        toggle.focus();
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const step = event.key === 'ArrowDown' ? 1 : -1;
+        items[(i + step + items.length) % items.length].focus();
+      }
+    });
+    toggle.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setOpen(true, true);
+      }
+    });
+
+    // Close when a click lands elsewhere, or the keyboard moves the focus
+    // elsewhere.  A focusout with no related target is left to the click:
+    // Safari gives a link no focus when it is clicked, so pressing "View as
+    // markdown" blurs the menu with nowhere to go, and closing it then would
+    // hide the link before the click reached it.
+    document.addEventListener('click', (event) => {
+      if (!root.contains(event.target as Node)) setOpen(false);
+    });
+    root.addEventListener('focusout', (event) => {
+      const to = event.relatedTarget as Node | null;
+      if (to && !root.contains(to)) setOpen(false);
+    });
+  }
+</script>

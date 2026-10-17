@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import { url, absolute } from '../lib/url';
+import { SITE } from '../lib/site';
+
+const tools = [
+  { name: 'adr', what: 'keeps architecture decision records: decisions, and why they were made.' },
+  { name: 'rfc', what: 'keeps requests for comments: proposed changes, written down for comment before they are made.' },
+  { name: 'sty', what: 'keeps user stories: who wants something of the software, what, and why, with the acceptance criteria that say when it is done.' },
+  { name: 'pse', what: 'keeps PIOSEE playbooks, each a plan for a situation before it arises.' },
+  { name: 'detoo', what: 'checks that every log is where its tool looks for it, and puts right what is not.' },
+];
+
+const starts = [
+  { title: 'Quick start', text: 'Start a log and write your first record in a few commands.', href: url('docs/quick-start/') },
+  { title: 'The tools', text: 'Every command of every tool, with the same help it prints.', href: url('docs/adr/') },
+  { title: 'Agent skills', text: 'Let your agent write the first draft, asking you for the reasons.', href: url('docs/skills/') },
+];
+
+const posts = (await getCollection('blog', (post) => !post.data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
+---
+
+<BaseLayout title={SITE.name} description={SITE.description}>
+  <JsonLd
+    slot="head"
+    type="WebSite"
+    data={{ name: SITE.name, url: absolute('', Astro.site), description: SITE.description }}
+  />
+  <Header slot="header" />
+
+  <main class="mx-auto max-w-5xl px-4 py-16 md:px-6 md:py-24">
+    <section class="flex flex-col items-center text-center">
+      <img src={url('detoo-logo.png')} alt="The detoo robot, drawing with a set square" width="160" height="160" class="h-40 w-40" />
+      <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight md:text-5xl">detoo</h1>
+      <p class="mt-4 max-w-2xl text-lg text-[var(--text-secondary)]">
+        Command-line tools and agent skills for working with decision records.
+      </p>
+    </section>
+
+    <section class="mt-16 grid gap-4 md:grid-cols-3">
+      {
+        starts.map((s) => (
+          <a
+            href={s.href}
+            class="rounded-2xl border border-[var(--border)] p-6 transition-colors hover:border-[var(--color-primary-500)] hover:bg-[var(--bg-secondary)]"
+          >
+            <h2 class="font-semibold">{s.title} →</h2>
+            <p class="mt-2 text-sm text-[var(--text-secondary)]">{s.text}</p>
+          </a>
+        ))
+      }
+    </section>
+
+    <section class="mt-16">
+      <h2 class="font-display text-2xl font-bold tracking-tight">The tools</h2>
+      <dl class="mt-6 divide-y divide-[var(--border)] border-y border-[var(--border)]">
+        {
+          tools.map((t) => (
+            <div class="grid gap-1 py-4 md:grid-cols-[8rem_1fr]">
+              <dt>
+                <a class="font-mono font-semibold text-[var(--color-primary-500)] hover:underline" href={url(`docs/${t.name}/`)}>
+                  {t.name}
+                </a>
+              </dt>
+              <dd class="text-[var(--text-secondary)]">{t.what}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    {
+      posts.length > 0 && (
+        <section class="mt-16">
+          <h2 class="font-display text-2xl font-bold tracking-tight">From the blog</h2>
+          <ul class="mt-6 space-y-6">
+            {posts.map((post) => (
+              <li>
+                <a class="text-lg font-semibold hover:underline" href={url(`blog/${post.id}/`)}>
+                  {post.data.title}
+                </a>
+                <p class="mt-1 text-sm text-[var(--text-tertiary)]">
+                  <time datetime={post.data.pubDate.toISOString()}>{dateFormatter.format(post.data.pubDate)}</time>
+                </p>
+                <p class="mt-2 text-[var(--text-secondary)]">{post.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>

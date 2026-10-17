@@ -1,0 +1,39 @@
+---
+/**
+ * CallToAction.astro — what follows a post: how to start, and, when the post
+ * is about one tool, that tool's documentation.
+ */
+import { url } from '../../lib/url';
+import type { Tool } from '../../lib/site';
+
+interface Props {
+  tool?: Tool;
+}
+
+const { tool } = Astro.props;
+---
+
+<aside class="mt-16 rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] p-6 md:p-8">
+  <h2 class="font-display text-xl font-bold tracking-tight">Try it in your own repository</h2>
+  <p class="mt-2 text-[var(--text-secondary)]">
+    detoo is free and open source. Install the tools, then start a log in the project you are working on.
+  </p>
+  <p class="mt-6 flex flex-wrap gap-3">
+    <a
+      href={url('docs/install/')}
+      class="rounded-lg bg-[var(--color-primary-600)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-primary-700)]"
+    >
+      Install detoo
+    </a>
+    {
+      tool && (
+        <a
+          href={url(`docs/${tool}/`)}
+          class="rounded-lg border border-[var(--border)] px-4 py-2 font-mono text-sm font-semibold hover:border-[var(--color-primary-500)]"
+        >
+          Read the {tool} docs
+        </a>
+      )
+    }
+  </p>
+</aside>

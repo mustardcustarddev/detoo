@@ -12,9 +12,11 @@ BINARIES    := $(addprefix $(BUILD_DIR)/,$(COMMANDS))
 COMPLETIONS := $(addsuffix .bash,$(BINARIES))
 
 # The commands embed their help and their record templates, so those files are
-# sources too: a binary is out of date when any of them changes.
+# sources too: a binary is out of date when any of them changes.  The
+# documentation site is left out: its node_modules holds tens of thousands of
+# files, some of them .go files that are not part of this module.
 EMBEDDED    := $(shell find internal -type f ! -name '*.go')
-SOURCES     := $(shell find . -type f -name '*.go') $(EMBEDDED) go.mod go.sum
+SOURCES     := $(shell find . -path ./docs/site -prune -o -type f -name '*.go' -print) $(EMBEDDED) go.mod go.sum
 
 all: help
 
@@ -63,6 +65,17 @@ install: deploy
 release: build ## tag the current commit and publish a release
 	git tag `git rev-parse --short HEAD` && git push --tags origin main
 	gh release create `git rev-parse --short HEAD` --generate-notes
+
+#############################################################################
+# Documentation site
+#############################################################################
+
+# The site's build generates its command reference from the tools' help, with
+# tools/sitegen, so it needs Go as well as Node.  It is not part of `build`,
+# which needs Go alone.
+.PHONY: site
+site: ## build the documentation site into docs/site/dist, and check its links
+	cd docs/site && npm ci && npm run build && npm run check-links
 
 #############################################################################
 # Housekeeping

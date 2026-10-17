@@ -141,3 +141,11 @@ terraform.rc
 ### Agent skills ###
 # Symlinks into .agents/skills, created by the skills installer
 .claude/skills/
+/docs/superpowers/
+
+### Documentation site ###
+# Dependencies, build output and the command pages tools/sitegen generates
+docs/site/node_modules/
+docs/site/dist/
+docs/site/.astro/
+docs/site/src/content/reference/
