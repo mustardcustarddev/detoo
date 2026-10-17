@@ -74,19 +74,17 @@ Install the skills into your project with the
 npx skills add mustardcustarddev/detoo
 ```
 
-They drive the tools for you: writing ADRs, RFCs, user stories and PIOSEE
-playbooks, by interviewing you for the reasons rather than guessing them, and
-reviewing and checking an ADR log. See the [catalogue](skills/README.md) for
-what each one does, and more ways to install them.
+The skills use the tools to write ADRs, RFCs, user stories and PIOSEE
+playbooks, asking you for the reasons behind each one. Others review an ADR
+log, and check the code against it. The [catalogue](skills/README.md)
+describes each skill, and other ways to install them.
 
 > [!TIP]
-> Let your agent write the first draft. The skills read the code and the
-> existing records, interview you for the context, the options and the
-> reasons, and write a complete draft in your project's template. They write
-> only what you said or the repository shows, so nothing is invented, and
-> every document they create is a Draft for your team to review. A blank
-> template becomes a short conversation, and the reasoning behind a decision
-> is captured while it is still fresh.
+> Let your agent write the first draft. The skills read the code, the
+> existing records and the documentation of the systems involved, ask you
+> about what they cannot find, and fill in your project's template. They
+> write only what you told them or what they read, and every document starts
+> as a Draft for your team to review.
 
 Ask your agent in your own words, for example:
 
@@ -122,12 +120,11 @@ records the renames, and to renumber documents that share a number, in the
 order git added them. `--git` and `--renumber` say yes without asking.
 Renumbering renames documents, so check anything else that refers to them.
 
-## Migrating from ADR Tools
+## Migrating from adr-tools
 
 A project that keeps its decisions with [adr-tools][] has them in `doc/adr`,
 numbered without a prefix, such as `0001-record-architecture-decisions.md`.
-`detoo doctor` finds the discrepancies, and `detoo doctor --fix` fixes them
-automatically:
+`detoo doctor` reports what differs, and `detoo doctor --fix` fixes it:
 
 ```bash
 detoo doctor                # report what is out of place

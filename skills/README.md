@@ -14,31 +14,31 @@ These need the `adr` tool.
 
 * [**create-adr**](create-adr/SKILL.md): record a decision with `adr`, filling
   in the template only from evidence, and interviewing the user for the rest.
-* [**review-adrs**](review-adrs/SKILL.md): judge each existing record by
-  whether it is truly architectural, show the reasoning, and offer to
-  deprecate, supersede or delete the rest.
-* [**find-missing-adrs**](find-missing-adrs/SKILL.md): survey the whole
-  codebase once, and propose records for the architectural decisions it
-  embodies but the log lacks.
+* [**review-adrs**](review-adrs/SKILL.md): judge whether each existing record
+  is architectural, show the reasoning, and offer to deprecate, supersede or
+  delete those that are not.
+* [**find-missing-adrs**](find-missing-adrs/SKILL.md): read the whole
+  codebase once, and propose records for the architectural decisions in the
+  code that the log does not record.
 * [**check-adrs**](check-adrs/SKILL.md): check that the code follows one
-  record, or every record in force, and advise on remediation.
+  record, or every record in force, and suggest fixes where it does not.
 
 ### Requests for comments
 
 This needs the `rfc` tool.
 
 * [**create-rfc**](create-rfc/SKILL.md): draft an RFC with `rfc` from a
-  one-line request, by reading the template, gathering facts, and interviewing
-  the user for their intent and reasons.
+  one-line request, reading the code for the facts, and asking the user what
+  they intend and why.
 
 ### User stories
 
 This needs the `sty` tool.
 
 * [**create-user-story**](create-user-story/SKILL.md): write a user story with
-  `sty` from a one-line subject, by reading the template, gathering facts, and
-  interviewing the user for who it is for, what they need, why, and how they
-  will know it is done. Splits epics into smaller stories.
+  `sty` from a one-line subject, asking the user who it is for, what they
+  need, why, and how they will know it is done. Splits epics into smaller
+  stories.
 
 ### PIOSEE playbooks
 
@@ -48,18 +48,21 @@ This needs the `pse` tool.
   `pse`: a plan, made in advance, for a situation the team expects to face.
   It covers the scenario, the decision it calls for, the information to
   gather, the options, the rules for selecting one, the steps to execute it,
-  and how to evaluate the result. It gathers the concrete detail from the
-  code and documents, and interviews the user for the plan. It also revises
-  a playbook after it has been used.
+  and how to evaluate the result. It asks the user about the problem, then
+  researches the code and the documentation of the systems involved, such as
+  a payment provider's, to propose the investigation, the options and the
+  steps for the user to confirm. It interviews the user step by step only
+  where its research finds nothing. It also revises a playbook after it has
+  been used.
 
-### What they share
+### What they have in common
 
-All of them share two principles. An agent writes nothing it cannot evidence,
-and asks the user rather than inventing context or reasons. And decisions are
-made at the right level, when they're needed: only architectural decisions
-belong in the ADR log, only changes others would want a say in need an RFC,
-a user story describes an outcome for someone, not a task, and a PIOSEE
-playbook plans for a situation before it arises, by rules the team sets.
+Each skill writes only what it has a source for: the repository, the
+documentation it has read, or the user. It asks the user for anything else. Each also keeps its log to what belongs
+there. Only architectural decisions go in the ADR log, and only changes that
+others would want a say in need an RFC. A user story describes an outcome
+someone wants. A PIOSEE playbook plans for a situation before it arises, by
+rules the team sets.
 
 Every ADR, RFC, user story and PIOSEE playbook an agent creates has the status
 `Draft`. Accepting one is for people to do.
@@ -89,15 +92,15 @@ npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
   --skill create-user-story --skill create-piosee
 ```
 
-Name the skills you want, rather than using `--skill '*'`: the CLI also finds
-`feature-driven-vertical-slices`, in `.claude/skills/`, which is for working
-on detoo itself, not for keeping a log.
+Name the skills you want. `--skill '*'` would also install
+`feature-driven-vertical-slices`, from `.claude/skills/`, which is for working
+on detoo itself.
 
 Some useful options:
 
 | Option           | Effect                                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------------------- |
-| `-g`, `--global` | Install for your user, in every project, rather than in the current project.                      |
+| `-g`, `--global` | Install for your user, in every project.                                                          |
 | `-a AGENT`       | Install for a particular agent, such as `-a claude-code` or `-a codex`. Repeat for more than one. |
 | `-y`, `--yes`    | Skip the confirmation prompts.                                                                    |
 

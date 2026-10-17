@@ -1,8 +1,8 @@
 ---
 name: create-piosee
-description: Writes a PIOSEE playbook with the pse command-line tool. A playbook is a plan, made in advance, for a situation the team expects to face, such as a customer reporting an unexpected charge, a tax threshold being crossed, or a failure that has happened before. It sets out the Scenario, the Problem to decide, the Information to gather, the Options, the rules for Selection, the steps of Execution and how to Evaluate the result. The skill turns a short request, such as "write a playbook for when a customer can't cancel", into a draft. It reads the project's template afresh, gathers the facts that the code, the documents and the systems hold, and interviews the user for the decision, the options and the rules for choosing, rather than guessing them. Every playbook it creates has the status Draft. Use it when the user asks to write, plan or draft a playbook or a PIOSEE, to plan for an incident or situation before it happens, to plan "what we do when…", to revise, replace or update a playbook (for example after one was used), or to start a PIOSEE log with pse init.
+description: Writes a PIOSEE playbook with the pse command-line tool. A playbook is a plan, made in advance, for a situation the team expects to face, such as a customer reporting an unexpected charge, a tax threshold being crossed, or a failure that has happened before. It sets out the Scenario, the Problem to decide, the Information to gather, the Options, the rules for Selection, the steps of Execution and how to Evaluate the result. The skill turns a short request, such as "write a playbook for when a Stripe payment is handled incorrectly", into a draft. It interviews the user about the nature of the problem, then researches the codebase, the project's documents and the documentation of the systems involved, such as the payment provider's, to propose the investigation, the options and the steps. It asks the user to confirm each proposal, and interviews them step by step only where its research finds nothing. Every playbook it creates has the status Draft. Use it when the user asks to write, plan or draft a playbook or a PIOSEE, to plan for an incident or situation before it happens, to plan "what we do when…", to revise, replace or update a playbook (for example after one was used), or to start a PIOSEE log with pse init.
 license: Apache-2.0
-compatibility: Requires the pse command-line tool on PATH.
+compatibility: Requires the pse command-line tool on PATH. Reading third-party documentation needs a web fetch or search tool.
 ---
 
 # Create a PIOSEE playbook
@@ -26,10 +26,12 @@ time, and nothing that happened. An incident can prompt a playbook, and what
 was learned from it can shape one, but the playbook is written for the next
 time.
 
-What the situation is, what the team will decide, and how, belong to the user
-and their team. Your job is to draw the plan out of them, to find the facts
-that make it concrete, and to write it down faithfully. You are the
-interviewer and the scribe, not the owner of the plan.
+The user knows what the problem is. Most of the rest can be found out: the
+code shows where the evidence is and what the system can do, and the
+documentation of the systems involved shows the options and the steps. Your
+job is to learn the problem from the user, research the rest, propose it with
+its sources, and have the user confirm it. Ask the user to work through a
+section step by step only when your research finds nothing for it.
 
 ## The rules that matter most
 
@@ -38,22 +40,31 @@ interviewer and the scribe, not the owner of the plan.
    imperative: what to collect, which option to select when, what to do. If
    the user is describing an incident, write the plan that would serve the
    next one, and leave the incident's own details out.
-2. **Write nothing you cannot evidence.** Every claim must come from one of
-   three places:
+2. **Interview for the problem; research the rest.** Ask the user what
+   happens, how it shows itself, and what has to be decided. Then research
+   the context, the investigation, the options and the steps, and propose
+   them. Ask the user to confirm each proposal: yes, no, or a correction in
+   their own words.
+3. **Write nothing you cannot evidence.** Every claim must come from one of
+   four places:
    * the user, in this conversation;
-   * the repository or documents, which you have read;
+   * the repository or the project's documents, which you have read;
+   * the documentation of a system involved, such as a payment provider's,
+     which you have read;
    * the output of a command you ran.
 
-   This matters most for the concrete detail that makes a playbook usable:
-   the names of services, logs, paths and fields, the steps through a
-   dashboard, links, and reason codes. Policies, owners, authority, deadlines
-   and targets matter just as much. Someone will follow these under pressure,
-   and an invented one sends them the wrong way.
-3. **The user sets the rules.** The options that are open, when each applies,
-   the criteria for selecting one and the default are the team's. You may
-   suggest options, criteria or steps when the user asks. Label them as
-   suggestions, and write them in only if the user adopts them.
-4. **Every playbook you create is a Draft.** The tool writes `Draft`; never
+   A proposal cites its source, and enters the playbook only when the user
+   confirms it. What you know from memory, or think is common practice, is
+   not a source: read the documentation, or ask. This matters most for the
+   concrete detail that makes a playbook usable: the names of services,
+   logs, paths and fields, the steps through a dashboard or an API, links,
+   and reason codes. Someone will follow these under pressure, and an
+   invented one sends them the wrong way.
+4. **Policy is the team's.** Authority limits, owners, deadlines, targets and
+   the default option are the team's to set. Propose one only when a policy,
+   a contract or the system's documentation states it, and say which. Where
+   none does, ask.
+5. **Every playbook you create is a Draft.** The tool writes `Draft`; never
    change it. Whether a playbook is agreed is for the team to record.
 
 When you want to make a claim and have no evidence for it, **stop and ask the
@@ -66,8 +77,8 @@ Before you start, read:
 
 * [piosee.md](references/piosee.md): what a PIOSEE playbook is, what each
   section is for, and what makes a good one;
-* [interviewing.md](references/interviewing.md): how to plan and run the
-  interview, with a worked example;
+* [interviewing.md](references/interviewing.md): how to interview for the
+  problem, research the rest, and confirm it, with a worked example;
 * [writing-piosees.md](references/writing-piosees.md): what counts as
   evidence, what to do when a fact is missing, and how to write each section.
 
@@ -100,8 +111,8 @@ one in [pse-tool.md](references/pse-tool.md#templates). Do not work from
 memory of the built-in template or of an earlier playbook; projects change
 their templates.
 
-List its sections, and the guidance under each. These are what the interview
-must fill.
+List its sections, and the guidance under each. These are what the research
+and the confirmations must fill.
 
 ### 3. Check that it is a playbook
 
@@ -125,91 +136,110 @@ must fill.
 * **A request that covers several situations** may need several playbooks.
   List the situations, and confirm which to write.
 
-### 4. Gather the facts
+### 4. Interview for the problem
 
-A playbook is only as useful as it is concrete. The person following it needs
-to know exactly where to look and what to click. Much of that is in the
-repository, so learn what it can tell you before asking anything:
+A request such as "a Stripe payment handled incorrectly" names an area, not a
+situation. Before researching, learn from the user, in one or two rounds:
 
-* the code that handles the situation, and the names it uses: services and
-  components, the logs they write, records they store (by path and field),
-  events they emit or receive, and configuration;
-* the third-party systems involved, such as a payment provider or a cloud
-  console, and the documentation the project links to for them;
-* runbooks, policies, support macros, earlier playbooks, ADRs, and anything
-  the user points you to;
-* how the situation showed itself before, if the user points you to an
-  incident, a ticket or a log, as evidence for the Scenario and the
-  Information to gather.
+* **what happens**, or is reported: a customer charged twice, charged with no
+  order, or paid for an order that stays unpaid;
+* **how the team comes to know of it**: a customer contact, an alert, a
+  reconciliation report;
+* **the systems involved**, as the user knows them: the provider, the
+  services, the tools support uses;
+* **what has to be decided** when it happens, and what goes wrong if it is
+  decided wrongly;
+* **anything to read first**: an incident, a ticket, a log, a document.
 
-Run read-only commands only. Note where each fact came from. Cite a link only
-if you have read the page, or the user gave it to you.
+Play the Scenario and the Problem back in a sentence or two, and have the
+user confirm them. These two cannot come from research: without them there is
+nothing to research.
 
-The facts are yours to establish. The plan is the user's. Start the fact
-sheet described in
-[writing-piosees.md](references/writing-piosees.md#facts-first), and mark
-everything the template needs that you do not have as **Unknown**.
+### 5. Research
 
-### 5. Plan the interview
+Learn everything you can before asking anything more. Work through the
+playbook's concerns in order, and note each finding with its source in the
+fact sheet described in
+[writing-piosees.md](references/writing-piosees.md#facts-first).
 
-Go through the template's sections, and under each write the questions this
-situation raises, using the question bank in
-[interviewing.md](references/interviewing.md). Make them specific to the
-situation and to what you found. Cross off what the facts already answer.
-Keep the plan in your working notes, and revise it as answers come in.
+1. **The context of the problem.** Find the code that handles the situation,
+   and how it can go wrong: where payments are created, which events are
+   handled and how, retries, idempotency, and the states a record passes
+   through. Read anything the user pointed you to, and the existing
+   playbooks, runbooks, ADRs and policies that touch it.
+2. **The course of investigation (Information).** Find where the evidence
+   lives, and how to reach it: the logs and the events to look for in them,
+   the records by table or path and field, the identifiers that link one
+   system to another (such as an order ID kept in a payment's metadata),
+   the admin tools and dashboards the project uses, and who can reach each.
+3. **The options and the execution (Options, Execution).** Read the
+   documentation of each system involved: the provider's guides and API
+   reference for this situation, such as refunds, disputes and resending
+   events. Use the official documentation, and match it to the version the
+   project uses, such as an API version pinned in its configuration. Find
+   what the code can do too: admin endpoints, scripts, jobs that can be run
+   again. From these, work out the realistic options, when each applies, its
+   constraints (time limits, whether it can be undone), and its steps.
+4. **Selection and Evaluation.** Find what decides between the options: the
+   conditions the documentation sets, and any policy, limit, service level
+   or metric in the repository. Draft rules that map what the investigation
+   finds onto an option, with a conservative fallback where the evidence is
+   unclear, and mark the source of each.
 
-### 6. Interview the user
+Run read-only commands only. Do not call a system's API, or query a live
+system, unless the user asks you to. Cite a link only if you have read the
+page, or the user gave it to you.
 
-Ask in rounds, a section or two at a time, in the template's order. Each
-round is one call to your question tool. For the built-in template:
+Mark everything the template needs that your research did not settle as
+**Unknown**.
 
-1. **Scenario**: what happens, or is reported, and how the team comes to know
-   of it. How often it happens, or when it is expected, and the standing
-   conditions that frame it.
-2. **Problem**: the decision that has to be made, as one question, and what
-   goes wrong if it is decided wrongly, in each direction.
-3. **Information**: show the sources you found, and ask what else the person
-   handling it must find out, and from whom. Ask what is known and what is
-   assumed, and how to settle the critical unknowns quickly.
-4. **Options**: the courses of action open to them, when each applies, and
-   the tradeoffs of each. Ask what to do when the evidence is unclear: the
-   conservative fallback.
-5. **Selection**: the criteria, which findings lead to which option, the
-   default, how confident they are in the rule, and what it assumes.
-6. **Execution**: the steps for each option, in order, by role. Cover what
-   each step depends on, what to record, whom to tell and how, how to roll
-   back, and what to do to stop it happening again.
-7. **Evaluation**: how they will tell the playbook worked, with measures and
-   targets. Ask who reviews it, and when, and what they do if it falls short.
+### 6. Confirm what you found
 
-After each round, play the section back in a sentence or two, so the user can
-correct it before the next section builds on it. If an answer is vague, ask a
-follow-up rather than sharpening it yourself.
+Go through the sections in the template's order. For each, write the
+proposal in the chat, in the playbook's own words, with the source of each
+point. Then ask the user to confirm it through your question tool, with the
+options **Yes** and **No**, and their correction typed in as **Other**.
+Confirm up to four sections in one call. See
+[interviewing.md](references/interviewing.md#confirming-a-proposal).
 
+* **Yes**: the proposal is the user's now. Mark it confirmed in the fact
+  sheet.
+* **Other**: use the correction in place of the proposal, and play it back
+  if it changes more than a detail.
+* **No**: ask what is wrong, as an open question, and treat the section as
+  one research did not settle.
+
+Where a section offers real choices, such as which of the options the team
+would use, ask about them in one multiple-choice question instead.
+
+### 7. Interview for what research did not find
+
+For each section, or each point, still marked Unknown, interview the user
+step by step, using the question bank in
+[interviewing.md](references/interviewing.md#question-bank). Make each
+question specific, and cite what you did find. This always includes any
+policy no source states: authority limits, owners, the default option,
+deadlines and targets.
+
+If an answer is vague, ask a follow-up rather than sharpening it yourself.
 When the user cannot answer a point, offer the choices in
 [writing-piosees.md](references/writing-piosees.md#when-a-fact-is-missing).
-The scenario, the decision and the options cannot be deferred: without them
-there is no plan to write. Say so.
 
-If the user asks you to fill the gaps yourself, explain that someone will
-follow this playbook under pressure, so it must say what the team means.
-Offer to write only what is known, and mark the rest as open questions. If
-the user asks for your ideas, give them as labelled suggestions; see
-[writing-piosees.md](references/writing-piosees.md#your-own-suggestions).
+Stop when every section of the template can be written from confirmed
+entries in the fact sheet.
 
-Stop when every section of the template can be written from the fact sheet.
-
-### 7. Draft, and get approval
+### 8. Draft, and get approval
 
 Write the draft in the conversation, in the template's sections, adding any
-section the user asked for or the house style uses. After it, list the
-sources: each claim, and where it came from. Ask the user to approve it or
-correct it. Revise until they approve.
+section the user asked for or the house style uses, such as **Reference
+Links** to the documentation you read. After it, list the sources: each
+claim, where it came from, and whether the user confirmed it or gave it. Ask
+the user to approve the draft or correct it. Revise until they approve.
 
 Do not create a file before approval. `pse new` takes the next number, and
 with `-r` or `-u` it changes other playbooks too.
 
-### 8. Create the playbook
+### 9. Create the playbook
 
 ```bash
 VISUAL= EDITOR= pse new "Title of the playbook"
@@ -236,7 +266,7 @@ Then edit the new file:
 Never write link lines by hand. See [pse-tool.md](references/pse-tool.md) for
 every command and its effects.
 
-### 9. Finish
+### 10. Finish
 
 * Read the file back, and check it against the list at the end of
   [writing-piosees.md](references/writing-piosees.md#before-you-finish).
@@ -257,8 +287,8 @@ A playbook is meant to be kept current, so that it works when it is needed.
 
 * **A Draft** is revised in place, to the same standard of evidence.
 * **When a fact changes**, such as a renamed service, a moved menu or a new
-  owner, ask the user whether to correct the playbook in place. Git keeps
-  the history.
+  owner, research it again, propose the correction, and ask the user whether
+  to correct the playbook in place. Git keeps the history.
 * **When the plan changes**, ask the user which they prefer:
   * a new playbook that replaces the old one (`-r`), for a new set of
     options or selection rules for the same situation;
@@ -266,23 +296,30 @@ A playbook is meant to be kept current, so that it works when it is needed.
   * an edit in place.
 * **After the playbook has been used**, the user may want to review it
   against its own Evaluation section. Ask what happened, what the playbook
-  got right, and where it was missing, wrong or slow. Revise the plan from
-  their answers, as above. Leave the incident itself out of the playbook; it
-  belongs where the team records its incidents.
+  got right, and where it was missing, wrong or slow. Research what it
+  lacked, and revise the plan as above. Leave the incident itself out of the
+  playbook; it belongs where the team records its incidents.
 
 ## Edge cases
 
 * **The user says the playbook is agreed.** It is still created as a Draft.
   Tell them they can mark it agreed through their process.
 * **The user wants a quick playbook now, and the details later.** Write what
-  is known, and mark the rest as open questions. The scenario, the decision
-  and at least one option must still come from the user.
-* **There is only one known option.** That is a valid playbook. Ask what to
-  do when that option does not apply, or the evidence is unclear, which is
-  often an escalation. Record the answer as the fallback. Do not invent one.
+  is confirmed, and mark the rest as open questions. The scenario and the
+  decision must still come from the user, and at least one option must be
+  confirmed.
+* **There is only one known option.** That is a valid playbook. Propose the
+  fallback for when it does not apply, or the evidence is unclear, if a
+  source gives one; otherwise ask for it. Do not invent one.
+* **You cannot read the documentation**, because you have no web tool, or
+  the pages are not public. Say so, ask the user for the documentation or a
+  link, and interview for what it would have answered.
+* **The sources disagree**, such as the code and the documentation, or two
+  versions of an API. Show both, with their sources, and ask the user which
+  holds.
 * **The user asks you to decide the selection rule.** Explain that the
-  playbook will be followed as the team's policy, so the rule must be theirs.
-  Offer your comparison of the options, and your view, labelled as yours.
+  playbook will be followed as the team's policy, so the rule must be theirs
+  to confirm. Propose one from your sources, labelled with them.
 * **The `pse` command is missing.** Tell the user. Do not create playbooks by
   hand, since the numbering and links would not be maintained.
 * **The tool reports an error.** Show the user the message, which begins
