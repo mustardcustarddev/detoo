@@ -6,6 +6,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { getEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
@@ -25,13 +26,17 @@ const author = await getEntry('authors', post.data.author);
 const authorName = author?.data.name ?? SITE.name;
 const articleUrl = new URL(Astro.url.pathname, Astro.site).toString();
 
+// Social previews get a 1200px JPEG of the cover, not the full-size original.
+const shareImage = heroImage && (await getImage({ src: heroImage, width: 1200, format: 'jpg' }));
+const shareImageUrl = shareImage && new URL(shareImage.src, Astro.site).toString();
+
 const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  image={heroImage && new URL(heroImage.src, Astro.site).toString()}
+  image={shareImageUrl}
   ogType="article"
   noindex={noindex}
   canonicalUrl={canonicalUrl}
@@ -48,7 +53,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
       url: articleUrl,
       datePublished: pubDate.toISOString(),
       dateModified: updatedDate?.toISOString(),
-      image: heroImage ? new URL(heroImage.src, Astro.site).toString() : absolute('og-default.png', Astro.site),
+      image: shareImageUrl ?? absolute('og-default.png', Astro.site),
       author: { name: authorName, url: author?.data.url },
       publisher: { name: SITE.name, logo: absolute('detoo-logo.png', Astro.site) },
     }}
@@ -65,7 +70,13 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
         <p class="mt-4 text-lg text-[var(--text-secondary)]">{description}</p>
 
         <p class="mt-6 text-sm text-[var(--text-tertiary)]">
-          <span class="font-semibold text-[var(--text-primary)]">{authorName}</span>
+          {
+            author?.data.url ? (
+              <a class="font-semibold text-[var(--text-primary)] hover:underline" href={author.data.url} rel="author">{authorName}</a>
+            ) : (
+              <span class="font-semibold text-[var(--text-primary)]">{authorName}</span>
+            )
+          }
           {" · "}
           <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
           {updatedDate && <span> (updated {dateFormatter.format(updatedDate)})</span>}
@@ -84,8 +95,16 @@ const dateFormatter = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
 
       {
         heroImage && (
-          <figure class="mb-12 overflow-hidden rounded-2xl border border-[var(--border)]">
-            <img src={heroImage.src} alt="" width={heroImage.width} height={heroImage.height} class="w-full object-cover" />
+          <figure class="mb-12 overflow-hidden rounded-lg">
+            <Image
+              src={heroImage}
+              alt=""
+              widths={[768, 1536]}
+              sizes="(min-width: 768px) 720px, 100vw"
+              loading="eager"
+              fetchpriority="high"
+              class="w-full"
+            />
           </figure>
         )
       }
