@@ -18,6 +18,8 @@ detoo doctor
 
 – No adr, sty or pse log found.
 
+→ Run detoo doctor --fix to fix it.
+
  DOCTOR  ✗ 1 problem in 1 log  Nothing was changed.                      EXIT 1 
 echo $?
 1

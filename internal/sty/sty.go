@@ -24,6 +24,7 @@ var Kind = record.Kind{
 	Plural:      "user stories",
 	Heading:     "User Stories",
 	Status:      "Draft",
+	Retires:     []string{"Draft"},
 	FirstRecord: "describe-work-in-user-stories",
 	Replaces:    record.Words{Verb: "replace", Forward: "Replaces", Reverse: "Replaced by"},
 	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},

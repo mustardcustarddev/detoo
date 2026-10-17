@@ -70,7 +70,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 		return Result{}, err
 	}
 	if cmd.Relation.Retires() {
-		if err := h.removeStatus(ctx, target, h.Kind.Status); err != nil {
+		if err := h.removeStatus(ctx, target, h.Kind.Retires...); err != nil {
 			return Result{}, err
 		}
 	}
@@ -99,10 +99,10 @@ func (h Handler) addLink(ctx context.Context, source record.Record, linkType str
 	return h.Log.WriteLines(ctx, source.File, record.AddLink(sourceLines, linkType, record.Title(targetLines), target.File))
 }
 
-func (h Handler) removeStatus(ctx context.Context, target record.Record, status string) error {
+func (h Handler) removeStatus(ctx context.Context, target record.Record, statuses ...string) error {
 	lines, err := h.Log.Lines(ctx, target.File)
 	if err != nil {
 		return err
 	}
-	return h.Log.WriteLines(ctx, target.File, record.RemoveStatus(lines, status))
+	return h.Log.WriteLines(ctx, target.File, record.RemoveStatus(lines, statuses...))
 }

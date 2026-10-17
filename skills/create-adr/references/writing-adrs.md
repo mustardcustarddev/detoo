@@ -78,9 +78,9 @@ which it is.
 
 ### Status
 
-The tool writes `Accepted`. Change it to `Draft`, always, even when the user
-says the decision is agreed: accepting the record is for people to do, once
-they have reviewed it.
+Always `Draft`. The tool writes it; leave it, even when the user says the
+decision is agreed: accepting the record is for people to do, once they have
+reviewed it.
 
 ### Context
 

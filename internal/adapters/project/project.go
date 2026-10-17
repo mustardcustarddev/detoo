@@ -1,17 +1,21 @@
 // Package project looks at a project's directory as a whole: where it is, the
-// marker files that say where its logs are kept, and the files in a directory.
+// marker files that say where its logs are kept, and the files in a directory,
+// and changes it: it moves directories, renames files, and rewrites
+// documents.
 //
 // This is a driven adapter.  Where logstore serves the one log a record tool
-// keeps, this serves a command that looks across every log in a project.
+// keeps, this serves a command that looks after every log in a project.
 package project
 
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
@@ -138,4 +142,157 @@ func (p *Project) Files(ctx context.Context, dir string) ([]string, bool, error)
 		}
 	}
 	return names, true, nil
+}
+
+// Move moves the directory from to to, making the directories above to that
+// it needs.  It refuses to move onto anything already at to.
+func (p *Project) Move(ctx context.Context, from, to string) error {
+	src, err := p.path(ctx, from)
+	if err != nil {
+		return err
+	}
+	dst, err := p.path(ctx, to)
+	if err != nil {
+		return err
+	}
+	if _, err := os.Lstat(dst); err == nil {
+		return fmt.Errorf("cannot move %s to %s: %s exists", from, to, to)
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return err
+	}
+	return os.Rename(src, dst)
+}
+
+// Rename renames the file from, in dir, to to.  It refuses to rename over
+// another file, but renames a file whose name differs only in case on a
+// filesystem that ignores case, where the two names are the same file.
+func (p *Project) Rename(ctx context.Context, dir, from, to string) error {
+	full, err := p.path(ctx, dir)
+	if err != nil {
+		return err
+	}
+	src, dst := filepath.Join(full, from), filepath.Join(full, to)
+	srcInfo, err := os.Lstat(src)
+	if err != nil {
+		return err
+	}
+	if dstInfo, err := os.Lstat(dst); err == nil {
+		if !os.SameFile(srcInfo, dstInfo) {
+			return fmt.Errorf("cannot rename %s to %s in %s: %s exists", from, to, dir, to)
+		}
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	return os.Rename(src, dst)
+}
+
+// RemoveIfEmpty removes dir if nothing is left in it, and reports whether it
+// did.
+func (p *Project) RemoveIfEmpty(ctx context.Context, dir string) (bool, error) {
+	full, err := p.path(ctx, dir)
+	if err != nil {
+		return false, err
+	}
+	entries, err := os.ReadDir(full)
+	if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+	if len(entries) > 0 {
+		return false, nil
+	}
+	return true, os.Remove(full)
+}
+
+// Markdown returns the Markdown files in the project's root, and in dirs and
+// every directory beneath them, in order and each once.  Hidden files and
+// directories are left out, and so is a directory that does not exist.
+func (p *Project) Markdown(ctx context.Context, dirs []string) ([]string, error) {
+	seen := map[string]bool{}
+	var found []string
+	add := func(name string) {
+		if !seen[name] {
+			seen[name] = true
+			found = append(found, name)
+		}
+	}
+
+	root, err := p.Root(ctx)
+	if err != nil {
+		return nil, err
+	}
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return nil, err
+	}
+	for _, entry := range entries {
+		if entry.Type().IsRegular() && isMarkdown(entry.Name()) {
+			add(entry.Name())
+		}
+	}
+
+	for _, dir := range dirs {
+		full, err := p.path(ctx, dir)
+		if err != nil {
+			return nil, err
+		}
+		err = filepath.WalkDir(full, func(file string, entry fs.DirEntry, err error) error {
+			if err != nil {
+				if file == full && errors.Is(err, fs.ErrNotExist) {
+					return fs.SkipAll
+				}
+				return err
+			}
+			if file != full && strings.HasPrefix(entry.Name(), ".") {
+				if entry.IsDir() {
+					return fs.SkipDir
+				}
+				return nil
+			}
+			if entry.Type().IsRegular() && isMarkdown(entry.Name()) {
+				rel, err := filepath.Rel(full, file)
+				if err != nil {
+					return err
+				}
+				add(path.Join(path.Clean(dir), filepath.ToSlash(rel)))
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	sort.Strings(found)
+	return found, nil
+}
+
+func isMarkdown(name string) bool {
+	return !strings.HasPrefix(name, ".") && strings.EqualFold(filepath.Ext(name), ".md")
+}
+
+// Read returns the content of a file.
+func (p *Project) Read(ctx context.Context, name string) (string, error) {
+	full, err := p.path(ctx, name)
+	if err != nil {
+		return "", err
+	}
+	data, err := os.ReadFile(full)
+	return string(data), err
+}
+
+// Write replaces the content of a file, keeping its permissions.
+func (p *Project) Write(ctx context.Context, name, content string) error {
+	full, err := p.path(ctx, name)
+	if err != nil {
+		return err
+	}
+	info, err := os.Stat(full)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(full, []byte(content), info.Mode().Perm())
 }

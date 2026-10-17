@@ -1,0 +1,49 @@
+cat > .sty-dir <<EOF
+docs/sty
+EOF
+touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/story-0003-third.md doc/adr/0001-first.md doc/adr/adr-0001-first.md
+detoo doctor --fix
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   5 documents in 4 directories
+
+╭─ ! adr  docs/adr   BY HAND  ───── 2 decision records · 1 fixed · 2 problems ─╮
+│ ✓ Moved from doc/ to docs/                                                   │
+│   doc/adr  →  docs/adr                                                       │
+│ ✗ File names do not begin with ADR-                                          │
+│   0001-first.md                                                              │
+│     ! adr-0001-first.md would have the same name: fix by hand                │
+│   adr-0001-first.md                                                          │
+│     ! 0001-first.md would have the same name: fix by hand                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ! sty  docs/sty   BY HAND  ───────── 3 user stories · 2 fixed · 2 problems ─╮
+│ ✓ Moved from doc/ to docs/                                                   │
+│   doc/userstory  →  docs/userstory                                           │
+│ ✓ Renamed to begin with STORY-                                               │
+│   story-0003-third.md  →  STORY-0003-third.md                                │
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│ ! Needs fixing by hand: .sty-dir names docs/sty, so sty still looks there.   │
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│   sty no longer finds the user story in doc/sty.                             │
+│ ! Needs fixing by hand: both directories exist, so moving one would clash.   │
+│   doc/sty         1 user story  · former directory                           │
+│   docs/userstory  1 user story  · current directory, where sty looks         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc or pse log found.
+
+ DOCTOR  ✓ Fixed 3 problems.  ! 4 need fixing by hand  Made 3 changes.   EXIT 1 
+echo $?
+1
+ls docs/sty
+STORY-0001-first.md
+ls doc/sty
+STORY-0003-third.md
+ls docs/adr
+0001-first.md
+adr-0001-first.md

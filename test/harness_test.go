@@ -87,6 +87,19 @@ func (w *workspace) rfc(args ...string) {
 	w.run("rfc", args...)
 }
 
+// git runs git.
+func (w *workspace) git(args ...string) {
+	w.t.Helper()
+	w.echo("git", args...)
+	cmd := exec.Command("git", args...)
+	cmd.Dir = w.cwd()
+	cmd.Env = w.environ()
+	cmd.Stdout, cmd.Stderr = &w.log, &w.log
+	if err := cmd.Run(); err != nil {
+		w.t.Fatalf("running git %s: %v", strings.Join(args, " "), err)
+	}
+}
+
 // sty runs the sty command.
 func (w *workspace) sty(args ...string) {
 	w.t.Helper()
@@ -156,6 +169,10 @@ func (w *workspace) environ() []string {
 		env = append(env, variable(tool, "TEMPLATE")+"=", variable(tool, "PAGER")+"=cat")
 	}
 	env = append(env, variable("detoo", "PAGER")+"=cat", "COLUMNS=", "CLICOLOR_FORCE=")
+	// git, run by a test or by detoo, ignores the user's configuration, and
+	// any repository the temporary directory happens to be in.
+	env = append(env, "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL="+os.DevNull,
+		"GIT_CEILING_DIRECTORIES="+filepath.Dir(w.root))
 	for name, value := range w.env {
 		env = append(env, name+"="+value)
 	}
@@ -190,11 +207,14 @@ func (w *workspace) mkdir(dir string) {
 	}
 }
 
-// write creates a file with the given content.
+// write creates a file with the given content, and any directory it needs.
 func (w *workspace) write(name, content string) {
 	w.t.Helper()
 	w.echo("cat >", name, "<<EOF")
 	w.printf("%sEOF\n", content)
+	if err := os.MkdirAll(filepath.Dir(w.path(name)), 0o755); err != nil {
+		w.t.Fatal(err)
+	}
 	if err := os.WriteFile(w.path(name), []byte(content), 0o644); err != nil {
 		w.t.Fatal(err)
 	}

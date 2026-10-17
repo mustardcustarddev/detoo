@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -87,10 +88,11 @@ func AddLink(lines []string, linkType, targetTitle, targetFile string) []string 
 	return linked
 }
 
-// RemoveStatus returns lines with a status line deleted from the status
-// section, collapsing the blank line it leaves behind.  Only the status section
-// is searched, so the same text elsewhere in the record is left alone.
-func RemoveStatus(lines []string, status string) []string {
+// RemoveStatus returns lines with each line that reads one of statuses deleted
+// from the status section, collapsing the blank lines they leave behind.  Only
+// the status section is searched, so the same text elsewhere in the record is
+// left alone.
+func RemoveStatus(lines []string, statuses ...string) []string {
 	remaining := make([]string, 0, len(lines))
 	inStatus, afterBlank := false, false
 	for _, line := range lines {
@@ -108,7 +110,7 @@ func RemoveStatus(lines []string, status string) []string {
 				afterBlank = true
 				continue
 			}
-			if line == status {
+			if slices.Contains(statuses, line) {
 				continue
 			}
 			afterBlank = false

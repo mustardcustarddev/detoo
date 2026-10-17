@@ -62,7 +62,7 @@ func TestHandleCreatesTheNextNumberedRecord(t *testing.T) {
 	if want := "docs/adr/ADR-0002-use-mysql-database.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
 	}
-	want := "# 2. Use MySQL Database\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\n## Context\n\nContext.\n"
+	want := "# 2. Use MySQL Database\n\nDate: 1992-01-12\n\n## Status\n\nDraft\n\n## Context\n\nContext.\n"
 	if got := log.Content(result.File); got != want {
 		t.Errorf("record is\n%s\nwant\n%s", got, want)
 	}
@@ -97,9 +97,28 @@ func TestHandleSupersedesAnExistingRecord(t *testing.T) {
 		t.Errorf("superseded record is\n%s\nwant\n%s", got, wantOld)
 	}
 	// The new record records what it replaced.
-	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\nSupersedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nDraft\n\nSupersedes [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content(result.File); got != wantNew {
 		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
+	}
+}
+
+// A decision superseded while it is still a draft is no longer one.
+func TestHandleSupersedesADraft(t *testing.T) {
+	log := memlog.WithRecords(map[string]string{
+		"docs/adr/0001-first.md": "# 1. First\n\n## Status\n\nDraft\n\n## Context\n\nContext.\n",
+	})
+
+	if _, err := newHandler(log, &spyEditor{}).Handle(context.Background(), Command{
+		Title:    "Second",
+		Replaces: []string{"1"},
+	}); err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+
+	wantOld := "# 1. First\n\n## Status\n\nSuperseded by [2. Second](ADR-0002-second.md)\n\n## Context\n\nContext.\n"
+	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
+		t.Errorf("superseded record is\n%s\nwant\n%s", got, wantOld)
 	}
 }
 
@@ -121,7 +140,7 @@ func TestHandleUpdatesAnExistingRecord(t *testing.T) {
 	if got := log.Content("docs/adr/0001-first.md"); got != wantOld {
 		t.Errorf("updated record is\n%s\nwant\n%s", got, wantOld)
 	}
-	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nAccepted\n\nUpdates [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
+	wantNew := "# 2. Second\n\nDate: 1992-01-12\n\n## Status\n\nDraft\n\nUpdates [1. First](0001-first.md)\n\n## Context\n\nContext.\n"
 	if got := log.Content(result.File); got != wantNew {
 		t.Errorf("new record is\n%s\nwant\n%s", got, wantNew)
 	}

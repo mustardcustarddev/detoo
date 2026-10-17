@@ -21,8 +21,8 @@ type Command struct {
 	Title string
 
 	// Replaces holds references to records this one replaces.  Each is marked
-	// as replaced, in the words of the kind of log, and loses the status a new
-	// record is given.
+	// as replaced, in the words of the kind of log, and loses the statuses
+	// the kind retires, such as Draft.
 	Replaces []string
 
 	// Updates holds references to records this one makes substantive changes
@@ -126,7 +126,7 @@ func (h Handler) relate(ctx context.Context, created record.Record, relation rec
 		return err
 	}
 	if relation.Retires() {
-		if err := h.removeStatus(ctx, target, h.Kind.Status); err != nil {
+		if err := h.removeStatus(ctx, target, h.Kind.Retires...); err != nil {
 			return err
 		}
 	}
@@ -147,10 +147,10 @@ func (h Handler) addLink(ctx context.Context, source record.Record, linkType str
 	return h.Log.WriteLines(ctx, source.File, record.AddLink(sourceLines, linkType, record.Title(targetLines), target.File))
 }
 
-func (h Handler) removeStatus(ctx context.Context, target record.Record, status string) error {
+func (h Handler) removeStatus(ctx context.Context, target record.Record, statuses ...string) error {
 	lines, err := h.Log.Lines(ctx, target.File)
 	if err != nil {
 		return err
 	}
-	return h.Log.WriteLines(ctx, target.File, record.RemoveStatus(lines, status))
+	return h.Log.WriteLines(ctx, target.File, record.RemoveStatus(lines, statuses...))
 }

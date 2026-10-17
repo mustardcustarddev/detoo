@@ -1,11 +1,14 @@
 // Package doctor checks that a project's logs are where the tools look for
-// them, and named as the tools name them today.
+// them, and named as the tools name them today, and fixes them.
 //
-// It reports and changes nothing.  A log the tools have lost after a rename,
-// such as user stories left in docs/sty, is found here, and so is a document
-// named before its log's prefix was upper case.  When moving or renaming would
-// clash with something already there, the problem is reported as needing
-// fixing by hand.
+// Handler reports and changes nothing.  A log the tools have lost after a
+// rename, such as user stories left in docs/sty, is found here, and so is a
+// document named before its log's prefix was upper case.  When moving or
+// renaming would clash with something already there, the problem is reported
+// as needing fixing by hand.
+//
+// Fixer moves and renames what Handler finds, and updates the links to what
+// it moved, leaving the clashes alone.
 package doctor
 
 import (
@@ -125,10 +128,12 @@ type Move struct {
 }
 
 // Rename is a document not named with its log's prefix, and the name it
-// should have.  Clash reports that a file of that name is there already.
+// should have.  Clash reports that a document of that name is there already,
+// or that another would be renamed to it too: ClashWith names that document.
 type Rename struct {
 	Dir, From, To string
 	Clash         bool
+	ClashWith     string
 }
 
 // Found reports whether the project keeps the log anywhere.
@@ -190,6 +195,10 @@ func (r Result) ByHand() int {
 	}
 	return n
 }
+
+// Fixable counts the problems with every log that a fix moves or renames,
+// those that do not need fixing by hand.
+func (r Result) Fixable() int { return r.Problems() - r.ByHand() }
 
 // Documents counts the documents of every log.
 func (r Result) Documents() int {
@@ -319,20 +328,37 @@ func documents(kind record.Kind, files []string) []string {
 }
 
 // misnamed returns a rename for each document in dir not named as kind names
-// documents today.  A rename clashes when a file of the new name is there
-// already: compared by exact name, so that a filesystem that ignores case does
-// not see a document as clashing with itself.
+// documents today.  A rename clashes when a document of the new name is there
+// already, or when another document would be renamed to it too, as
+// 0001-first.md and adr-0001-first.md would both be ADR-0001-first.md.  Names
+// are compared exactly, so that a filesystem that ignores case does not see a
+// document as clashing with itself.
 func misnamed(kind record.Kind, dir Dir) []Rename {
 	present := map[string]bool{}
+	claimants := map[string][]string{} // a name → the documents that would have it
 	for _, name := range dir.Documents {
 		present[name] = true
+		canonical, _ := kind.CanonicalName(name)
+		claimants[canonical] = append(claimants[canonical], name)
 	}
 	var renames []Rename
 	for _, name := range dir.Documents {
 		canonical, _ := kind.CanonicalName(name)
-		if canonical != name {
-			renames = append(renames, Rename{Dir: dir.Path, From: name, To: canonical, Clash: present[canonical]})
+		if canonical == name {
+			continue
 		}
+		rename := Rename{Dir: dir.Path, From: name, To: canonical}
+		if present[canonical] {
+			rename.Clash, rename.ClashWith = true, canonical
+		} else {
+			for _, other := range claimants[canonical] {
+				if other != name {
+					rename.Clash, rename.ClashWith = true, other
+					break
+				}
+			}
+		}
+		renames = append(renames, rename)
 	}
 	return renames
 }

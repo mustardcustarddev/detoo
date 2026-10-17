@@ -83,12 +83,31 @@ func TestARenameOntoAnExistingFileClashes(t *testing.T) {
 	log := check(t, adr.Kind, fakeProject{dirs: map[string][]string{
 		"docs/adr": {"0001-first.md", "ADR-0001-first.md"},
 	}})
-	want := []Rename{{Dir: "docs/adr", From: "0001-first.md", To: "ADR-0001-first.md", Clash: true}}
+	want := []Rename{{Dir: "docs/adr", From: "0001-first.md", To: "ADR-0001-first.md", Clash: true, ClashWith: "ADR-0001-first.md"}}
 	if !reflect.DeepEqual(log.Misnamed, want) {
 		t.Errorf("Misnamed = %v, want %v", log.Misnamed, want)
 	}
 	if log.ByHand() != 1 {
 		t.Errorf("ByHand() = %d, want 1", log.ByHand())
+	}
+}
+
+// Two documents that would be renamed to the same name clash with each other,
+// so that neither is renamed over the other.
+func TestTwoRenamesToOneNameClash(t *testing.T) {
+	log := check(t, adr.Kind, fakeProject{dirs: map[string][]string{
+		"docs/adr": {"0001-first.md", "adr-0001-first.md", "0002-second.md"},
+	}})
+	want := []Rename{
+		{Dir: "docs/adr", From: "0001-first.md", To: "ADR-0001-first.md", Clash: true, ClashWith: "adr-0001-first.md"},
+		{Dir: "docs/adr", From: "adr-0001-first.md", To: "ADR-0001-first.md", Clash: true, ClashWith: "0001-first.md"},
+		{Dir: "docs/adr", From: "0002-second.md", To: "ADR-0002-second.md"},
+	}
+	if !reflect.DeepEqual(log.Misnamed, want) {
+		t.Errorf("Misnamed = %v, want %v", log.Misnamed, want)
+	}
+	if log.ByHand() != 2 {
+		t.Errorf("ByHand() = %d, want 2", log.ByHand())
 	}
 }
 

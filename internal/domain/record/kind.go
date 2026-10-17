@@ -38,9 +38,14 @@ type Kind struct {
 	// Heading titles a table of contents of the log.
 	Heading string
 
-	// Status is the status a new record is created with.  A record that is
-	// replaced loses this line of its status.
+	// Status is the status a new record is created with.
 	Status string
+
+	// Retires are the statuses a record loses when another replaces it,
+	// those that say it is in force or about to be: a superseded decision is
+	// neither a draft nor accepted.  Any other status, such as Deprecated,
+	// is the author's to change.
+	Retires []string
 
 	// FirstRecord is the title the record that opens a log is filed under.
 	FirstRecord string

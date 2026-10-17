@@ -22,6 +22,7 @@ var Kind = record.Kind{
 	Plural:      "PIOSEE records",
 	Heading:     "PIOSEE Decisions",
 	Status:      "Draft",
+	Retires:     []string{"Draft"},
 	FirstRecord: "make-decisions-with-piosee",
 	Replaces:    record.Words{Verb: "reverse", Forward: "Reverses", Reverse: "Reversed by"},
 	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},

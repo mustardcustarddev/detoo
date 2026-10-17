@@ -1,5 +1,11 @@
   # Check the project's logs:
   detoo doctor
 
+  # Move and rename the logs to where the tools look, and update the links:
+  detoo doctor --fix
+
+  # The same, with git mv, without being asked:
+  detoo doctor --fix --git
+
   # In a script, stop when a log is in the wrong place or misnamed:
   detoo doctor > /dev/null || exit 1

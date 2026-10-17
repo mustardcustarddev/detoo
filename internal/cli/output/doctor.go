@@ -44,32 +44,113 @@ const widest = 120
 // and a status line ending in the exit status the command returns.
 func Doctor(w io.Writer, t Terminal, result doctor.Result) error {
 	r := newReport(t, result)
-	var b strings.Builder
-	b.WriteString(r.header())
-	b.WriteString("\n\n")
 	if result.Healthy() {
-		b.WriteString(r.healthyBox())
-	} else {
-		boxes := make([]string, 0, len(result.Logs))
-		var missing []string
-		for _, l := range result.Logs {
-			if l.Found() {
-				boxes = append(boxes, r.logBox(l))
-			} else {
-				missing = append(missing, l.Kind.Name)
+		return r.write(w, r.healthyBox(), r.statusBar())
+	}
+	boxes := make([]string, 0, len(result.Logs))
+	var missing []string
+	for _, l := range result.Logs {
+		if l.Found() {
+			boxes = append(boxes, r.logBox(l))
+		} else {
+			missing = append(missing, l.Kind.Name)
+		}
+	}
+	boxes = append(boxes, r.missing(missing)...)
+	if hint := r.fixHint(); hint != "" {
+		boxes = append(boxes, hint)
+	}
+	return r.write(w, strings.Join(boxes, "\n\n"), r.statusBar())
+}
+
+// fixHint says that doctor --fix fixes the problems that do not need fixing
+// by hand, and how many of them that is, or is empty when every problem does.
+func (r *report) fixHint() string {
+	problems, byHand, fixable := r.result.Problems(), r.result.ByHand(), r.result.Fixable()
+	if fixable == 0 {
+		return ""
+	}
+	text := "to fix them."
+	switch {
+	case problems == 1:
+		text = "to fix it."
+	case byHand > 0:
+		verb := "needs"
+		if byHand > 1 {
+			verb = "need"
+		}
+		text = fmt.Sprintf("to fix %d of the %d problems; %d %s fixing by hand.", fixable, problems, byHand, verb)
+	}
+	return r.fg(r.th.primary).Render("→") + " Run " + bold("detoo doctor --fix") + " " + r.fg(r.th.subtext).Render(text)
+}
+
+// DoctorFix writes what a fix changed: a header, a box for each log found,
+// saying what was fixed in it and what is left to fix by hand, a box of the
+// documents whose links were changed, and a status line ending in the exit
+// status the command returns.  When nothing was changed, it is the report
+// doctor writes without fixing.
+func DoctorFix(w io.Writer, t Terminal, fixed doctor.Fixed) error {
+	if fixed.Changes() == 0 {
+		return Doctor(w, t, fixed.After)
+	}
+	r := newReport(t, fixed.After)
+	boxes := make([]string, 0, len(fixed.After.Logs)+1)
+	var missing []string
+	for i, l := range fixed.After.Logs {
+		f := fixed.Logs[i]
+		switch {
+		case f.Count() > 0 || l.Problems() > 0:
+			boxes = append(boxes, r.fixBox(l, f, removedBy(fixed, i)))
+		case l.Found():
+			boxes = append(boxes, r.logBox(l))
+		default:
+			missing = append(missing, l.Kind.Name)
+		}
+	}
+	if len(fixed.Relinked) > 0 {
+		boxes = append(boxes, r.linksBox(fixed.Relinked))
+	}
+	boxes = append(boxes, r.missing(missing)...)
+	if fixed.Git {
+		boxes = append(boxes, r.tick()+" Used "+bold("git mv")+r.fg(r.th.subtext).Render(", so git records the moves and renames. Review with git status."))
+	}
+	return r.write(w, strings.Join(boxes, "\n\n"), r.fixStatusBar(fixed))
+}
+
+// write writes the header, the body and the status bar, in the colours the
+// terminal shows.
+func (r *report) write(w io.Writer, body, status string) error {
+	text := r.header() + "\n\n" + body + "\n\n" + status + "\n"
+	_, err := io.WriteString(&colorprofile.Writer{Forward: w, Profile: r.t.Profile}, text)
+	return err
+}
+
+// missing says which logs the project does not keep, if any.
+func (r *report) missing(names []string) []string {
+	if len(names) == 0 {
+		return nil
+	}
+	return []string{r.dash() + " " + r.fg(r.th.subtext).Render("No "+series(names)+" log found.")}
+}
+
+// removedBy returns the directories removed after the moves out of them that
+// the log of index i made, each given to the last log that moved out of it.
+func removedBy(fixed doctor.Fixed, i int) []string {
+	var dirs []string
+	for _, dir := range fixed.Removed {
+		last := -1
+		for j, f := range fixed.Logs {
+			for _, m := range f.Moved {
+				if path.Dir(m.From) == dir {
+					last = j
+				}
 			}
 		}
-		if len(missing) > 0 {
-			boxes = append(boxes, r.dash()+" "+r.fg(r.th.subtext).Render("No "+series(missing)+" log found."))
+		if last == i {
+			dirs = append(dirs, dir)
 		}
-		b.WriteString(strings.Join(boxes, "\n\n"))
 	}
-	b.WriteString("\n\n")
-	b.WriteString(r.statusBar())
-	b.WriteString("\n")
-
-	_, err := io.WriteString(&colorprofile.Writer{Forward: w, Profile: t.Profile}, b.String())
-	return err
+	return dirs
 }
 
 // theme is the palette the report is drawn in, taken from detoo's avatar: its
@@ -243,6 +324,13 @@ func (r *report) box(title, aside, body string, border color.Color) string {
 
 // logBox draws the problems with one log.
 func (r *report) logBox(l doctor.Log) string {
+	border, title := r.logTitle(l)
+	return r.box(title, r.logAside(l, 0), r.logBody(l), border)
+}
+
+// logTitle is the border and the title of a log's box, which say whether
+// anything is wrong with it, and whether it needs fixing by hand.
+func (r *report) logTitle(l doctor.Log) (color.Color, string) {
 	border, icon := r.th.border, r.tick()
 	switch {
 	case l.ByHand() > 0:
@@ -259,12 +347,20 @@ func (r *report) logBox(l doctor.Log) string {
 	if l.ByHand() > 0 {
 		title += "  " + r.badge("BY HAND", r.th.yellow)
 	}
+	return border, title
+}
 
+// logAside counts a log's documents, the problems fixed in it, and the
+// problems with it.
+func (r *report) logAside(l doctor.Log, fixed int) string {
 	aside := count(l.Documents(), l.Kind.Noun, l.Kind.Plural)
+	if fixed > 0 {
+		aside += fmt.Sprintf(" · %d fixed", fixed)
+	}
 	if l.Problems() > 0 {
 		aside += " · " + count(l.Problems(), "problem", "problems")
 	}
-	return r.box(title, r.fg(r.th.faint).Render(aside), r.logBody(l), border)
+	return r.fg(r.th.faint).Render(aside)
 }
 
 func (r *report) logBody(l doctor.Log) string {
@@ -360,7 +456,11 @@ func (r *report) misnamed(l doctor.Log) []string {
 			from = r.fg(r.th.faint).Render(rn.Dir+"/") + from
 		}
 		if rn.Clash {
-			rows = append(rows, []string{from, r.bang(), r.fg(r.th.yellow).Render(rn.To + " is there already: fix by hand")})
+			why := rn.To + " is there already"
+			if rn.ClashWith != rn.To {
+				why = rn.ClashWith + " would have the same name"
+			}
+			rows = append(rows, []string{from, r.bang(), r.fg(r.th.yellow).Render(why + ": fix by hand")})
 			continue
 		}
 		rows = append(rows, []string{from, r.arrow(), r.fg(r.th.green).Bold(true).Render(prefix) + r.fg(r.th.subtext).Render(rest)})
@@ -384,6 +484,75 @@ func (r *report) mapping(rows [][]string) []string {
 		}
 	}
 	return lines
+}
+
+// fixBox draws what a fix changed in one log, and what is left wrong with it:
+// the moves, the directories they left empty and that were removed, the
+// renames, and the problems that need fixing by hand.
+func (r *report) fixBox(l doctor.Log, f doctor.Fixes, removed []string) string {
+	subtext := r.fg(r.th.subtext)
+	var lines []string
+	for _, m := range f.Moved {
+		switch m.Reason {
+		case doctor.UnderDoc:
+			lines = append(lines, r.tick()+" Moved from "+bold("doc/")+" to "+bold("docs/"))
+		case doctor.Former:
+			lines = append(lines, r.tick()+" Moved from a former directory to "+bold(m.To))
+		}
+		lines = append(lines, r.mapping([][]string{{m.From, r.arrow(), r.to(m)}})...)
+	}
+	for _, dir := range removed {
+		lines = append(lines, r.tick()+" Removed "+bold(dir+"/")+subtext.Render(", which is empty now"))
+	}
+	if len(f.Renamed) > 0 {
+		lines = append(lines, r.renamed(l, f.Renamed)...)
+	}
+	for _, m := range l.Misplaced {
+		lines = append(lines, r.misplaced(l, m)...)
+	}
+	if len(l.Misnamed) > 0 {
+		lines = append(lines, r.misnamed(l)...)
+	}
+
+	border, title := r.logTitle(l)
+	return r.box(title, r.logAside(l, f.Count()), strings.Join(lines, "\n"), border)
+}
+
+// renamed lists the documents a fix renamed, with their old and new names.
+// When they were in more than one directory, each is shown with the
+// directory it was in.
+func (r *report) renamed(l doctor.Log, renames []doctor.Rename) []string {
+	prefix := l.Kind.Prefix + "-"
+	lines := []string{r.tick() + " Renamed to begin with " + bold(prefix)}
+	dirs := map[string]bool{}
+	for _, rn := range renames {
+		dirs[rn.Dir] = true
+	}
+	rows := make([][]string, 0, len(renames))
+	for _, rn := range renames {
+		rest := strings.TrimPrefix(rn.To, prefix)
+		from := r.fg(r.th.faint).Render(strings.TrimSuffix(rn.From, rest)) + rest
+		if len(dirs) > 1 {
+			from = r.fg(r.th.faint).Render(rn.Dir+"/") + from
+		}
+		rows = append(rows, []string{from, r.arrow(), r.fg(r.th.green).Bold(true).Render(prefix) + r.fg(r.th.subtext).Render(rest)})
+	}
+	return append(lines, r.mapping(rows)...)
+}
+
+// linksBox lists the documents whose links a fix changed.
+func (r *report) linksBox(relinked []doctor.Relinked) string {
+	subtext := r.fg(r.th.subtext)
+	links := 0
+	rows := make([][]string, 0, len(relinked))
+	for _, d := range relinked {
+		links += d.Links
+		rows = append(rows, []string{d.Path, subtext.Render(count(d.Links, "link", "links"))})
+	}
+	lines := append([]string{r.tick() + " " + subtext.Render("Changed to lead to the documents where they are now.")}, grid(rows)...)
+	title := r.tick() + " " + bold("links")
+	aside := r.fg(r.th.faint).Render(count(links, "link", "links") + " in " + count(len(relinked), "document", "documents"))
+	return r.box(title, aside, strings.Join(lines, "\n"), r.th.border)
 }
 
 // healthyBox lists every log, each in its place.
@@ -437,40 +606,76 @@ func span(l doctor.Log) string {
 	return id(first) + " … " + id(last)
 }
 
+// barStyle is the background of the status bar, with text in colour c, or in
+// the terminal's own colour when c is nil.
+func (r *report) barStyle(c color.Color) lipgloss.Style {
+	style := lipgloss.NewStyle().Background(r.th.bar)
+	if c != nil {
+		style = style.Foreground(c)
+	}
+	return style
+}
+
 // statusBar sums up across the width of the report, ending in the exit status.
 func (r *report) statusBar() string {
-	bar := lipgloss.NewStyle().Background(r.th.bar)
-	on := func(c color.Color) lipgloss.Style { return bar.Foreground(c) }
-
-	left := r.badge("DOCTOR", r.th.primary) + bar.Render(" ")
-	exit := r.badge("EXIT 0", r.th.green)
 	if r.result.Healthy() {
-		left += on(r.th.green).Render("✓") + bar.Render(" "+r.healthySummary()+"  ")
-	} else {
-		exit = r.badge("EXIT 1", r.th.red)
-		troubled := 0
-		for _, l := range r.result.Logs {
-			if l.Problems() > 0 {
-				troubled++
-			}
-		}
-		left += on(r.th.red).Render("✗") + bar.Render(fmt.Sprintf(" %s in %s  ",
-			count(r.result.Problems(), "problem", "problems"), count(troubled, "log", "logs")))
-		if n := r.result.ByHand(); n > 0 {
-			verb := "needs"
-			if n > 1 {
-				verb = "need"
-			}
-			left += on(r.th.yellow).Bold(true).Render("!") + on(r.th.yellow).Render(fmt.Sprintf(" %d %s fixing by hand  ", n, verb))
+		return r.bar(r.barStyle(r.th.green).Render("✓")+r.barStyle(nil).Render(" "+r.healthySummary()+"  "), "Nothing was changed.")
+	}
+	troubled := 0
+	for _, l := range r.result.Logs {
+		if l.Problems() > 0 {
+			troubled++
 		}
 	}
+	summary := r.barStyle(r.th.red).Render("✗") + r.barStyle(nil).Render(fmt.Sprintf(" %s in %s  ",
+		count(r.result.Problems(), "problem", "problems"), count(troubled, "log", "logs")))
+	return r.bar(summary+r.byHandSummary(), "Nothing was changed.")
+}
 
+// fixStatusBar sums up what a fix changed, and what it left.
+func (r *report) fixStatusBar(fixed doctor.Fixed) string {
+	tick := r.barStyle(r.th.green).Render("✓")
+	plain := r.barStyle(nil)
+	summary := tick + plain.Render(" Fixed "+count(fixed.Count(), "problem", "problems")+".")
+	if r.result.Healthy() {
+		summary += plain.Render(" All is well.  ")
+	} else {
+		summary += plain.Render("  ")
+		if left := r.result.Problems() - r.result.ByHand(); left > 0 {
+			summary += r.barStyle(r.th.red).Render("✗") + plain.Render(" "+count(left, "problem", "problems")+" left  ")
+		}
+		summary += r.byHandSummary()
+	}
+	return r.bar(summary, "Made "+count(fixed.Changes(), "change", "changes")+".")
+}
+
+// byHandSummary counts the problems that need fixing by hand, if any.
+func (r *report) byHandSummary() string {
+	n := r.result.ByHand()
+	if n == 0 {
+		return ""
+	}
+	verb := "needs"
+	if n > 1 {
+		verb = "need"
+	}
+	yellow := r.barStyle(r.th.yellow)
+	return yellow.Bold(true).Render("!") + yellow.Render(fmt.Sprintf(" %d %s fixing by hand  ", n, verb))
+}
+
+// bar lays out the status bar: the badge, the summary, a note when there is
+// room for it, and the exit status.
+func (r *report) bar(summary, note string) string {
+	exit := r.badge("EXIT 0", r.th.green)
+	if !r.result.Healthy() {
+		exit = r.badge("EXIT 1", r.th.red)
+	}
+	left := r.badge("DOCTOR", r.th.primary) + r.barStyle(nil).Render(" ") + summary
 	fill := r.width - lipgloss.Width(left) - lipgloss.Width(exit)
-	note := "Nothing was changed."
 	if fill < len(note) {
 		note = ""
 	}
-	return left + on(r.th.subtext).Width(max(fill, 0)).Render(note) + exit
+	return left + r.barStyle(r.th.subtext).Width(max(fill, 0)).Render(note) + exit
 }
 
 func (r *report) healthySummary() string {

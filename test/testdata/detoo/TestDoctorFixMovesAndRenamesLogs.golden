@@ -1,0 +1,157 @@
+cat > docs/adr/0001-record-architecture-decisions.md <<EOF
+# 1. Record architecture decisions
+
+## Status
+
+Accepted
+
+## Decision
+
+We propose it in [RFC 1](../../doc/rfc/0001-adopt-a-single-detoo-command.md).
+EOF
+cat > doc/rfc/0001-adopt-a-single-detoo-command.md <<EOF
+# 1. Adopt a single detoo command
+
+## Status
+
+Draft
+
+## Summary
+
+As [ADR 1](../../docs/adr/0001-record-architecture-decisions.md) says.
+EOF
+cat > docs/sty/story-0001-describe-work-in-user-stories.md <<EOF
+# 1. Describe work in user stories
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [2. Find documents in the wrong place](0002-find-documents-in-the-wrong-place.md)
+EOF
+cat > docs/sty/0002-find-documents-in-the-wrong-place.md <<EOF
+# 2. Find documents in the wrong place
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updates [1. Describe work in user stories](story-0001-describe-work-in-user-stories.md)
+EOF
+cat > README.md <<EOF
+See [the stories](docs/sty/) and [the RFCs](doc/rfc/).
+EOF
+detoo doctor --fix
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   4 documents in 3 directories
+
+╭─ ✓ adr  docs/adr ────────────────────────────── 1 decision record · 1 fixed ─╮
+│ ✓ Renamed to begin with ADR-                                                 │
+│   0001-record-architecture-decisions.md                                      │
+│     → ADR-0001-record-architecture-decisions.md                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ rfc  docs/rfc ────────────────────────────────────────── 1 RFC · 2 fixed ─╮
+│ ✓ Moved from doc/ to docs/                                                   │
+│   doc/rfc  →  docs/rfc                                                       │
+│ ✓ Removed doc/, which is empty now                                           │
+│ ✓ Renamed to begin with RFC-                                                 │
+│   0001-adopt-a-single-detoo-command.md                                       │
+│     → RFC-0001-adopt-a-single-detoo-command.md                               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ sty  docs/userstory ─────────────────────────── 2 user stories · 3 fixed ─╮
+│ ✓ Moved from a former directory to docs/userstory                            │
+│   docs/sty  →  docs/userstory                                                │
+│ ✓ Renamed to begin with STORY-                                               │
+│   0002-find-documents-in-the-wrong-place.md                                  │
+│     → STORY-0002-find-documents-in-the-wrong-place.md                        │
+│   story-0001-describe-work-in-user-stories.md                                │
+│     → STORY-0001-describe-work-in-user-stories.md                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ links ─────────────────────────────────────────── 6 links in 5 documents ─╮
+│ ✓ Changed to lead to the documents where they are now.                       │
+│   README.md                                                       2 links    │
+│   docs/adr/ADR-0001-record-architecture-decisions.md              1 link     │
+│   docs/rfc/RFC-0001-adopt-a-single-detoo-command.md               1 link     │
+│   docs/userstory/STORY-0001-describe-work-in-user-stories.md      1 link     │
+│   docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md  1 link     │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No pse log found.
+
+ DOCTOR  ✓ Fixed 6 problems. All is well.  Made 12 changes.              EXIT 0 
+echo $?
+0
+ls .
+README.md
+docs
+ls docs/rfc
+RFC-0001-adopt-a-single-detoo-command.md
+ls docs/userstory
+STORY-0001-describe-work-in-user-stories.md
+STORY-0002-find-documents-in-the-wrong-place.md
+cat README.md
+See [the stories](docs/userstory/) and [the RFCs](docs/rfc/).
+cat docs/adr/ADR-0001-record-architecture-decisions.md
+# 1. Record architecture decisions
+
+## Status
+
+Accepted
+
+## Decision
+
+We propose it in [RFC 1](../rfc/RFC-0001-adopt-a-single-detoo-command.md).
+cat docs/rfc/RFC-0001-adopt-a-single-detoo-command.md
+# 1. Adopt a single detoo command
+
+## Status
+
+Draft
+
+## Summary
+
+As [ADR 1](../adr/ADR-0001-record-architecture-decisions.md) says.
+cat docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md
+# 2. Find documents in the wrong place
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updates [1. Describe work in user stories](STORY-0001-describe-work-in-user-stories.md)
+sty list
+docs/userstory/STORY-0001-describe-work-in-user-stories.md
+docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   4 documents in 3 directories
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│ ✓  adr  docs/adr        1 decision record  ADR-0001                          │
+│ ✓  rfc  docs/rfc        1 RFC              RFC-0001                          │
+│ ✓  sty  docs/userstory  2 user stories     STORY-0001 … STORY-0002           │
+│ –  pse  docs/piosee     no log                                               │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ DOCTOR  ✓ The 3 logs found are in place and named with their prefix.    EXIT 0 
+echo $?
+0

@@ -30,8 +30,14 @@ func RunDetoo(kinds []record.Kind, files fs.FS) int {
 
 	// The composition root, as in Run: the disk and the terminal are chosen
 	// here, once.
-	application := app.NewDetoo(kinds, project.New(workdir, kinds))
-	root := cli.NewDetooCommand(files, application, terminal, os.Stdout, os.Stderr, os.Getenv)
+	p := project.New(workdir, kinds)
+	application := app.NewDetoo(kinds, p, project.NewGit(p))
+	// A question is asked only of someone at a terminal, never of a script.
+	var confirm cli.Confirm
+	if term.IsTerminal(os.Stdin.Fd()) && term.IsTerminal(os.Stdout.Fd()) {
+		confirm = cli.Prompt(os.Stdin, os.Stderr)
+	}
+	root := cli.NewDetooCommand(files, application, terminal, confirm, os.Stdout, os.Stderr, os.Getenv)
 	if err := root.Execute(); err != nil {
 		if exit, ok := errors.AsType[*cli.ExitError](err); ok {
 			return exit.Code

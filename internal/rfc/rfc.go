@@ -21,6 +21,7 @@ var Kind = record.Kind{
 	Plural:      "RFCs",
 	Heading:     "Requests for Comments",
 	Status:      "Draft",
+	Retires:     []string{"Draft"},
 	FirstRecord: "use-requests-for-comments",
 	Replaces:    record.Words{Verb: "obsolete", Forward: "Obsoletes", Reverse: "Obsoleted by"},
 	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},

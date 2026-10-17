@@ -1,0 +1,42 @@
+touch doc/adr/0001-record-architecture-decisions.md doc/adr/0002-use-markdown-for-documents.md docs/userstory/story-0001-describe-work-in-user-stories.md
+git init --quiet --initial-branch=main
+git add doc/adr/0001-record-architecture-decisions.md docs/userstory
+detoo doctor --fix --git
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   3 documents in 2 directories
+
+╭─ ✓ adr  docs/adr ───────────────────────────── 2 decision records · 3 fixed ─╮
+│ ✓ Moved from doc/ to docs/                                                   │
+│   doc/adr  →  docs/adr                                                       │
+│ ✓ Removed doc/, which is empty now                                           │
+│ ✓ Renamed to begin with ADR-                                                 │
+│   0001-record-architecture-decisions.md                                      │
+│     → ADR-0001-record-architecture-decisions.md                              │
+│   0002-use-markdown-for-documents.md                                         │
+│     → ADR-0002-use-markdown-for-documents.md                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ sty  docs/userstory ───────────────────────────── 1 user story · 1 fixed ─╮
+│ ✓ Renamed to begin with STORY-                                               │
+│   story-0001-describe-work-in-user-stories.md                                │
+│     → STORY-0001-describe-work-in-user-stories.md                            │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc or pse log found.
+
+✓ Used git mv, so git records the moves and renames. Review with git status.
+
+ DOCTOR  ✓ Fixed 4 problems. All is well.  Made 5 changes.               EXIT 0 
+echo $?
+0
+git ls-files
+docs/adr/ADR-0001-record-architecture-decisions.md
+docs/userstory/STORY-0001-describe-work-in-user-stories.md
+ls docs/adr
+ADR-0001-record-architecture-decisions.md
+ADR-0002-use-markdown-for-documents.md

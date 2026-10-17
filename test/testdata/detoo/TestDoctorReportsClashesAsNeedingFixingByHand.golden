@@ -29,6 +29,8 @@ detoo doctor
 
 – No rfc or pse log found.
 
+→ Run detoo doctor --fix to fix 2 of the 4 problems; 2 need fixing by hand.
+
  DOCTOR  ✗ 4 problems in 2 logs  ! 2 need fixing by hand                 EXIT 1 
 echo $?
 1

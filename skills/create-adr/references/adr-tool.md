@@ -49,7 +49,7 @@ before the prefix (`NNNN-….md`), as adr-tools names them, are still read;
 `detoo doctor` reports them.
 
 * `DATE` is today in ISO 8601 (`2026-10-16`), or `$ADR_DATE` exactly as given.
-* `STATUS` is `Accepted`.
+* `STATUS` is `Draft`.
 * Everything else in the template, including its guidance text, is copied as
   it is. The guidance text must be replaced by the record's content.
 
@@ -58,25 +58,25 @@ Links are lines in the `## Status` section, written in both records:
 ```markdown
 ## Status
 
-Accepted
+Draft
 
 Supersedes [2. Use MySQL](ADR-0002-use-mysql.md)
 ```
 
-| Option              | Written in the new record     | Written in the old record        | Old record's `Accepted` line |
-| ------------------- | ----------------------------- | -------------------------------- | ---------------------------- |
-| `-s`, `--supersede` | `Supersedes [N. Title](file)` | `Superseded by [N. Title](file)` | Removed                      |
-| `-u`, `--update`    | `Updates [N. Title](file)`    | `Updated by [N. Title](file)`    | Kept                         |
+| Option              | Written in the new record     | Written in the old record        | Old record's status line |
+| ------------------- | ----------------------------- | -------------------------------- | ------------------------ |
+| `-s`, `--supersede` | `Supersedes [N. Title](file)` | `Superseded by [N. Title](file)` | Removed                  |
+| `-u`, `--update`    | `Updates [N. Title](file)`    | `Updated by [N. Title](file)`    | Kept                     |
 
 Records written by adr-tools spell these "Supercedes" and "Superceded by", so
-search for both spellings. Only a line reading exactly `Accepted` is removed.
-A status that has been edited to something else, such as `Draft`, `Proposed`
+search for both spellings. Only a line reading exactly `Draft` or `Accepted` is
+removed. A status that has been edited to something else, such as `Proposed`
 or `Deprecated`, stays beside the link.
 
 > **The link takes effect at once.** `adr new -s 4 "Title"` marks record 4
-> "Superseded by" the new record, and removes record 4's `Accepted` line, the
-> moment the new record is created, even though the new record will be a
-> draft. `-u` adds "Updated by" to the old record at once, too.
+> "Superseded by" the new record, and removes record 4's `Accepted` or `Draft`
+> line, the moment the new record is created, even though the new record is
+> only a draft. `-u` adds "Updated by" to the old record at once, too.
 
 Never write link lines by hand. Use `-s` and `-u` on `adr new`, or `adr link`
 afterwards, so that both records agree.

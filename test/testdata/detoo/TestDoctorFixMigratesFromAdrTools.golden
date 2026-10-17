@@ -1,0 +1,110 @@
+cat > doc/adr/0001-record-architecture-decisions.md <<EOF
+# 1. Record architecture decisions
+
+Date: 2016-02-12
+
+## Status
+
+Accepted
+
+## Context
+
+We need to record the architectural decisions made on this project.
+EOF
+cat > doc/adr/0002-use-mysql.md <<EOF
+# 2. Use MySQL
+
+Date: 2016-02-12
+
+## Status
+
+Superseded by [3. Use PostgreSQL](0003-use-postgresql.md)
+
+## Context
+
+We need a database.
+EOF
+cat > doc/adr/0003-use-postgresql.md <<EOF
+# 3. Use PostgreSQL
+
+Date: 2016-02-13
+
+## Status
+
+Accepted
+
+Supersedes [2. Use MySQL](0002-use-mysql.md)
+
+## Context
+
+We need a better database.
+EOF
+detoo doctor --fix
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   3 documents in 1 directory
+
+╭─ ✓ adr  docs/adr ───────────────────────────── 3 decision records · 4 fixed ─╮
+│ ✓ Moved from doc/ to docs/                                                   │
+│   doc/adr  →  docs/adr                                                       │
+│ ✓ Removed doc/, which is empty now                                           │
+│ ✓ Renamed to begin with ADR-                                                 │
+│   0001-record-architecture-decisions.md                                      │
+│     → ADR-0001-record-architecture-decisions.md                              │
+│   0002-use-mysql.md                                                          │
+│     → ADR-0002-use-mysql.md                                                  │
+│   0003-use-postgresql.md                                                     │
+│     → ADR-0003-use-postgresql.md                                             │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ links ─────────────────────────────────────────── 2 links in 2 documents ─╮
+│ ✓ Changed to lead to the documents where they are now.                       │
+│   docs/adr/ADR-0002-use-mysql.md       1 link                                │
+│   docs/adr/ADR-0003-use-postgresql.md  1 link                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc, sty or pse log found.
+
+ DOCTOR  ✓ Fixed 4 problems. All is well.  Made 7 changes.               EXIT 0 
+echo $?
+0
+ls docs/adr
+ADR-0001-record-architecture-decisions.md
+ADR-0002-use-mysql.md
+ADR-0003-use-postgresql.md
+cat docs/adr/ADR-0002-use-mysql.md
+# 2. Use MySQL
+
+Date: 2016-02-12
+
+## Status
+
+Superseded by [3. Use PostgreSQL](ADR-0003-use-postgresql.md)
+
+## Context
+
+We need a database.
+adr list
+docs/adr/ADR-0001-record-architecture-decisions.md
+docs/adr/ADR-0002-use-mysql.md
+docs/adr/ADR-0003-use-postgresql.md
+adr new --supersede 3 "Use SQLite"
+docs/adr/ADR-0004-use-sqlite.md
+cat docs/adr/ADR-0003-use-postgresql.md
+# 3. Use PostgreSQL
+
+Date: 2016-02-13
+
+## Status
+
+Supersedes [2. Use MySQL](ADR-0002-use-mysql.md)
+
+Superseded by [4. Use SQLite](ADR-0004-use-sqlite.md)
+
+## Context
+
+We need a better database.

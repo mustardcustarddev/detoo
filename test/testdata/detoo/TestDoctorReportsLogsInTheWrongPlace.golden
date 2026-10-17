@@ -41,6 +41,8 @@ detoo doctor
 │ ✓ In place. File names begin with PIOSEE-.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
+→ Run detoo doctor --fix to fix 6 of the 7 problems; 1 needs fixing by hand.
+
  DOCTOR  ✗ 7 problems in 3 logs  ! 1 needs fixing by hand                EXIT 1 
 echo $?
 1

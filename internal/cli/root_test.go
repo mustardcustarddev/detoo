@@ -29,7 +29,7 @@ func testRoots(t *testing.T) []*cobra.Command {
 		NewRootCommand(adr.Kind, adr.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewRootCommand(rfc.Kind, rfc.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewRootCommand(sty.Kind, sty.Files, &app.Application{}, io.Discard, io.Discard, getenv),
-		NewDetooCommand(detoo.Files, &app.Detoo{}, nil, io.Discard, io.Discard, getenv),
+		NewDetooCommand(detoo.Files, &app.Detoo{}, nil, nil, io.Discard, io.Discard, getenv),
 	}
 }
 

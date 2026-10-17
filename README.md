@@ -79,12 +79,41 @@ upper-case prefix (such as `0001-record-architecture-decisions.md`, or the
 older `story-0001-describe-work-in-user-stories.md`). It changes nothing, and
 exits 1 when it finds a problem, so it can run in CI.
 
+`detoo doctor --fix` puts those problems right: it moves each log to where its
+tool looks, renames its documents to begin with the prefix, and updates the
+links to them in the Markdown files at the top of the project and under
+`docs/` and `doc/`. Where moving or renaming
+would clash with something already there, it leaves things as they are and
+says what to fix by hand. In a git repository, it offers to move and rename
+with `git mv`, so that git records the renames; `--git` says yes without
+being asked, as a script needs to.
+
 ## Agent skills
 
 [skills](skills/README.md) holds agent skills that drive the tools for you:
 writing ADRs, RFCs and user stories, and working decisions through PIOSEE, by
 interviewing you for the reasons rather than guessing them, and reviewing and checking an ADR log. The catalogue there
 says how to install them.
+
+## Migrating from ADR Tools
+
+A project that keeps its decisions with [adr-tools][] has them in `doc/adr`,
+numbered without a prefix, such as `0001-record-architecture-decisions.md`.
+`detoo doctor` finds the discrepancies, and `detoo doctor --fix` fixes them
+automatically:
+
+```bash
+detoo doctor                # report what is out of place
+detoo doctor --fix --git    # git mv doc/adr to docs/adr, rename to ADR-0001-…, update links
+adr list                    # adr finds the decisions again
+```
+
+The links between decisions, such as `Superseded by`, follow the renamed
+files, and so do links to them from a `README.md` or other documents. If you
+started adr-tools with a directory of your own, `.adr-dir` names it: if that
+is `doc/adr`, delete `.adr-dir` before fixing, or `doctor` will ask you to fix
+it by hand. Commit before fixing, so you can review the changes with
+`git status` and `git diff`: with `--git`, git shows each file as renamed.
 
 ## Thanks
 

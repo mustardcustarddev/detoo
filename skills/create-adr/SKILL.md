@@ -31,10 +31,9 @@ explains what counts as evidence, and how to write each section.
 
 ## Every record you create is a Draft
 
-The tool writes `Accepted`; change it to `Draft`, always. Whether a decision is
-accepted is for people to record, by editing the line themselves once they have
-reviewed the record, even when the user tells you the decision is already
-agreed.
+The tool writes `Draft`; never change it. Whether a decision is accepted is for
+people to record, by editing the line themselves once they have reviewed the
+record, even when the user tells you the decision is already agreed.
 
 ## Workflow
 
@@ -122,8 +121,8 @@ other than today.
 
 If the record supersedes or updates an existing one, tell the user that the
 tool records the link in **both** records at once. With `-s`, the old record
-is marked "Superseded by" the new one, and loses its `Accepted` line, although
-the new record is only a draft. Ask whether to:
+is marked "Superseded by" the new one, and loses its `Accepted` or `Draft`
+line, although the new record is only a draft. Ask whether to:
 
 * **link now**: `VISUAL= EDITOR= adr new -s 4 "Title"` (or `-u 4`); or
 * **link on acceptance**: name the old record in the text of the new one, and
@@ -131,9 +130,8 @@ the new record is only a draft. Ask whether to:
 
 Then edit that file:
 
-* Change the status line from `Accepted` to `Draft`.
-* Keep the other lines the tool wrote: the title, the date, and any link lines
-  in the Status section.
+* Keep the lines the tool wrote: the title, the date, `Draft`, and any link
+  lines in the Status section.
 * Replace the guidance text under each heading with the approved content.
 
 Never write link lines by hand; use the tool:
