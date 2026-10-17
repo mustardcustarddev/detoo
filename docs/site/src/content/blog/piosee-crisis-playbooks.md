@@ -2,9 +2,9 @@
 title: "Fly the aircraft: what pilots know about outages that we don't"
 pubDate: 2026-10-17
 author: "tom-regan"
-draft: true
+draft: false
 tags: [ "incident management", "SRE", "decision-making", "software development" ]
-categories: [ "Technology" ]
+tool: pse
 description: "When an engine fails after take-off, pilots know the engine is no longer the problem. I use PIOSEE, a model from the flight deck, to write incident playbooks."
 heroImage: ../../assets/piosee-crisis-playbooks.jpg
 ---
