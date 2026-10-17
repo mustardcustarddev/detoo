@@ -1,8 +1,8 @@
-  # Create a new record with the title "Roll back release 2.3":
-  pse new "Roll back release 2.3"
+  # Create a new playbook with the title "Unexpected charge after deletion":
+  pse new "Unexpected charge after deletion"
 
-  # Create a new record that reverses decision 4, which did not work:
-  pse new -r 4 "Restore release 2.3 with the fix"
+  # Create a new playbook that replaces playbook 4, after it was used:
+  pse new -r 4 "Customer cannot cancel a subscription"
 
-  # Create a new record that updates decision 7, after evaluating it:
-  pse new -u 7 "Move the launch to April"
+  # Create a new playbook that updates playbook 7, for a case it left out:
+  pse new -u 7 "Refund a charge in a retired currency"

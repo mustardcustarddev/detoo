@@ -1,0 +1,62 @@
+pse new "Checkout errors after a release"
+docs/piosee/PIOSEE-0001-checkout-errors-after-a-release.md
+pse new "Crossing the VAT threshold"
+docs/piosee/PIOSEE-0002-crossing-the-vat-threshold.md
+pse new -r 1 "Checkout fails"
+docs/piosee/PIOSEE-0003-checkout-fails.md
+pse new --update 2 "Registering for VAT abroad"
+docs/piosee/PIOSEE-0004-registering-for-vat-abroad.md
+pse link -u 3 2
+head -10 docs/piosee/PIOSEE-0001-checkout-errors-after-a-release.md
+# 1. Checkout errors after a release
+
+Date: 1992-01-12
+
+## Status
+
+Replaced by [3. Checkout fails](PIOSEE-0003-checkout-fails.md)
+
+## Scenario
+
+head -12 docs/piosee/PIOSEE-0002-crossing-the-vat-threshold.md
+# 2. Crossing the VAT threshold
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [4. Registering for VAT abroad](PIOSEE-0004-registering-for-vat-abroad.md)
+
+Updated by [3. Checkout fails](PIOSEE-0003-checkout-fails.md)
+
+head -12 docs/piosee/PIOSEE-0003-checkout-fails.md
+# 3. Checkout fails
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Replaces [1. Checkout errors after a release](PIOSEE-0001-checkout-errors-after-a-release.md)
+
+Updates [2. Crossing the VAT threshold](PIOSEE-0002-crossing-the-vat-threshold.md)
+
+head -10 docs/piosee/PIOSEE-0004-registering-for-vat-abroad.md
+# 4. Registering for VAT abroad
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updates [2. Crossing the VAT threshold](PIOSEE-0002-crossing-the-vat-threshold.md)
+
+pse list
+docs/piosee/PIOSEE-0001-checkout-errors-after-a-release.md
+docs/piosee/PIOSEE-0002-crossing-the-vat-threshold.md
+docs/piosee/PIOSEE-0003-checkout-fails.md
+docs/piosee/PIOSEE-0004-registering-for-vat-abroad.md

@@ -37,7 +37,7 @@ detoo doctor
 │     → STORY-0002-find-documents-in-the-wrong-place.md                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ✓ pse  docs/piosee ─────────────────────────────────────── 1 PIOSEE record ─╮
+╭─ ✓ pse  docs/piosee ───────────────────────────────────── 1 PIOSEE playbook ─╮
 │ ✓ In place. File names begin with PIOSEE-.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 

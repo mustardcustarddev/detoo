@@ -1,11 +1,14 @@
 pse help
-Command-line tools for working with a log of decisions made with PIOSEE:
-Problem, Information, Options, Select, Execute, Evaluate.
+Command-line tools for working with a log of PIOSEE playbooks.  Each playbook
+plans for a situation before it arises: the Scenario, the Problem to decide,
+the Information to gather, the Options, how to make the Selection, the steps
+of Execution, and the Evaluation of the result.
 
-PIOSEE records are stored as Markdown files in a subdirectory of the project,
-by default `docs/piosee`.  Each record's file name begins with `PIOSEE-` and
-its number, such as `PIOSEE-0001-make-decisions-with-piosee.md`.  Run
-"pse init" to start a log, and "pse new" to add to it.
+PIOSEE playbooks are stored as Markdown files in a subdirectory of the
+project, by default `docs/piosee`.  Each playbook's file name begins with
+`PIOSEE-` and its number, such as
+`PIOSEE-0001-plan-for-incidents-with-piosee.md`.  Run "pse init" to start a
+log, and "pse new" to add to it.
 
 Usage:
   pse [flags]
@@ -16,75 +19,74 @@ Available Commands:
   config      Print the configuration in use
   graph       Draw the links between records in Mermaid or Graphviz format
   help        Help about any command
-  init        Start a log of PIOSEE records
-  link        Record that one PIOSEE record reverses or updates another
-  list        List the PIOSEE records, or write a table of contents
-  new         Create the next numbered PIOSEE record
+  init        Start a log of PIOSEE playbooks
+  link        Record that one PIOSEE playbook replaces or updates another
+  list        List the PIOSEE playbooks, or write a table of contents
+  new         Create the next numbered PIOSEE playbook
 
 Flags:
   -h, --help   help for pse
 
 Use "pse [command] --help" for more information about a command.
 pse help new
-Creates a new, numbered PIOSEE record, in draft.  The title is a single
-argument, so it must be quoted if it contains spaces.  The record is opened
+Creates a new, numbered PIOSEE playbook, in draft.  The title is a single
+argument, so it must be quoted if it contains spaces.  The playbook is opened
 for editing in the editor specified by the VISUAL or EDITOR environment
 variable (VISUAL is preferred; EDITOR is used if VISUAL is not set).  After
-editing, the file name of the record is output to stdout, so the command can
+editing, the file name of the playbook is output to stdout, so the command can
 be used in scripts.
 
-If the record directory contains a file `templates/template.md`, this is used
-as the template for the new record.  Otherwise a built-in template is used,
-with a section for each step of PIOSEE: problem, information, options,
-select, execute and evaluate.
+If the playbook directory contains a file `templates/template.md`, this is
+used as the template for the new playbook.  Otherwise a built-in template is
+used, with a section for the scenario and for each step of PIOSEE: problem,
+information, options, selection, execution and evaluation.
 
-Multiple --reverse and --update options can be given, so that the new record
-can reverse or update multiple existing records.  A reversed record loses its
-Draft status; an updated one keeps its status.
+Multiple --replace and --update options can be given, so that the new
+playbook can replace or update multiple existing playbooks.  A replaced
+playbook loses its Draft status; an updated one keeps its status.
 
 Usage:
   pse new TITLE [flags]
 
 Examples:
-  # Create a new record with the title "Roll back release 2.3":
-  pse new "Roll back release 2.3"
+  # Create a new playbook with the title "Unexpected charge after deletion":
+  pse new "Unexpected charge after deletion"
 
-  # Create a new record that reverses decision 4, which did not work:
-  pse new -r 4 "Restore release 2.3 with the fix"
+  # Create a new playbook that replaces playbook 4, after it was used:
+  pse new -r 4 "Customer cannot cancel a subscription"
 
-  # Create a new record that updates decision 7, after evaluating it:
-  pse new -u 7 "Move the launch to April"
+  # Create a new playbook that updates playbook 7, for a case it left out:
+  pse new -u 7 "Refund a charge in a retired currency"
 
 Flags:
   -h, --help                help for new
-  -r, --reverse REFERENCE   a REFERENCE (number or partial filename) to a record this one reverses
+  -r, --replace REFERENCE   a REFERENCE (number or partial filename) to a record this one replaces
   -u, --update REFERENCE    a REFERENCE (number or partial filename) to a record this one updates
 pse help link
-Records, in both records, that SOURCE reverses or updates TARGET.
+Records, in both playbooks, that SOURCE replaces or updates TARGET.
 
 SOURCE and TARGET are both a reference (number or partial filename) to a
-PIOSEE record.  Exactly one of --reverse and --update must be given.
+PIOSEE playbook.  Exactly one of --replace and --update must be given.
 
-With --reverse, SOURCE undoes or abandons the decision in TARGET, which is
-marked "Reversed by" SOURCE and loses its Draft status.
+With --replace, SOURCE is a new plan for the situation TARGET planned for,
+and TARGET is marked "Replaced by" SOURCE and loses its Draft status.
 
-With --update, SOURCE builds on the decision in TARGET, such as the next
-cycle of PIOSEE after an evaluation, and TARGET is marked "Updated by" SOURCE
-and keeps its status.
+With --update, SOURCE changes part of TARGET, such as a case it left out, and
+TARGET is marked "Updated by" SOURCE and keeps its status.
 
 Usage:
-  pse link (--reverse | --update) SOURCE TARGET [flags]
+  pse link (--replace | --update) SOURCE TARGET [flags]
 
 Examples:
-  # Record that decision 3 updates decision 2:
+  # Record that playbook 3 updates playbook 2:
   pse link --update 3 2
 
-  # Record that decision 5 reverses decision 4, which did not work:
+  # Record that playbook 5 replaces playbook 4:
   pse link -r 5 4
 
 Flags:
   -h, --help      help for link
-  -r, --reverse   SOURCE reverses TARGET, which loses its Draft status
+  -r, --replace   SOURCE replaces TARGET, which loses its Draft status
   -u, --update    SOURCE makes substantive changes to TARGET
 pse nonsense
 pse: unknown command "nonsense" for "pse"

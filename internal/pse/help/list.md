@@ -1,7 +1,7 @@
-Lists the PIOSEE records, one path a line.
+Lists the PIOSEE playbooks, one path a line.
 
 With --toc, writes a table of contents in Markdown instead, in which each
-record links to its document.  The intro and the outro, if given, must also
+playbook links to its document.  The intro and the outro, if given, must also
 be in Markdown.
 
-When there are no records, nothing is written.
+When there are no playbooks, nothing is written.

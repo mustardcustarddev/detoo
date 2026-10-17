@@ -8,39 +8,40 @@ import (
 // The pse tool shares its engine with the other record tools, and their tests
 // cover the behaviour every tool shares.  These tests cover what the pse
 // tool's definition changes: a directory named for the method rather than the
-// tool, the prefix of its file names, its first record, the sections of a new
-// record, the words and options for its links, the heading of its reports, its
-// configuration, and its help.
+// tool, the prefix of its file names, its first playbook, the sections of a
+// new playbook, the words and options for its links, the heading of its
+// reports, its configuration, and its help.
 
 func TestInitPseRepository(t *testing.T) {
 	w := newWorkspace(t, "pse")
 	w.pse("init")
 	w.ls("docs/piosee")
-	w.cat("docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md")
+	w.cat("docs/piosee/PIOSEE-0001-plan-for-incidents-with-piosee.md")
 	w.check()
 }
 
-// A new record is a draft, in a section for each step of PIOSEE.
+// A new playbook is a draft, with a section for its scenario and for each step
+// of PIOSEE.
 func TestCreatePiosee(t *testing.T) {
 	w := newWorkspace(t, "pse")
-	w.pse("new", "Roll back release 2.3")
-	w.cat("docs/piosee/PIOSEE-0001-roll-back-release-2-3.md")
+	w.pse("new", "Unexpected charge after deletion")
+	w.cat("docs/piosee/PIOSEE-0001-unexpected-charge-after-deletion.md")
 	w.check()
 }
 
-// A decision that is reversed loses its Draft status; one that is updated
+// A playbook that is replaced loses its Draft status; one that is updated
 // keeps it.
-func TestReverseAndUpdatePiosees(t *testing.T) {
+func TestReplaceAndUpdatePiosees(t *testing.T) {
 	w := newWorkspace(t, "pse")
-	w.pse("new", "Turn off tax codes")
-	w.pse("new", "Move the launch to March")
-	w.pse("new", "-r", "1", "Roll back release 2.3")
-	w.pse("new", "--update", "2", "Move the launch to April")
+	w.pse("new", "Checkout errors after a release")
+	w.pse("new", "Crossing the VAT threshold")
+	w.pse("new", "-r", "1", "Checkout fails")
+	w.pse("new", "--update", "2", "Registering for VAT abroad")
 	w.pse("link", "-u", "3", "2")
-	w.head(10, "docs/piosee/PIOSEE-0001-turn-off-tax-codes.md")
-	w.head(12, "docs/piosee/PIOSEE-0002-move-the-launch-to-march.md")
-	w.head(12, "docs/piosee/PIOSEE-0003-roll-back-release-2-3.md")
-	w.head(10, "docs/piosee/PIOSEE-0004-move-the-launch-to-april.md")
+	w.head(10, "docs/piosee/PIOSEE-0001-checkout-errors-after-a-release.md")
+	w.head(12, "docs/piosee/PIOSEE-0002-crossing-the-vat-threshold.md")
+	w.head(12, "docs/piosee/PIOSEE-0003-checkout-fails.md")
+	w.head(10, "docs/piosee/PIOSEE-0004-registering-for-vat-abroad.md")
 	w.pse("list")
 	w.check()
 }
@@ -49,20 +50,20 @@ func TestReverseAndUpdatePiosees(t *testing.T) {
 // option is wrong.
 func TestPseLinkOptions(t *testing.T) {
 	w := newWorkspace(t, "pse")
-	w.pse("new", "First Decision")
-	w.pse("new", "Second Decision")
+	w.pse("new", "First Playbook")
+	w.pse("new", "Second Playbook")
 	w.pse("link", "2", "1")
 	w.pse("link", "-s", "2", "1")
-	w.pse("new", "--replace", "1", "Third Decision")
+	w.pse("new", "--reverse", "1", "Third Playbook")
 	w.ls("docs/piosee")
-	w.head(8, "docs/piosee/PIOSEE-0001-first-decision.md")
+	w.head(8, "docs/piosee/PIOSEE-0001-first-playbook.md")
 	w.check()
 }
 
 func TestPseReports(t *testing.T) {
 	w := newWorkspace(t, "pse")
-	w.pse("new", "First Decision")
-	w.pse("new", "-r", "1", "Second Decision")
+	w.pse("new", "First Playbook")
+	w.pse("new", "-r", "1", "Second Playbook")
 	w.pse("list", "--toc")
 	w.pse("graph")
 	w.pse("graph", "--graphviz")
@@ -95,7 +96,7 @@ func TestPrefixedLogsCanShareADirectory(t *testing.T) {
 	w := newWorkspace(t, "pse")
 	w.pse("init", "docs/work")
 	w.sty("init", "docs/work")
-	w.pse("new", "A Decision")
+	w.pse("new", "A Playbook")
 	w.sty("new", "A Story")
 	w.ls("docs/work")
 	w.pse("list")

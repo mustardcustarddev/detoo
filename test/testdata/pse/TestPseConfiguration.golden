@@ -2,7 +2,7 @@ pse config
 pse_dir="docs/piosee"
 pse_template=""
 pse init decisions
-decisions/PIOSEE-0001-make-decisions-with-piosee.md
+decisions/PIOSEE-0001-plan-for-incidents-with-piosee.md
 pse config
 pse_dir="decisions"
 pse_template=""
@@ -36,29 +36,33 @@ Date: 1992-01-12
 
 Draft
 
+## Scenario
+
+The situation this playbook is for, in one to three sentences: what happens, or is reported, that calls for it.
+
 ## Problem
 
-What is wrong, or what must be decided: what is happening, what it affects, how badly, and how long there is to act.
+The decision to make when the scenario arises, as one clear question, and the main risks if it is decided wrongly. No solutions here.
 
 ## Information
 
-The facts that bear on the problem, and where each came from: what is known, what is not, and who was asked.
+The facts to gather before deciding: what to collect, where each is found, and who owns it. Separate what is known from what is assumed, and say how to settle the critical unknowns quickly.
 
 ## Options
 
-Each course of action considered, including doing nothing, with its risks and benefits.
+The realistic courses of action, distinct and actionable, including at least one conservative fallback. For each, when it applies and its tradeoffs.
 
-## Select
+## Selection
 
-The option chosen, who chose it, and why it was chosen over the others.
+How to choose an option: the criteria, which option each finding of the investigation leads to, the default, and the confidence and assumptions behind the rule.
 
-## Execute
+## Execution
 
-How the option is carried out: the actions, who takes each, in what order, and what shows it is working.
+The steps to carry out the option chosen, in order: who takes each, what each depends on, what to record and tell whom, and how to roll back.
 
-## Evaluate
+## Evaluation
 
-Whether the action solved the problem, what was learned, and whether the decision must be revisited. Until it is evaluated: how and when it will be.
+How to tell, after the playbook is used, whether it worked: the measurable outcomes, when and by whom they are reviewed, and what to do if they are missed.
 cat decisions/PIOSEE-0003-uses-the-pse-settings.md
 # 3. Uses the pse settings, from custom.md
 

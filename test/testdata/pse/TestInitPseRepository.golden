@@ -1,69 +1,84 @@
 pse init
-docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
+docs/piosee/PIOSEE-0001-plan-for-incidents-with-piosee.md
 ls docs/piosee
-PIOSEE-0001-make-decisions-with-piosee.md
-cat docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
-# 1. Make decisions with PIOSEE
+PIOSEE-0001-plan-for-incidents-with-piosee.md
+cat docs/piosee/PIOSEE-0001-plan-for-incidents-with-piosee.md
+# 1. Plan for incidents with PIOSEE
 
 Date: 1992-01-12
 
 ## Status
 
-Accepted
+Draft
+
+## Scenario
+
+We foresee a situation that will call for a decision under pressure, such as
+a customer reporting an unexpected charge, a deadline set by a regulator, or a
+failure we have seen before, and we have no plan for it.
 
 ## Problem
 
-Some of our decisions are made under pressure: what to do about an incident,
-a failed release, a missed deadline or a supplier who has let us down. Made in
-a hurry, in a call or a chat thread, such a decision is easily made on part
-of the facts, by whoever spoke first, and is soon forgotten, along with what
-was learned from it.
+Should we write a playbook for this situation now, before it arises, and if
+so, how?
+
+Primary risks:
+
+* Deciding in a hurry when it arises, on part of the facts, by whoever is
+  there, and differently each time.
+* Spending effort on plans for situations that never arise, or that are
+  better handled as they come.
 
 ## Information
 
-PIOSEE is a method of making a decision in six steps, taught to airline
-pilots: Problem, Information, Options, Select, Execute and Evaluate. The
-steps make the crew state the problem and the facts, stop them jumping to a
-conclusion, give everyone a way to be heard, and make it normal to reverse a
-decision that has not worked.
+Collect these before deciding:
 
-Its known weaknesses are that it can delay a quick, obvious action, that it
-can be used to justify a decision rather than to make one, and that it does
-not capture intuition.
-
-See https://en.wikipedia.org/wiki/Pilot_decision_making
+* How often the situation arises, or is likely to, and when it last did.
+* What it costs to decide it wrongly, or late: to customers, to money, to
+  compliance.
+* Whether a playbook, runbook or policy already covers it, or a situation
+  close to it, in this directory or elsewhere.
+* Who will have to act when it arises, and what access and authority they
+  will need.
 
 ## Options
 
-* Carry on deciding as each situation demands, and recording nothing.
-* Work through such decisions with PIOSEE, and record each one in this
-  directory.
-* Use a similar method, such as T-DODAR or FOR-DEC, which differ mostly in
-  their words.
+1. **Decide when it arises.** Suits a situation that is rare and cheap to get
+   wrong. Costs nothing now, but the decision is made under pressure.
+2. **Write a PIOSEE playbook.** Suits a situation that recurs, or is costly to
+   get wrong. Takes effort now, and must be kept up to date.
+3. **Extend an existing playbook.** Suits a situation close to one that a
+   playbook already covers. Keeps related plans together, but can make that
+   playbook harder to follow.
 
-## Select
+## Selection
 
-We will work through such decisions with PIOSEE, and record each one here,
-so that the people making it see the same facts and options, and those who
-come later can see what was known, what was weighed, what was done, and how
-it turned out.
+* Extend an existing playbook (option 3) when one covers a situation close
+  to this one, and the same decision, options and selection rules apply.
+* Otherwise, write a PIOSEE playbook (option 2) when the situation recurs, or
+  a wrong or late decision would be costly. One known option is enough, with
+  a conservative fallback for when it does not apply.
+* Otherwise, decide when it arises (option 1).
 
-## Execute
+## Execution
 
-* Each decision is a Markdown file in this directory, numbered in sequence.
-  Numbers are not reused.
-* Each has a section for each step of PIOSEE.
-* A new record is a draft. Its status records what becomes of it.
-* When harm is happening and the action that stops it is obvious, we act
-  first, and record the decision afterwards.
-* A record written after the event records the options considered at the
-  time. What was seen only in hindsight belongs under Evaluate.
-* A decision is evaluated once it has been carried out, in its own record. A
-  decision that reverses an earlier one says so, and so does the decision it
-  reverses. A decision that builds on an earlier one updates it, and both say
-  so.
+1. Create the playbook in this directory with `pse new`. Each playbook is a
+   Markdown file, numbered in sequence. Numbers are not reused.
+2. Fill in each section: the scenario it is for, the problem to decide, the
+   information to gather, the options, the rules for selecting one, the steps
+   to execute it, and how to evaluate the result.
+3. Have the people who will act on it review it. A new playbook is a draft
+   until they agree it.
+4. When the situation arises, follow the playbook, and record what was
+   decided and done where the team records its incidents.
+5. A playbook rewritten for the same situation replaces the one it rewrites,
+   and both say so. A playbook that changes part of another, such as one that
+   extends it to a situation close to it, updates it, and both say so.
 
-## Evaluate
+## Evaluation
 
-To be evaluated once we have made a few decisions this way: whether the
-records helped us decide, and whether anyone read them afterwards.
+* Review each playbook after it is used: whether it led to a sound decision
+  in time, and what it lacked.
+* Review the directory regularly: which playbooks were used, which are out
+  of date, and which situations still lack one.
+* Rewrite or retire a playbook that did not help.

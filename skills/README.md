@@ -2,8 +2,8 @@
 
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
-comments with `rfc`, user stories with `sty`, and decisions made with PIOSEE
-with `pse`. Each directory is one skill, and is self-contained, so it can be
+comments with `rfc`, user stories with `sty`, and PIOSEE playbooks with
+`pse`. Each directory is one skill, and is self-contained, so it can be
 installed on its own.
 
 ## Catalogue
@@ -40,15 +40,17 @@ This needs the `sty` tool.
   interviewing the user for who it is for, what they need, why, and how they
   will know it is done. Splits epics into smaller stories.
 
-### PIOSEE decisions
+### PIOSEE playbooks
 
 This needs the `pse` tool.
 
-* [**create-piosee**](create-piosee/SKILL.md): work a decision through
-  PIOSEE (Problem, Information, Options, Select, Execute, Evaluate) and record
-  it with `pse`: asking first how much time there is, gathering the facts,
-  laying out the options, and leaving the choice to the user. Evaluates a
-  recorded decision once it has been carried out.
+* [**create-piosee**](create-piosee/SKILL.md): write a PIOSEE playbook with
+  `pse`: a plan, made in advance, for a situation the team expects to face.
+  It covers the scenario, the decision it calls for, the information to
+  gather, the options, the rules for selecting one, the steps to execute it,
+  and how to evaluate the result. It gathers the concrete detail from the
+  code and documents, and interviews the user for the plan. It also revises
+  a playbook after it has been used.
 
 ### What they share
 
@@ -57,9 +59,9 @@ and asks the user rather than inventing context or reasons. And decisions are
 made at the right level, when they're needed: only architectural decisions
 belong in the ADR log, only changes others would want a say in need an RFC,
 a user story describes an outcome for someone, not a task, and a PIOSEE
-record is one decision about one problem, chosen by the people it belongs to.
+playbook plans for a situation before it arises, by rules the team sets.
 
-Every ADR, RFC, user story and PIOSEE record an agent creates has the status
+Every ADR, RFC, user story and PIOSEE playbook an agent creates has the status
 `Draft`. Accepting one is for people to do.
 
 ## Installing
@@ -70,24 +72,9 @@ Each skill drives `adr`, `rfc`, `sty` or `pse`, which must be on the `PATH` of
 the machine the agent runs on. Build and install them as described in the
 [README](../README.md#install).
 
-### 2. Make sure you can reach the repository
+### 2. Install the skills
 
-detoo is a private repository, so you need read access to
-`mustardcustarddev/detoo` on GitHub, and Git set up to use it. Any one of
-these will do:
-
-* a Git credential helper that already has your GitHub credentials;
-* the GitHub CLI, signed in with `gh auth login`;
-* an SSH key added to your GitHub account.
-
-If you can `git clone https://github.com/mustardcustarddev/detoo.git`, or
-`git clone git@github.com:mustardcustarddev/detoo.git`, you are ready.
-
-### 3. Install the skills
-
-Install with the [skills](https://github.com/vercel-labs/skills) CLI. It uses
-the same command for private repositories as for public ones, and the Git or
-GitHub CLI authentication you already have:
+Install with the [skills](https://github.com/vercel-labs/skills) CLI:
 
 ```bash
 # See which skills the repository offers, without installing
@@ -106,12 +93,6 @@ Name the skills you want, rather than using `--skill '*'`: the CLI also finds
 `feature-driven-vertical-slices`, in `.claude/skills/`, which is for working
 on detoo itself, not for keeping a log.
 
-If HTTPS does not work for you, give the repository's SSH address instead:
-
-```bash
-npx skills add git@github.com:mustardcustarddev/detoo.git --skill create-rfc
-```
-
 Some useful options:
 
 | Option           | Effect                                                                                            |
@@ -122,12 +103,6 @@ Some useful options:
 
 Later, `npx skills list` shows what is installed, `npx skills update` brings
 it up to date, and `npx skills remove` removes it.
-
-For GitHub, the CLI tries your Git credentials first, then the GitHub CLI,
-then SSH. It never reads the GitHub CLI's stored token. Setting `GITHUB_TOKEN`
-or `GH_TOKEN` is optional, and only needed if none of those is set up; see the
-CLI's notes on
-[private repositories](https://github.com/vercel-labs/skills#private-repositories).
 
 ### Without the CLI
 

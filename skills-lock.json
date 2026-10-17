@@ -5,31 +5,31 @@
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/check-adrs/SKILL.md",
-      "computedHash": "2a34e99323727b32662f9dc38fb2636072301f8e4256d1a629da1913925ea35f"
+      "computedHash": "e4d0e3a5bb110bb6849efb266ee23a58f7707a154d815eb681617ecac180e5ee"
     },
     "create-adr": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-adr/SKILL.md",
-      "computedHash": "c121b7543175ccf3e1a8734656e0c926d853e946b34ce59dd66337c7b1bf207d"
+      "computedHash": "2ada29a31a7f3277841a0188b32a75fecf3fa8b2314cd0180b45e6ce5010ab05"
     },
     "create-piosee": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-piosee/SKILL.md",
-      "computedHash": "f1d8380204a6ff5c120ecf6c332cdd4700a5858e52896cd1d3bb0805fae2923f"
+      "computedHash": "daa162ac6abe686023b18d334341a607d2d849688ffdf49d248550e5f928625a"
     },
     "create-rfc": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-rfc/SKILL.md",
-      "computedHash": "c838294b708d450e8a1301db7122d740240319f107fd191a05ac0e1635858a38"
+      "computedHash": "2e211f6a1eda794e7fdbdd4e84ca7f69d2b649a3e64cf1f4d05ef053485e574e"
     },
     "create-user-story": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-user-story/SKILL.md",
-      "computedHash": "e2b59f9edb1bdf9d07a597887d03b00936fc7fa8d7be000d0421876d407d1ccd"
+      "computedHash": "778144cc3c8953262214dc5ba01ca8f66fe0e36888d709fcd57264f658bbc60c"
     },
     "feature-driven-vertical-slices": {
       "source": "mustardcustarddev/detoo",
@@ -47,7 +47,7 @@
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/review-adrs/SKILL.md",
-      "computedHash": "99a4f37146ec651470e7201c77142a8ff92f290f31150fa383cb00c9a626ef4e"
+      "computedHash": "ba13239751887f23a6f0ccf350fe736c507cd3d47b5a4643c83d07d712872a03"
     }
   }
 }

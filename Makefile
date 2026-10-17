@@ -55,6 +55,10 @@ deploy: build ## install the commands and their shell completion under $(PREFIX)
 	install -m 755 $(BINARIES) $(DESTDIR)$(PREFIX)/bin
 	install -m 644 $(COMPLETIONS) $(DESTDIR)$(PREFIX)/etc/bash_completion.d
 
+# `make install` is what most people type, so it is kept, but out of the help.
+.PHONY: install
+install: deploy
+
 .PHONY: release
 release: build ## tag the current commit and publish a release
 	git tag `git rev-parse --short HEAD` && git push --tags origin main

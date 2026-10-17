@@ -80,20 +80,20 @@ func TestEveryCommandTakesItsOptionsFirst(t *testing.T) {
 }
 
 // TestPagerIsTheTools covers where help is paged: through the tool's own PAGER
-// variable, else PAGER, else more.  A pager runs only on a terminal, so the
-// end-to-end tests cannot see which one was chosen.
+// variable, and otherwise not at all, even when PAGER is set.  A pager runs
+// only on a terminal, so the end-to-end tests cannot see which one was chosen.
 func TestPagerIsTheTools(t *testing.T) {
 	env := map[string]string{}
 	getenv := func(name string) string { return env[name] }
 	rfcTool := tool{Kind: rfc.Kind}
 
-	if got := pager(rfcTool, getenv); got != "more" {
-		t.Errorf("with nothing set, pager = %q, want more", got)
+	if got := pager(rfcTool, getenv); got != "" {
+		t.Errorf("with nothing set, pager = %q, want none", got)
 	}
 	env["PAGER"] = "less"
 	env["ADR_PAGER"] = "adr-pager"
-	if got := pager(rfcTool, getenv); got != "less" {
-		t.Errorf("with PAGER and ADR_PAGER set, rfc's pager = %q, want less", got)
+	if got := pager(rfcTool, getenv); got != "" {
+		t.Errorf("with PAGER and ADR_PAGER set, rfc's pager = %q, want none", got)
 	}
 	env["RFC_PAGER"] = "rfc-pager"
 	if got := pager(rfcTool, getenv); got != "rfc-pager" {

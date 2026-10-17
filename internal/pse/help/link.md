@@ -1,11 +1,10 @@
-Records, in both records, that SOURCE reverses or updates TARGET.
+Records, in both playbooks, that SOURCE replaces or updates TARGET.
 
 SOURCE and TARGET are both a reference (number or partial filename) to a
-PIOSEE record.  Exactly one of --reverse and --update must be given.
+PIOSEE playbook.  Exactly one of --replace and --update must be given.
 
-With --reverse, SOURCE undoes or abandons the decision in TARGET, which is
-marked "Reversed by" SOURCE and loses its Draft status.
+With --replace, SOURCE is a new plan for the situation TARGET planned for,
+and TARGET is marked "Replaced by" SOURCE and loses its Draft status.
 
-With --update, SOURCE builds on the decision in TARGET, such as the next
-cycle of PIOSEE after an evaluation, and TARGET is marked "Updated by" SOURCE
-and keeps its status.
+With --update, SOURCE changes part of TARGET, such as a case it left out, and
+TARGET is marked "Updated by" SOURCE and keeps its status.
