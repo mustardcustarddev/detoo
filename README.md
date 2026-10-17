@@ -1,6 +1,6 @@
 # detoo
 
-<img src="assets/detoo-avatar.png" alt="Detoo robot drawing with a set square" width="320">
+<img src="https://github.com/user-attachments/assets/43a08c20-05b9-4365-a7d7-ff14c3360a1d" alt="Detoo robot drawing with a set square" width="320">
 
 [![Apache License 2.0](https://img.shields.io/:license-Apache%20License%202.0-blue.svg?style=shield)](LICENSE.md)
 
@@ -71,9 +71,7 @@ Install the skills into your project with the
 [skills](https://github.com/vercel-labs/skills) CLI:
 
 ```bash
-npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
-  --skill find-missing-adrs --skill check-adrs --skill create-rfc \
-  --skill create-user-story --skill create-piosee
+npx skills add mustardcustarddev/detoo
 ```
 
 They drive the tools for you: writing ADRs, RFCs, user stories and PIOSEE
@@ -104,7 +102,9 @@ Ask your agent in your own words, for example:
 
 ## Troubleshooting
 
-<img src="assets/detoo-doctor.png" alt="detoo doctor in a terminal, reporting that the adr, rfc, sty and pse logs are all in place and named with their prefix" width="640">
+<div style="display: flex; justify-content: center;">
+<img src="https://github.com/user-attachments/assets/c9b1549f-0582-49db-a943-54948be08e62" alt="detoo doctor in a terminal, reporting that the adr, rfc, sty and pse logs are all in place and named with their prefix" width="1024">
+</div>
 
 ```bash
 detoo doctor                # check every log directory
@@ -112,12 +112,15 @@ detoo doctor --fix          # put right what it finds
 ```
 
 `detoo doctor` checks that each log directory is where its tool looks for it,
-and that each document is named the way its tool expects. It changes nothing,
-and exits 1 when it finds a problem, so it can run in CI.
+that each document is named the way its tool expects, and that no two share a
+number. It changes nothing, and exits 1 when it finds a problem, so it can run
+in CI.
 
 `detoo doctor --fix` moves and renames what is out of place, and updates the
 links to it. In a git repository it offers to use `git mv`, so that git
-records the renames; `--git` says yes without asking.
+records the renames, and to renumber documents that share a number, in the
+order git added them. `--git` and `--renumber` say yes without asking.
+Renumbering renames documents, so check anything else that refers to them.
 
 ## Migrating from ADR Tools
 

@@ -9,7 +9,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // Git is a project in a git repository, which moves and renames with git mv,
@@ -102,6 +104,56 @@ func (g *Git) Rename(ctx context.Context, dir, from, to string) error {
 	}
 	_, err = g.git(ctx, "mv", "--", src, dst)
 	return err
+}
+
+// Added returns when git first committed the file name, following it through
+// renames, and whether it has.  A file git does not track, or has staged but
+// not committed, has not been.  The file is found in git's index ignoring
+// case, since a filesystem that ignores case lets a file be renamed without
+// git, as story-0001-first.md to STORY-0001-first.md.
+func (g *Git) Added(ctx context.Context, name string) (time.Time, bool, error) {
+	full, err := g.path(ctx, name)
+	if err != nil {
+		return time.Time{}, false, err
+	}
+	out, err := g.git(ctx, "ls-files", "-z", "--full-name", "--", ":(icase)"+full)
+	if err != nil {
+		return time.Time{}, false, err
+	}
+	tracked := strings.Split(strings.TrimSuffix(out, "\x00"), "\x00")
+	if out == "" {
+		return time.Time{}, false, nil
+	}
+	file := tracked[0]
+	// An exact match, if there is one among several that differ in case.
+	for _, t := range tracked {
+		if strings.HasSuffix(filepath.ToSlash(full), "/"+t) {
+			file = t
+		}
+	}
+	// Before the first commit, git log fails rather than finding nothing.
+	if _, err := g.git(ctx, "rev-parse", "--verify", "--quiet", "HEAD"); err != nil {
+		if _, failed := errors.AsType[*exec.ExitError](err); failed {
+			return time.Time{}, false, nil
+		}
+		return time.Time{}, false, err
+	}
+	// git log takes a path from the top of the working tree as one from the
+	// current directory, so it is marked as from the top.
+	out, err = g.git(ctx, "log", "--follow", "--diff-filter=A", "--format=%at", "--", ":/"+file)
+	if err != nil {
+		return time.Time{}, false, err
+	}
+	lines := strings.Fields(out)
+	if len(lines) == 0 {
+		return time.Time{}, false, nil
+	}
+	// The earliest, should git have recorded it as added more than once.
+	seconds, err := strconv.ParseInt(lines[len(lines)-1], 10, 64)
+	if err != nil {
+		return time.Time{}, false, fmt.Errorf("git log: %q is not a time", lines[len(lines)-1])
+	}
+	return time.Unix(seconds, 0).UTC(), true, nil
 }
 
 // tracked reports whether git tracks the file name, or any file under the

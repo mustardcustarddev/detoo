@@ -159,6 +159,45 @@ func TestDoctorFixWithGitNeedsARepository(t *testing.T) {
 	w.check()
 }
 
+// Documents that share a number are reported, and so is a slip of a log's
+// prefix, which counts by the name it is renamed to.  Outside a git
+// repository, which came first is not known, so they need renumbering by
+// hand, and a fix leaves them alone.
+func TestDoctorReportsSharedNumbersOutsideGit(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.touch(
+		"docs/userstory/STORY-0001-describe-work-in-user-stories.md",
+		"docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md",
+		"docs/userstory/STOY-0002-fix-documents-in-the-wrong-place.md",
+	)
+	w.detoo("doctor")
+	w.detoo("doctor", "--fix", "--renumber")
+	w.ls("docs/userstory")
+	w.check()
+}
+
+// In a git repository, a fix asked to renumber gives each document that
+// shares a number one of its own, by when git added it: one git has not
+// committed goes last.  It changes the number in its title, and the links to
+// it, text and all.  Not asked, and not at a terminal, it leaves them alone.
+func TestDoctorFixRenumbersInAGitRepository(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.write("docs/adr/ADR-0001-record-architecture-decisions.md", "# 1. Record architecture decisions\n")
+	w.write("docs/adr/ADR-0002-use-postgresql.md", "# 2. Use PostgreSQL\n")
+	w.write("docs/adr/ADR-0002-use-sqlite-for-tests.md",
+		"# 2. Use SQLite for tests\n\nAlongside [2. Use PostgreSQL](ADR-0002-use-postgresql.md).\n")
+	w.write("docs/adr/ADR-0003-use-markdown.md",
+		"# 3. Use Markdown\n\nAfter [2. Use SQLite for tests](ADR-0002-use-sqlite-for-tests.md).\n")
+	w.git("init", "--quiet", "--initial-branch=main")
+	w.git("add", "docs")
+	w.detoo("doctor", "--fix")
+	w.detoo("doctor", "--fix", "--renumber", "--git")
+	w.git("status", "--short")
+	w.cat("docs/adr/ADR-0004-use-sqlite-for-tests.md")
+	w.cat("docs/adr/ADR-0003-use-markdown.md")
+	w.check()
+}
+
 func TestDetooHelp(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	w.detoo("help")

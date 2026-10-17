@@ -3,8 +3,12 @@ package doctor
 import (
 	"context"
 	"errors"
+	"fmt"
 	"path"
+	"regexp"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
@@ -15,6 +19,11 @@ type Command struct {
 	// Git moves and renames with git, so that the repository records each as
 	// a rename rather than a deletion and a new file.
 	Git bool
+
+	// Renumber gives each document that shares a number with one git
+	// recorded before it a number of its own, and moves up the documents
+	// after it to make room.
+	Renumber bool
 }
 
 // ErrNotARepository is returned when a fix is asked to move with git in a
@@ -50,13 +59,11 @@ type Workspace interface {
 }
 
 // Git is a Workspace that moves and renames with git where it can: the files
-// git tracks are moved with git mv, and the rest as Workspace moves them.
+// git tracks are moved with git mv, and the rest as Workspace moves them.  Its
+// History orders the documents that share a number.
 type Git interface {
 	Workspace
-
-	// Repository reports whether the project is in a git repository, where
-	// it can move with git.
-	Repository(ctx context.Context) (bool, error)
+	History
 }
 
 // Fixer fixes the logs of Kinds, in Project, or in Git when asked to move
@@ -100,17 +107,27 @@ type Fixed struct {
 type Fixes struct {
 	Moved   []Move
 	Renamed []Rename
+
+	// Duplicates are the numbers documents shared, and Renumbered the
+	// documents renumbered so that each has its own.
+	Duplicates []Duplicate
+	Renumbered []Renumber
 }
 
 // Relinked is a document whose links were changed, by the path it has after
-// the fix, and how many of its links were changed.
+// the fix, and how many of its links were changed.  Retitled reports that the
+// number in its title was changed, as the document was renumbered.
 type Relinked struct {
-	Path  string
-	Links int
+	Path     string
+	Links    int
+	Retitled bool
 }
 
 // Count counts the problems fixed in the log.
-func (f Fixes) Count() int { return len(f.Moved) + len(f.Renamed) }
+func (f Fixes) Count() int { return len(f.Moved) + len(f.Renamed) + len(f.Duplicates) }
+
+// Files counts the directories and documents moved or renamed in the log.
+func (f Fixes) Files() int { return len(f.Moved) + len(f.Renamed) + len(f.Renumbered) }
 
 // Count counts the problems fixed in every log.
 func (f Fixed) Count() int {
@@ -121,13 +138,30 @@ func (f Fixed) Count() int {
 	return n
 }
 
+// Renumbered counts the documents renumbered in every log.
+func (f Fixed) Renumbered() int {
+	n := 0
+	for _, l := range f.Logs {
+		n += len(l.Renumbered)
+	}
+	return n
+}
+
 // Changes counts what the fix changed: each directory moved or removed, each
-// document renamed, and each document whose links were changed.
-func (f Fixed) Changes() int { return f.Count() + len(f.Removed) + len(f.Relinked) }
+// document renamed or renumbered, and each document whose links or title
+// were changed.
+func (f Fixed) Changes() int {
+	n := len(f.Removed) + len(f.Relinked)
+	for _, l := range f.Logs {
+		n += l.Files()
+	}
+	return n
+}
 
 // Handle checks the logs, moves each misplaced directory and renames each
-// misnamed document that would not clash, updates the links to what moved,
-// and checks the logs again.  A clash is left as it is, to be fixed by hand.
+// misnamed document that would not clash, renumbers the documents that share
+// a number if asked to, updates the links to what moved, and checks the logs
+// again.  A clash is left as it is, to be fixed by hand.
 func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 	if cmd.Git {
 		in, err := f.Repository(ctx)
@@ -140,12 +174,15 @@ func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 		f.Project = f.Git
 	}
 	checker := Handler{Kinds: f.Kinds, Project: f.Project}
+	if f.Git != nil {
+		checker.History = f.Git
+	}
 	before, err := checker.Handle(ctx, Query{})
 	if err != nil {
 		return Fixed{}, err
 	}
 	fixed := Fixed{Before: before, Git: cmd.Git, Logs: make([]Fixes, len(before.Logs))}
-	moves := relocation{dirs: map[string]string{}, files: map[string]string{}}
+	moves := relocation{dirs: map[string]string{}, files: map[string]string{}, numbers: map[string][2]int{}}
 
 	for i, l := range before.Logs {
 		for _, m := range l.Misplaced {
@@ -171,6 +208,11 @@ func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 			moves.files[path.Join(rn.Dir, rn.From)] = path.Join(dir, rn.To)
 			fixed.Logs[i].Renamed = append(fixed.Logs[i].Renamed, rn)
 		}
+		if cmd.Renumber {
+			if err := f.renumber(ctx, l, &fixed.Logs[i], moves); err != nil {
+				return Fixed{}, err
+			}
+		}
 	}
 
 	if fixed.Removed, err = f.removeEmptied(ctx, fixed); err != nil {
@@ -186,6 +228,34 @@ func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 		return Fixed{}, err
 	}
 	return fixed, nil
+}
+
+// renumber renames each document of l that a fix renumbers, where it is now,
+// the highest numbers first, so that no document is renamed onto another that
+// has yet to move up.
+func (f Fixer) renumber(ctx context.Context, l Log, fixes *Fixes, moves relocation) error {
+	for _, d := range l.Duplicates {
+		if d.Clash == NoClash {
+			fixes.Duplicates = append(fixes.Duplicates, d)
+		}
+	}
+	renumbers := slices.Clone(l.Renumbers)
+	slices.SortStableFunc(renumbers, compareNumbers(l.Kind))
+	for _, r := range renumbers {
+		if r.Clash != NoClash {
+			continue
+		}
+		dir := moves.dir(r.Dir)
+		if err := f.Project.Rename(ctx, dir, r.From, r.To); err != nil {
+			return err
+		}
+		moves.files[path.Join(r.Dir, r.File)] = path.Join(dir, r.To)
+		moves.numbers[path.Join(dir, r.To)] = [2]int{l.Kind.Number(r.From), l.Kind.Number(r.To)}
+		fixes.Renumbered = append(fixes.Renumbered, r)
+	}
+	// Reported in the order of the log.
+	slices.Reverse(fixes.Renumbered)
+	return nil
 }
 
 // removeEmptied removes each directory that held a directory moved away, such
@@ -233,22 +303,58 @@ func (f Fixer) relink(ctx context.Context, before Result, moves relocation) ([]R
 		if err != nil {
 			return nil, err
 		}
-		changed, n := Relink(content, moves.origin(name), name, moves.to)
-		if n == 0 {
+		changed, n := relink(content, moves.origin(name), name, moves.to, moves.renumbered)
+		changed, retitled := retitle(changed, moves.numbers[name])
+		if n == 0 && !retitled {
 			continue
 		}
 		if err := f.Project.Write(ctx, name, changed); err != nil {
 			return nil, err
 		}
-		relinked = append(relinked, Relinked{Path: name, Links: n})
+		relinked = append(relinked, Relinked{Path: name, Links: n, Retitled: retitled})
 	}
 	return relinked, nil
 }
 
+// title matches the first line of a record, which begins with its number:
+// "# 3. Use PostgreSQL".
+var title = regexp.MustCompile(`^# ([0-9]+)\. `)
+
+// retitle returns content with the number its title begins with changed from
+// the first of numbers to the second, and whether it changed it.  Content
+// whose title begins with another number, or with none, is left as it is.
+func retitle(content string, numbers [2]int) (string, bool) {
+	m := title.FindStringSubmatchIndex(content)
+	if numbers == [2]int{} || m == nil {
+		return content, false
+	}
+	if n, err := strconv.Atoi(content[m[2]:m[3]]); err != nil || n != numbers[0] {
+		return content, false
+	}
+	return content[:m[2]] + strconv.Itoa(numbers[1]) + content[m[3]:], true
+}
+
 // relocation is where the fix moved things: each directory moved, and each
-// document renamed, from its path before the fix to its path after.
+// document renamed, from its path before the fix to its path after, and the
+// number each document renumbered had and has, by its path after.
 type relocation struct {
 	dirs, files map[string]string
+	numbers     map[string][2]int
+}
+
+// renumbered returns the text a link to the document at name, its path after
+// the fix, should have: a link whose text begins with the number the
+// document had, as "3. Use PostgreSQL", begins with the one it has now.
+func (r relocation) renumbered(name, text string) (string, bool) {
+	numbers, ok := r.numbers[name]
+	if !ok {
+		return text, false
+	}
+	rest, ok := strings.CutPrefix(text, fmt.Sprintf("%d. ", numbers[0]))
+	if !ok {
+		return text, false
+	}
+	return fmt.Sprintf("%d. %s", numbers[1], rest), true
 }
 
 // dir returns where a directory is after the moves.

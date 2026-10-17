@@ -5,11 +5,13 @@ import (
 	"image/color"
 	"io"
 	"path"
+	"strconv"
 	"strings"
 
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/colorprofile"
 
+	"github.com/mustardcustard/detoo/internal/domain/record"
 	"github.com/mustardcustard/detoo/internal/features/health/doctor"
 )
 
@@ -43,6 +45,12 @@ const widest = 120
 // found when any has problems (or one box listing every log when none has),
 // and a status line ending in the exit status the command returns.
 func Doctor(w io.Writer, t Terminal, result doctor.Result) error {
+	return doctorReport(w, t, result, false)
+}
+
+// doctorReport writes the report Doctor writes, after a fix that changed
+// nothing when fixed is true, which hints at what is left to fix.
+func doctorReport(w io.Writer, t Terminal, result doctor.Result, fixed bool) error {
 	r := newReport(t, result)
 	if result.Healthy() {
 		return r.write(w, r.healthyBox(), r.statusBar())
@@ -57,10 +65,24 @@ func Doctor(w io.Writer, t Terminal, result doctor.Result) error {
 		}
 	}
 	boxes = append(boxes, r.missing(missing)...)
-	if hint := r.fixHint(); hint != "" {
+	hint := r.fixHint()
+	if fixed {
+		hint = r.renumberHint()
+	}
+	if hint != "" {
 		boxes = append(boxes, hint)
 	}
 	return r.write(w, strings.Join(boxes, "\n\n"), r.statusBar())
+}
+
+// renumberHint says that doctor --fix --renumber renumbers documents that
+// share a number, when a fix has left some, or is empty.
+func (r *report) renumberHint() string {
+	if r.result.Renumberable() == 0 {
+		return ""
+	}
+	return r.fg(r.th.primary).Render("→") + " Run " + bold("detoo doctor --fix --renumber") + " " +
+		r.fg(r.th.subtext).Render("to renumber the documents that share a number.")
 }
 
 // fixHint says that doctor --fix fixes the problems that do not need fixing
@@ -91,7 +113,7 @@ func (r *report) fixHint() string {
 // doctor writes without fixing.
 func DoctorFix(w io.Writer, t Terminal, fixed doctor.Fixed) error {
 	if fixed.Changes() == 0 {
-		return Doctor(w, t, fixed.After)
+		return doctorReport(w, t, fixed.After, true)
 	}
 	r := newReport(t, fixed.After)
 	boxes := make([]string, 0, len(fixed.After.Logs)+1)
@@ -113,6 +135,9 @@ func DoctorFix(w io.Writer, t Terminal, fixed doctor.Fixed) error {
 	boxes = append(boxes, r.missing(missing)...)
 	if fixed.Git {
 		boxes = append(boxes, r.tick()+" Used "+bold("git mv")+r.fg(r.th.subtext).Render(", so git records the moves and renames. Review with git status."))
+	}
+	if hint := r.renumberHint(); hint != "" {
+		boxes = append(boxes, hint)
 	}
 	return r.write(w, strings.Join(boxes, "\n\n"), r.fixStatusBar(fixed))
 }
@@ -380,6 +405,9 @@ func (r *report) logBody(l doctor.Log) string {
 	if len(l.Misnamed) > 0 {
 		lines = append(lines, r.misnamed(l)...)
 	}
+	if len(l.Duplicates) > 0 {
+		lines = append(lines, r.duplicates(l)...)
+	}
 	return strings.Join(lines, "\n")
 }
 
@@ -468,6 +496,127 @@ func (r *report) misnamed(l doctor.Log) []string {
 	return append(lines, r.mapping(rows)...)
 }
 
+// duplicates lists the numbers documents of the log share, and how to give
+// each its own: by when git added them, or by hand.
+func (r *report) duplicates(l doctor.Log) []string {
+	subtext := r.fg(r.th.subtext)
+	var lines []string
+	clash := doctor.NoClash
+	for _, d := range l.Duplicates {
+		clash = max(clash, d.Clash)
+		lines = append(lines, r.cross()+" "+fmt.Sprintf("%d %s share the number ", len(d.Documents), l.Kind.Plural)+bold(strconv.Itoa(d.Number)))
+		rows := make([][]string, 0, len(d.Documents))
+		for i, name := range d.Documents {
+			if len(l.Dirs) > 1 {
+				name = r.fg(r.th.faint).Render(d.Dir+"/") + name
+			}
+			note := ""
+			if d.Clash == doctor.NoClash {
+				note = "· renumbered"
+				if i == 0 {
+					note = fmt.Sprintf("· added first, keeps %d", d.Number)
+				}
+			}
+			rows = append(rows, []string{name, subtext.Render(note)})
+		}
+		lines = append(lines, grid(rows)...)
+	}
+
+	switch clash {
+	case doctor.NoClash:
+		lines = append(lines, r.hang(r.fg(r.th.primary).Render("→"), bold("--fix")+" can renumber them by when git added each:"))
+	case doctor.NoHistory:
+		lines = append(lines,
+			r.hang(r.bang(), "Needs fixing by hand: this is not a git repository, so which came first is not known."),
+			r.hang(" ", subtext.Render("Keep the first of each, and renumber the others, such as:")))
+	case doctor.NamesClash:
+		lines = append(lines,
+			r.hang(r.bang(), "Needs fixing by hand: fix the file names that clash first, and doctor can renumber these."),
+			r.hang(" ", subtext.Render("Or keep the first of each, and renumber the others, such as:")))
+	}
+	lines = append(lines, r.renumbers(l, l.Renumbers)...)
+	n := len(l.Renumbers)
+	warning := "Renumbering renames " + count(n, l.Kind.Noun, l.Kind.Plural) + ". Links to " + them(n) +
+		" in the project's Markdown are updated, but other references to " + them(n) + " could be affected."
+	if clash != doctor.NoClash {
+		warning = "Renumbering renames " + count(n, l.Kind.Noun, l.Kind.Plural) + ": update the title of each, the links to " +
+			them(n) + ", and anything else that refers to " + them(n) + " by name or number."
+	}
+	return append(lines, r.hang(r.bang(), r.fg(r.th.yellow).Render(warning)))
+}
+
+// them is the pronoun for n things.
+func them(n int) string {
+	if n == 1 {
+		return "it"
+	}
+	return "them"
+}
+
+// hang writes text after icon, wrapped to fit a box, with the lines after the
+// first indented to line up with the first.
+func (r *report) hang(icon, text string) string {
+	inner := r.width - 4 // the box's borders and padding
+	wrapped := lipgloss.NewStyle().Width(inner - 2).Render(text)
+	lines := strings.Split(wrapped, "\n")
+	for i, line := range lines {
+		line = strings.TrimRight(line, " ")
+		if i == 0 {
+			lines[i] = icon + " " + line
+		} else {
+			lines[i] = "  " + line
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+// renumbers lays out documents renumbered, or to be, with the number that
+// changes marked, and where each that shared a number goes in the log.
+func (r *report) renumbers(l doctor.Log, renumbers []doctor.Renumber) []string {
+	subtext := r.fg(r.th.subtext)
+	dirs := map[string]bool{}
+	for _, rn := range renumbers {
+		dirs[rn.Dir] = true
+	}
+	rows := make([][]string, 0, len(renumbers))
+	var places []string
+	for _, rn := range renumbers {
+		from := r.number(l, rn.From, r.th.red, false)
+		if len(dirs) > 1 || len(l.Dirs) > 1 {
+			from = r.fg(r.th.faint).Render(rn.Dir+"/") + from
+		}
+		rows = append(rows, []string{from, r.arrow(), r.number(l, rn.To, r.th.green, true)})
+		id := func(name string) string { return ident(l.Kind, l.Kind.Number(name)) }
+		switch {
+		case rn.After == "":
+		case rn.Before == "":
+			places = append(places, r.hang(" ", subtext.Render(id(rn.To)+" goes last, after "+id(rn.After)+", the last added before it.")))
+		default:
+			places = append(places, r.hang(" ", subtext.Render(id(rn.To)+" goes between "+id(rn.After)+", the last added before it, and "+id(rn.Before)+".")))
+		}
+	}
+	return append(r.mapping(rows), places...)
+}
+
+// number shows a document's name with its number in colour c, and the rest
+// subdued when the name is what a document should have.
+func (r *report) number(l doctor.Log, name string, c color.Color, should bool) string {
+	prefix := ""
+	if l.Kind.Prefix != "" {
+		prefix = l.Kind.Prefix + "-"
+	}
+	rest := strings.TrimPrefix(name, prefix)
+	i := strings.IndexFunc(rest, func(r rune) bool { return r < '0' || r > '9' })
+	if i < 0 {
+		return name
+	}
+	style := lipgloss.NewStyle()
+	if should {
+		style = r.fg(r.th.subtext)
+	}
+	return style.Render(prefix) + r.fg(c).Bold(should).Render(rest[:i]) + style.Render(rest[i:])
+}
+
 // mapping lays out rows of what is there, an arrow or a warning, and what
 // should be, in a grid.  When the grid is too wide for a box, each row is
 // stacked instead, with what should be beneath what is there.
@@ -510,8 +659,18 @@ func (r *report) fixBox(l doctor.Log, f doctor.Fixes, removed []string) string {
 	for _, m := range l.Misplaced {
 		lines = append(lines, r.misplaced(l, m)...)
 	}
+	if len(f.Renumbered) > 0 {
+		lines = append(lines, r.hang(r.tick(), "Renumbered by when git added each:"))
+		lines = append(lines, r.renumbers(l, f.Renumbered)...)
+		lines = append(lines, r.hang(r.bang(), r.fg(r.th.yellow).Render(
+			"Links to "+them(len(f.Renumbered))+" in the project's Markdown were updated. Check other references to "+
+				them(len(f.Renumbered))+" by name or number, such as links from elsewhere, other branches, and mentions in text.")))
+	}
 	if len(l.Misnamed) > 0 {
 		lines = append(lines, r.misnamed(l)...)
+	}
+	if len(l.Duplicates) > 0 {
+		lines = append(lines, r.duplicates(l)...)
 	}
 
 	border, title := r.logTitle(l)
@@ -540,19 +699,39 @@ func (r *report) renamed(l doctor.Log, renames []doctor.Rename) []string {
 	return append(lines, r.mapping(rows)...)
 }
 
-// linksBox lists the documents whose links a fix changed.
+// linksBox lists the documents whose links a fix changed, and those whose
+// titles it renumbered.
 func (r *report) linksBox(relinked []doctor.Relinked) string {
 	subtext := r.fg(r.th.subtext)
-	links := 0
+	links, titles := 0, 0
 	rows := make([][]string, 0, len(relinked))
 	for _, d := range relinked {
 		links += d.Links
-		rows = append(rows, []string{d.Path, subtext.Render(count(d.Links, "link", "links"))})
+		var changed []string
+		if d.Links > 0 {
+			changed = append(changed, count(d.Links, "link", "links"))
+		}
+		if d.Retitled {
+			titles++
+			changed = append(changed, "title")
+		}
+		rows = append(rows, []string{d.Path, subtext.Render(strings.Join(changed, ", "))})
 	}
-	lines := append([]string{r.tick() + " " + subtext.Render("Changed to lead to the documents where they are now.")}, grid(rows)...)
+	text := "Changed to lead to the documents where they are now."
+	if titles > 0 {
+		text = "Changed to lead to the documents where they are now, and by the numbers they have now."
+	}
+	lines := append([]string{r.hang(r.tick(), subtext.Render(text))}, grid(rows)...)
 	title := r.tick() + " " + bold("links")
-	aside := r.fg(r.th.faint).Render(count(links, "link", "links") + " in " + count(len(relinked), "document", "documents"))
-	return r.box(title, aside, strings.Join(lines, "\n"), r.th.border)
+	var aside []string
+	if links > 0 {
+		aside = append(aside, count(links, "link", "links"))
+	}
+	if titles > 0 {
+		aside = append(aside, count(titles, "title", "titles"))
+	}
+	return r.box(title, r.fg(r.th.faint).Render(strings.Join(aside, " and ")+" in "+count(len(relinked), "document", "documents")),
+		strings.Join(lines, "\n"), r.th.border)
 }
 
 // healthyBox lists every log, each in its place.
@@ -594,16 +773,18 @@ func span(l doctor.Log) string {
 		}
 		last = max(last, n)
 	}
-	id := func(n int) string {
-		if l.Kind.Prefix == "" {
-			return fmt.Sprintf("%04d", n)
-		}
-		return fmt.Sprintf("%s-%04d", l.Kind.Prefix, n)
-	}
 	if first == last {
-		return id(first)
+		return ident(l.Kind, first)
 	}
-	return id(first) + " … " + id(last)
+	return ident(l.Kind, first) + " … " + ident(l.Kind, last)
+}
+
+// ident names a document by its kind's prefix and its number: ADR-0003.
+func ident(kind record.Kind, n int) string {
+	if kind.Prefix == "" {
+		return fmt.Sprintf("%04d", n)
+	}
+	return fmt.Sprintf("%s-%04d", kind.Prefix, n)
 }
 
 // barStyle is the background of the status bar, with text in colour c, or in

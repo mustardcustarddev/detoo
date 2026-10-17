@@ -132,10 +132,10 @@ func TestFixMovesAndRenamesALogAndItsLinks(t *testing.T) {
 			fixed.Count(), fixed.After.Healthy(), fixed.Before.Healthy())
 	}
 	wantRelinked := []Relinked{
-		{"README.md", 2},
-		{"docs/adr/ADR-0001-first.md", 1},
-		{"docs/adr/ADR-0002-second.md", 1},
-		{"docs/adr/README.md", 2},
+		{"README.md", 2, false},
+		{"docs/adr/ADR-0001-first.md", 1, false},
+		{"docs/adr/ADR-0002-second.md", 1, false},
+		{"docs/adr/README.md", 2, false},
 	}
 	if !reflect.DeepEqual(fixed.Relinked, wantRelinked) {
 		t.Errorf("Relinked = %v, want %v", fixed.Relinked, wantRelinked)

@@ -20,11 +20,12 @@ type Health struct {
 }
 
 // NewDetoo wires detoo for logs of kinds, in the project given, which git
-// moves files in when a fix asks it to.
+// moves files in when a fix asks it to, and whose history orders documents
+// that share a number.
 func NewDetoo(kinds []record.Kind, project doctor.Workspace, git doctor.Git) *Detoo {
 	return &Detoo{
 		Health: Health{
-			Doctor: doctor.Handler{Kinds: kinds, Project: project},
+			Doctor: doctor.Handler{Kinds: kinds, Project: project, History: git},
 			Fix:    doctor.Fixer{Kinds: kinds, Project: project, Git: git},
 		},
 	}

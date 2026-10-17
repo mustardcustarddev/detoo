@@ -35,7 +35,9 @@ func RunDetoo(kinds []record.Kind, files fs.FS) int {
 	// A question is asked only of someone at a terminal, never of a script.
 	var confirm cli.Confirm
 	if term.IsTerminal(os.Stdin.Fd()) && term.IsTerminal(os.Stdout.Fd()) {
-		confirm = cli.Prompt(os.Stdin, os.Stderr)
+		confirm = func(q output.Question) (bool, error) {
+			return output.Ask(os.Stdin, os.Stderr, terminal(), q)
+		}
 	}
 	root := cli.NewDetooCommand(files, application, terminal, confirm, os.Stdout, os.Stderr, os.Getenv)
 	if err := root.Execute(); err != nil {

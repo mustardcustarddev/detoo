@@ -7,5 +7,8 @@
   # The same, with git mv, without being asked:
   detoo doctor --fix --git
 
+  # Also renumber documents that share a number, by when git added each:
+  detoo doctor --fix --renumber
+
   # In a script, stop when a log is in the wrong place or misnamed:
   detoo doctor > /dev/null || exit 1

@@ -3,8 +3,8 @@ Looks after a project's logs as a whole: the logs that adr, rfc, sty and pse
 keep.
 
 Run "detoo doctor" to check that each log is where its tool looks for it, and
-named as its tool names documents today, and "detoo doctor --fix" to put it
-right.
+named and numbered as its tool names documents today, and "detoo doctor --fix"
+to put it right.
 
 Usage:
   detoo [flags]
@@ -12,7 +12,7 @@ Usage:
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  doctor      Check that each log is where its tool looks, and named as it names documents
+  doctor      Check that each log is where its tool looks, with documents named and numbered as it names them
   help        Help about any command
 
 Flags:
@@ -29,11 +29,22 @@ the tools would not find, or whose file names are out of date:
 * a log kept in a directory its tool no longer looks in, such as user stories
   in `docs/sty` instead of `docs/userstory`;
 * documents whose file names do not begin with their log's prefix in upper
-  case: `ADR-`, `RFC-`, `STORY-` or `PIOSEE-`.
+  case: `ADR-`, `RFC-`, `STORY-` or `PIOSEE-`, including a slip of the prefix,
+  such as `STOY-0003-title.md` among the user stories;
+* documents that share a number, such as `STORY-0003-first.md` and
+  `STORY-0003-second.md`.
 
 When moving or renaming would clash, such as when both `docs/sty` and
 `docs/userstory` exist, or `.sty-dir` names the old directory, the problem is
 reported as needing fixing by hand.
+
+In a git repository, doctor works out how to renumber documents that share a
+number from when git first committed each.  The first keeps the number.  Each
+other goes after the last document committed before it, and before the one
+after that, and the documents after it move up as far as they must to make
+room.  A document not yet committed goes last.  Outside a git repository,
+which came first is not known, so doctor suggests new numbers, and leaves the
+renumbering to be done by hand.
 
 The project is the nearest of the current directory and its parents that
 holds a `docs` or `doc` directory, or a tool's marker file such as `.adr-dir`.
@@ -42,15 +53,31 @@ Without `--fix`, nothing is changed, and doctor says how many of the problems
 `--fix` would fix.  With it, doctor moves each log to where its tool looks,
 renames its documents to begin with the prefix, and changes the links to them
 in the project's Markdown documents (those in the project's directory, and
-under `docs`, `doc` and each log's directory), so that none break.  A directory that moving a log out of leaves empty, such as `doc`, is
-removed.  Clashes are left as they are.  doctor then checks the logs again.
+under `docs`, `doc` and each log's directory), so that none break.  A
+directory that moving a log out of leaves empty, such as `doc`, is removed.
+Clashes are left as they are.  doctor then checks the logs again.
 
-In a git repository, when there is something to move or rename, `--fix` asks
-whether to move and rename with `git mv`, so that git records each as a rename
-rather than a deletion and a new file.  Files git does not track are moved as
+`--fix` renumbers documents that share a number only when asked to.  It
+renames each document it renumbers, changes the number in its title, and
+changes the links to it, and their text when it begins with the number, such
+as "3. Use PostgreSQL".  Anything else that refers to a renumbered document
+could be affected: links from outside the project's Markdown, other branches,
+and mentions of its number in text, tickets and commit messages.  So at a
+terminal, doctor warns of this, and asks first, renumbering only if the answer
+is yes.  `--renumber` renumbers without asking, and `--renumber=false` does
+not renumber; when doctor is not run at a terminal, it does not ask, and does
+not renumber unless given `--renumber`.
+
+In a git repository, when there is something to move or rename, `--fix` also
+asks whether to move and rename with `git mv`, so that git records each as a
+rename rather than a deletion and a new file.  Files git does not track are moved as
 they would be without git.  `--git` moves with git without asking, and
 `--git=false` without git; when doctor is not run at a terminal, it does not
 ask, and moves without git unless given `--git`.
+
+Before asking anything, `--fix` lists what it will do whatever the answers,
+such as the documents it renames to begin with their prefix, so that a
+question is not taken for the whole of the fix.
 
 When nothing is wrong, or nothing is left wrong after a fix, doctor says so
 and exits 0; otherwise it exits 1.
@@ -68,13 +95,17 @@ Examples:
   # The same, with git mv, without being asked:
   detoo doctor --fix --git
 
+  # Also renumber documents that share a number, by when git added each:
+  detoo doctor --fix --renumber
+
   # In a script, stop when a log is in the wrong place or misnamed:
   detoo doctor > /dev/null || exit 1
 
 Flags:
-      --fix    move and rename the logs to where the tools look, and update the links to them
-      --git    with --fix, move and rename with git mv; --git=false moves without git, and neither asks
-  -h, --help   help for doctor
+      --fix        move and rename the logs to where the tools look, and update the links to them
+      --git        with --fix, move and rename with git mv; --git=false moves without git, and neither asks
+  -h, --help       help for doctor
+      --renumber   with --fix, renumber documents that share a number, by when git added them; --renumber=false does not, and neither asks
 echo $?
 0
 detoo doctor extra

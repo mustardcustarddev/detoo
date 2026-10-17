@@ -1,0 +1,90 @@
+cat > docs/adr/ADR-0001-record-architecture-decisions.md <<EOF
+# 1. Record architecture decisions
+EOF
+cat > docs/adr/ADR-0002-use-postgresql.md <<EOF
+# 2. Use PostgreSQL
+EOF
+cat > docs/adr/ADR-0002-use-sqlite-for-tests.md <<EOF
+# 2. Use SQLite for tests
+
+Alongside [2. Use PostgreSQL](ADR-0002-use-postgresql.md).
+EOF
+cat > docs/adr/ADR-0003-use-markdown.md <<EOF
+# 3. Use Markdown
+
+After [2. Use SQLite for tests](ADR-0002-use-sqlite-for-tests.md).
+EOF
+git init --quiet --initial-branch=main
+git add docs
+detoo doctor --fix
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   4 documents in 1 directory
+
+╭─ ✗ adr  docs/adr ─────────────────────────── 4 decision records · 1 problem ─╮
+│ ✗ 2 decision records share the number 2                                      │
+│   ADR-0002-use-postgresql.md        · added first, keeps 2                   │
+│   ADR-0002-use-sqlite-for-tests.md  · renumbered                             │
+│ → --fix can renumber them by when git added each:                            │
+│   ADR-0002-use-sqlite-for-tests.md  →  ADR-0004-use-sqlite-for-tests.md      │
+│   ADR-0004 goes last, after ADR-0003, the last added before it.              │
+│ ! Renumbering renames 1 decision record. Links to it in the project's        │
+│   Markdown are updated, but other references to it could be affected.        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc, sty or pse log found.
+
+→ Run detoo doctor --fix --renumber to renumber the documents that share a number.
+
+ DOCTOR  ✗ 1 problem in 1 log  Nothing was changed.                      EXIT 1 
+echo $?
+1
+detoo doctor --fix --renumber --git
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   4 documents in 1 directory
+
+╭─ ✓ adr  docs/adr ───────────────────────────── 4 decision records · 1 fixed ─╮
+│ ✓ Renumbered by when git added each:                                         │
+│   ADR-0002-use-sqlite-for-tests.md  →  ADR-0004-use-sqlite-for-tests.md      │
+│   ADR-0004 goes last, after ADR-0003, the last added before it.              │
+│ ! Links to it in the project's Markdown were updated. Check other references │
+│   to it by name or number, such as links from elsewhere, other branches, and │
+│   mentions in text.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ links ──────────────────────────────── 1 link and 1 title in 2 documents ─╮
+│ ✓ Changed to lead to the documents where they are now, and by the numbers    │
+│   they have now.                                                             │
+│   docs/adr/ADR-0003-use-markdown.md          1 link                          │
+│   docs/adr/ADR-0004-use-sqlite-for-tests.md  title                           │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc, sty or pse log found.
+
+✓ Used git mv, so git records the moves and renames. Review with git status.
+
+ DOCTOR  ✓ Fixed 1 problem. All is well.  Made 3 changes.                EXIT 0 
+echo $?
+0
+git status --short
+A  docs/adr/ADR-0001-record-architecture-decisions.md
+A  docs/adr/ADR-0002-use-postgresql.md
+AM docs/adr/ADR-0003-use-markdown.md
+AM docs/adr/ADR-0004-use-sqlite-for-tests.md
+cat docs/adr/ADR-0004-use-sqlite-for-tests.md
+# 4. Use SQLite for tests
+
+Alongside [2. Use PostgreSQL](ADR-0002-use-postgresql.md).
+cat docs/adr/ADR-0003-use-markdown.md
+# 3. Use Markdown
+
+After [4. Use SQLite for tests](ADR-0004-use-sqlite-for-tests.md).

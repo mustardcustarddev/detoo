@@ -1,0 +1,67 @@
+touch docs/userstory/STORY-0001-describe-work-in-user-stories.md docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md docs/userstory/STOY-0002-fix-documents-in-the-wrong-place.md
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   3 documents in 1 directory
+
+╭─ ! sty  docs/userstory   BY HAND  ───────────── 3 user stories · 2 problems ─╮
+│ ✗ File names do not begin with STORY-                                        │
+│   STOY-0002-fix-documents-in-the-wrong-place.md                              │
+│     → STORY-0002-fix-documents-in-the-wrong-place.md                         │
+│ ✗ 2 user stories share the number 2                                          │
+│   STORY-0002-find-documents-in-the-wrong-place.md                            │
+│   STORY-0002-fix-documents-in-the-wrong-place.md                             │
+│ ! Needs fixing by hand: this is not a git repository, so which came first is │
+│   not known.                                                                 │
+│   Keep the first of each, and renumber the others, such as:                  │
+│   STORY-0002-fix-documents-in-the-wrong-place.md                             │
+│     → STORY-0003-fix-documents-in-the-wrong-place.md                         │
+│ ! Renumbering renames 1 user story: update the title of each, the links to   │
+│   it, and anything else that refers to it by name or number.                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc or pse log found.
+
+→ Run detoo doctor --fix to fix 1 of the 2 problems; 1 needs fixing by hand.
+
+ DOCTOR  ✗ 2 problems in 1 log  ! 1 needs fixing by hand                 EXIT 1 
+echo $?
+1
+detoo doctor --fix --renumber
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+█████████████▄    checked   3 documents in 1 directory
+
+╭─ ! sty  docs/userstory   BY HAND  ──── 3 user stories · 1 fixed · 1 problem ─╮
+│ ✓ Renamed to begin with STORY-                                               │
+│   STOY-0002-fix-documents-in-the-wrong-place.md                              │
+│     → STORY-0002-fix-documents-in-the-wrong-place.md                         │
+│ ✗ 2 user stories share the number 2                                          │
+│   STORY-0002-find-documents-in-the-wrong-place.md                            │
+│   STORY-0002-fix-documents-in-the-wrong-place.md                             │
+│ ! Needs fixing by hand: this is not a git repository, so which came first is │
+│   not known.                                                                 │
+│   Keep the first of each, and renumber the others, such as:                  │
+│   STORY-0002-fix-documents-in-the-wrong-place.md                             │
+│     → STORY-0003-fix-documents-in-the-wrong-place.md                         │
+│ ! Renumbering renames 1 user story: update the title of each, the links to   │
+│   it, and anything else that refers to it by name or number.                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc or pse log found.
+
+ DOCTOR  ✓ Fixed 1 problem.  ! 1 needs fixing by hand  Made 1 change.    EXIT 1 
+echo $?
+1
+ls docs/userstory
+STORY-0001-describe-work-in-user-stories.md
+STORY-0002-find-documents-in-the-wrong-place.md
+STORY-0002-fix-documents-in-the-wrong-place.md

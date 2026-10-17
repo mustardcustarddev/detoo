@@ -106,3 +106,14 @@ func TestGitRenamesFiles(t *testing.T) {
 		t.Errorf("Files() = %v, want %v", names, want)
 	}
 }
+
+// A file git does not track, or has staged but never committed, has no
+// history, even before the repository's first commit.
+func TestAddedIsNotKnownBeforeACommit(t *testing.T) {
+	g, _ := newRepository(t, []string{"docs/adr/ADR-0001-first.md"}, []string{"docs/adr/ADR-0002-second.md"})
+	for _, name := range []string{"docs/adr/ADR-0001-first.md", "docs/adr/ADR-0002-second.md", "docs/adr/adr-0001-FIRST.md"} {
+		if _, ok, err := g.Added(context.Background(), name); err != nil || ok {
+			t.Errorf("Added(%s) = %v, %v, want not added", name, ok, err)
+		}
+	}
+}

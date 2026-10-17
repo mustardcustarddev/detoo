@@ -1,12 +1,9 @@
 package cli
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"io/fs"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -17,7 +14,7 @@ import (
 )
 
 // Confirm asks a question that is answered yes or no, and returns the answer.
-type Confirm func(question string) (bool, error)
+type Confirm func(question output.Question) (bool, error)
 
 // NewDetooCommand returns the command tree of detoo, whose help is in files,
 // wired to run against application.  terminal finds out about the terminal a
@@ -47,10 +44,10 @@ func NewDetooCommand(files fs.FS, application *app.Detoo, terminal func() output
 }
 
 func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Terminal, confirm Confirm) *cobra.Command {
-	var fix, git bool
+	var fix, git, renumber bool
 	cmd := &cobra.Command{
 		Use:     "doctor",
-		Short:   "Check that each log is where its tool looks, and named as it names documents",
+		Short:   "Check that each log is where its tool looks, with documents named and numbered as it names them",
 		Long:    t.help("doctor.md"),
 		Example: t.help("doctor.example"),
 		Args:    cobra.NoArgs,
@@ -58,15 +55,15 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 			if git && !fix {
 				return errors.New("give --fix to use --git")
 			}
+			if renumber && !fix {
+				return errors.New("give --fix to use --renumber")
+			}
 			healthy := false
 			if fix {
-				if !cmd.Flags().Changed("git") {
-					var err error
-					if git, err = offerGit(cmd, application, confirm); err != nil {
-						return err
-					}
+				if err := offer(cmd, application, terminal, confirm, &git, &renumber); err != nil {
+					return err
 				}
-				fixed, err := application.Health.Fix.Handle(cmd.Context(), doctor.Command{Git: git})
+				fixed, err := application.Health.Fix.Handle(cmd.Context(), doctor.Command{Git: git, Renumber: renumber})
 				if err != nil {
 					return err
 				}
@@ -94,44 +91,49 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 	}
 	cmd.Flags().BoolVar(&fix, "fix", false, "move and rename the logs to where the tools look, and update the links to them")
 	cmd.Flags().BoolVar(&git, "git", false, "with --fix, move and rename with git mv; --git=false moves without git, and neither asks")
+	cmd.Flags().BoolVar(&renumber, "renumber", false, "with --fix, renumber documents that share a number, by when git added them; --renumber=false does not, and neither asks")
 	return cmd
 }
 
-// offerGit asks whether to move with git, when there is someone to ask, the
-// fix has something to move or rename, and the project is in a git
-// repository.  Otherwise the fix moves without git, as it does when asked not
-// to.
-func offerGit(cmd *cobra.Command, application *app.Detoo, confirm Confirm) (bool, error) {
-	if confirm == nil {
-		return false, nil
+// offer asks what a fix is to do that was not given as an option, when there
+// is someone to ask: whether to renumber documents that share a number, and
+// whether to move with git.  Otherwise the fix does neither, as it does when
+// asked not to.  Before the first question, it says what the fix will do
+// anyway, so that the questions are not taken for all of it.
+func offer(cmd *cobra.Command, application *app.Detoo, terminal func() output.Terminal, confirm Confirm, git, renumber *bool) error {
+	askGit, askRenumber := !cmd.Flags().Changed("git"), !cmd.Flags().Changed("renumber")
+	if confirm == nil || !askGit && !askRenumber {
+		return nil
 	}
 	result, err := application.Health.Doctor.Handle(cmd.Context(), doctor.Query{})
-	if err != nil || result.Fixable() == 0 {
-		return false, err
+	if err != nil {
+		return err
 	}
-	in, err := application.Health.Fix.Repository(cmd.Context())
-	if err != nil || !in {
-		return false, err
+	askRenumber = askRenumber && result.Renumberable() > 0
+	if askGit {
+		in, err := application.Health.Fix.Repository(cmd.Context())
+		if err != nil {
+			return err
+		}
+		askGit = in
 	}
-	return confirm("This project is in a git repository. Move and rename with git mv, so that git records the renames?")
-}
+	plan := output.PlanItems(result)
+	if len(plan) > 0 && (askRenumber || askGit) {
+		if err := output.Plan(cmd.ErrOrStderr(), terminal(), result); err != nil {
+			return err
+		}
+	}
 
-// Prompt returns a Confirm that writes each question to w, and reads the
-// answer from r.  The answer is yes unless it begins with n; at the end of
-// the input, it is no.
-func Prompt(r io.Reader, w io.Writer) Confirm {
-	answers := bufio.NewReader(r)
-	return func(question string) (bool, error) {
-		fmt.Fprintf(w, "%s [Y/n] ", question)
-		line, err := answers.ReadString('\n')
-		if err != nil && !errors.Is(err, io.EOF) {
-			return false, err
+	if askRenumber {
+		// Renumbering can break what refers to the documents, so it is
+		// done only when the user says yes.
+		if *renumber, err = confirm(output.RenumberQuestion(result)); err != nil {
+			return err
 		}
-		if errors.Is(err, io.EOF) && line == "" {
-			fmt.Fprintln(w)
-			return false, nil
-		}
-		answer := strings.ToLower(strings.TrimSpace(line))
-		return !strings.HasPrefix(answer, "n"), nil
 	}
+	// git mv is no use when there is nothing to move or rename.
+	if askGit && (len(plan) > 0 || *renumber) {
+		*git, err = confirm(output.GitQuestion)
+	}
+	return err
 }
