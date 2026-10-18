@@ -13,10 +13,13 @@ Command-line tools and agentic skills for working with decision records:
   comment before they are made.
 * `sty` keeps [user stories][stories]: who wants something of the software,
   what, and why, with the acceptance criteria that say when it is done.
-* `pse` keeps [PIOSEE][piosee] playbooks, each a plan for a situation before
-  it arises: the Problem to decide, the Information to gather, the Options,
-  how to make the Selection, the steps of Execution, and how to Evaluate the
-  result.
+* `plm` keeps problem playbooks, each a plan, made in advance, for responding
+  to a problem such as an incident. It follows the [PIOSEE][piosee] method:
+  the Problem to decide, the Immediate action to take, the Counter-indicated
+  actions to avoid, the Information to gather, the Options, how to make the
+  Selection, the steps of Execution, and how to Evaluate the result.
+* `sop` keeps standard operating procedures: the steps of a routine task,
+  such as rolling back a release, which playbooks refer to.
 
 ## Install
 
@@ -30,7 +33,8 @@ make deploy                 # install into /usr/local (override with PREFIX=)
 ## Usage
 
 Each tool works the same way. Start a log, which by default lives in
-`docs/adr`, `docs/rfc`, `docs/userstory` or `docs/piosee`, then add to it:
+`docs/adr`, `docs/rfc`, `docs/userstory`, `docs/problem` or `docs/sop`, then
+add to it:
 
 ```bash
 adr init
@@ -42,8 +46,9 @@ adr new "Use PostgreSQL for persistence"
 the number and a slug of the title, such as
 `ADR-0002-use-postgresql-for-persistence.md`,
 `RFC-0004-adopt-connect-for-internal-services.md`,
-`STORY-0012-reorder-a-previous-purchase.md` or
-`PIOSEE-0004-unexpected-charge-after-deletion.md`. A project can provide its
+`STORY-0012-reorder-a-previous-purchase.md`,
+`PROBLEM-0004-unexpected-charge-after-deletion.md` or
+`SOP-0003-roll-back-a-release.md`. A project can provide its
 own template in `templates/template.md` inside the log directory.
 
 A new document can replace or update earlier ones, and the link is recorded
@@ -53,7 +58,8 @@ in both:
 adr new --supersede 9 "Use Rust for performance-critical functionality"
 rfc new --obsolete 4 "Adopt Connect for internal services"
 sty new --replace 12 "Reorder a previous purchase"
-pse new --replace 4 "Customer cannot cancel a subscription"
+plm new --replace 4 "Customer cannot cancel a subscription"
+sop new --supersede 3 "Roll back a release"
 ```
 
 Publish a table of contents, or draw the links between documents with Mermaid
@@ -76,8 +82,9 @@ Install the skills into your project with the
 npx skills add mustardcustarddev/detoo
 ```
 
-The skills use the tools to write ADRs, RFCs, user stories and PIOSEE
-playbooks, asking you for the reasons behind each one. Others review an ADR
+The skills use the tools to write ADRs, RFCs, user stories, problem
+playbooks and SOPs, asking you for the reasons behind each one, or, for an
+SOP, researching the steps for you. Others review an ADR
 log, and check the code against it. The [catalogue](skills/README.md)
 describes each skill, and other ways to install them.
 
@@ -95,7 +102,8 @@ Ask your agent in your own words, for example:
 | "Write an ADR for moving our persistence to PostgreSQL."                  | `create-adr`        |
 | "Draft an RFC to migrate the system to hexagonal architecture."           | `create-rfc`        |
 | "Write a user story for exporting invoices."                              | `create-user-story` |
-| "Write a playbook for when a customer says they've been charged twice."   | `create-piosee`     |
+| "Write a playbook for when a customer says they've been charged twice."   | `create-playbook`   |
+| "Write an SOP for rolling back a release."                                | `create-sop`        |
 | "Review our ADRs, and tell me which aren't really architectural."         | `review-adrs`       |
 | "Find the architecture decisions in this codebase that have no ADR."      | `find-missing-adrs` |
 | "Check that the code follows ADR 7."                                      | `check-adrs`        |

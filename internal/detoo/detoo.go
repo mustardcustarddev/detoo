@@ -10,13 +10,14 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/domain/record"
-	"github.com/mustardcustard/detoo/internal/pse"
+	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/sop"
 	"github.com/mustardcustard/detoo/internal/sty"
 )
 
 // Kinds are the logs detoo looks across, in the order it reports them.
-var Kinds = []record.Kind{adr.Kind, rfc.Kind, sty.Kind, pse.Kind}
+var Kinds = []record.Kind{adr.Kind, rfc.Kind, sty.Kind, plm.Kind, sop.Kind}
 
 // Files holds what detoo's commands print about themselves, under help/.
 //

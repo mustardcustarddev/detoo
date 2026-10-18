@@ -69,7 +69,7 @@ title: Plan for the incident before it happens
 description: One line for search results and the feed, 160 characters at most.
 pubDate: 2026-10-17
 tags: [piosee, incidents]
-tool: pse # optional: the tool the post ends by pointing to
+tool: plm # optional: the tool the post ends by pointing to
 draft: true # shown by `npm run dev`, left out of the built site
 ---
 ```

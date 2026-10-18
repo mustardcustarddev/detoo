@@ -1,0 +1,31 @@
+cat > docs/problem/PIOSEE-0001-checkout-fails.md <<EOF
+# 1. Checkout fails
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+## Scenario
+
+Checkout fails.
+EOF
+plm list
+docs/problem/PIOSEE-0001-checkout-fails.md
+plm new -u 1 "Checkout fails for one region"
+docs/problem/PROBLEM-0002-checkout-fails-for-one-region.md
+cat docs/problem/PIOSEE-0001-checkout-fails.md
+# 1. Checkout fails
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+Updated by [2. Checkout fails for one region](PROBLEM-0002-checkout-fails-for-one-region.md)
+
+## Scenario
+
+Checkout fails.

@@ -1,0 +1,8 @@
+  # Create a new playbook with the title "Unexpected charge after deletion":
+  plm new "Unexpected charge after deletion"
+
+  # Create a new playbook that replaces playbook 4, after it was used:
+  plm new -r 4 "Customer cannot cancel a subscription"
+
+  # Create a new playbook that updates playbook 7, for a case it left out:
+  plm new -u 7 "Refund a charge in a retired currency"

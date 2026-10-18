@@ -1,0 +1,8 @@
+  # Draw the SOPs as an SVG image, with Mermaid:
+  sop graph | mmdc -i - -o graph.svg
+
+  # Draw them with Graphviz instead:
+  sop graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each SOP links to a .pdf file:
+  sop graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

@@ -1,12 +1,12 @@
-touch docs/adr/0001-record-architecture-decisions.md docs/adr/0002-use-markdown-for-documents.md docs/adr/README.md doc/rfc/0001-adopt-a-single-detoo-command.md docs/userstory/story-0001-describe-work-in-user-stories.md docs/sty/0002-find-documents-in-the-wrong-place.md docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md
+touch docs/adr/0001-record-architecture-decisions.md docs/adr/0002-use-markdown-for-documents.md docs/adr/README.md doc/rfc/0001-adopt-a-single-detoo-command.md docs/userstory/story-0001-describe-work-in-user-stories.md docs/sty/0002-find-documents-in-the-wrong-place.md docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md docs/sop/SOP-0001-write-a-standard-operating-procedure.md
 detoo doctor
 █▄                 detoo  dev
 ███▄
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
-█████████████▄    checked   6 documents in 5 directories
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
+█████████████▄    checked   7 documents in 6 directories
 
 ╭─ ✗ adr  docs/adr ────────────────────────── 2 decision records · 2 problems ─╮
 │ ✗ File names do not begin with ADR-                                          │
@@ -37,13 +37,22 @@ detoo doctor
 │     → STORY-0002-find-documents-in-the-wrong-place.md                        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ✓ pse  docs/piosee ───────────────────────────────────── 1 PIOSEE playbook ─╮
-│ ✓ In place. File names begin with PIOSEE-.                                   │
+╭─ ✗ plm  docs/piosee ─────────────────────────────── 1 playbook · 2 problems ─╮
+│ ✗ Kept in a former directory: playbooks now live in docs/problem             │
+│   plm no longer finds the playbook in docs/piosee.                           │
+│   docs/piosee  →  docs/problem                                               │
+│ ✗ File names do not begin with PROBLEM-                                      │
+│   PIOSEE-0001-make-decisions-with-piosee.md                                  │
+│     → PROBLEM-0001-make-decisions-with-piosee.md                             │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-→ Run detoo doctor --fix to fix 6 of the 7 problems; 1 needs fixing by hand.
+╭─ ✓ sop  docs/sop ──────────────────────────────────────────────────── 1 SOP ─╮
+│ ✓ In place. File names begin with SOP-.                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
 
- DOCTOR  ✗ 7 problems in 3 logs  ! 1 needs fixing by hand                EXIT 1 
+→ Run detoo doctor --fix to fix 8 of the 9 problems; 1 needs fixing by hand.
+
+ DOCTOR  ✗ 9 problems in 4 logs  ! 1 needs fixing by hand                EXIT 1 
 echo $?
 1
 ls docs/sty

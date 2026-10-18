@@ -7,7 +7,7 @@ detoo doctor --fix --git
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
 █████████████▄    checked   3 documents in 2 directories
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 2 decision records · 3 fixed ─╮
@@ -27,7 +27,7 @@ detoo doctor --fix --git
 │     → STORY-0001-describe-work-in-user-stories.md                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc or pse log found.
+– No rfc, plm or sop log found.
 
 ✓ Used git mv, so git records the moves and renames. Review with git status.
 

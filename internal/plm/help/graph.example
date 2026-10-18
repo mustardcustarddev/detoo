@@ -1,0 +1,8 @@
+  # Draw the problem playbooks as an SVG image, with Mermaid:
+  plm graph | mmdc -i - -o graph.svg
+
+  # Draw them with Graphviz instead:
+  plm graph --graphviz | dot -Tsvg > graph.svg
+
+  # Draw a PDF with Graphviz, in which each playbook links to a .pdf file:
+  plm graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

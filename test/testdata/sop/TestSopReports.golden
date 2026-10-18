@@ -1,0 +1,17 @@
+sop new "Roll back a release"
+docs/sop/SOP-0001-roll-back-a-release.md
+sop new -s 1 "Roll back a release with the deploy tool"
+docs/sop/SOP-0002-roll-back-a-release-with-the-deploy-tool.md
+sop list --toc
+# Standard Operating Procedures
+
+* [1. Roll back a release](SOP-0001-roll-back-a-release.md)
+* [2. Roll back a release with the deploy tool](SOP-0002-roll-back-a-release-with-the-deploy-tool.md)
+sop graph
+flowchart TD
+  sop1["1. Roll back a release"]
+  sop2["2. Roll back a release with the deploy tool"]
+  sop1 -.-> sop2
+  sop2 -->|"Supersedes"| sop1
+  click sop1 "SOP-0001-roll-back-a-release.html"
+  click sop2 "SOP-0002-roll-back-a-release-with-the-deploy-tool.html"

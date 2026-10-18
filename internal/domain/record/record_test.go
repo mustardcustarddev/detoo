@@ -61,10 +61,12 @@ func TestSlug(t *testing.T) {
 	}
 }
 
-// A kind may name its records by number alone, or begin each with a prefix.
+// A kind may name its records by number alone, or begin each with a prefix,
+// and may have begun them with another prefix before.
 var (
 	unprefixed = Kind{Name: "adr"}
 	prefixed   = Kind{Name: "sty", Prefix: "STORY"}
+	renamed    = Kind{Name: "plm", Prefix: "PROBLEM", FormerPrefixes: []string{"PIOSEE"}}
 )
 
 func TestNumber(t *testing.T) {
@@ -83,6 +85,8 @@ func TestNumber(t *testing.T) {
 		{prefixed, "docs/userstory/0003-unprefixed.md", 3},
 		{prefixed, "docs/userstory/epic-0004-other-prefix.md", 0},
 		{prefixed, "STORY-0005/epic-0006-in-a-prefixed-directory.md", 0},
+		{renamed, "docs/problem/PROBLEM-0007-current-prefix.md", 7},
+		{renamed, "docs/piosee/PIOSEE-0008-former-prefix.md", 8},
 	} {
 		if got := test.kind.Number(test.file); got != test.want {
 			t.Errorf("%s: Number(%q) = %d, want %d", test.kind.Name, test.file, got, test.want)
@@ -111,8 +115,8 @@ func TestFileNamePadsTheNumberToFourDigits(t *testing.T) {
 }
 
 // A record's name is recognised with its kind's prefix in any case, or with
-// none, as records were named before the prefixes were upper case, but not
-// with another prefix.
+// none, as records were named before the prefixes were upper case, or with a
+// prefix the kind had before, but not with another prefix.
 func TestIsRecordName(t *testing.T) {
 	for _, test := range []struct {
 		kind Kind
@@ -133,6 +137,10 @@ func TestIsRecordName(t *testing.T) {
 		{prefixed, "story-first.md", false},
 		{prefixed, "storyline-0001-first.md", false},
 		{prefixed, "README.md", false},
+		{renamed, "PROBLEM-0001-first.md", true},
+		{renamed, "PIOSEE-0001-first.md", true},
+		{renamed, "piosee-0001-first.md", true},
+		{renamed, "STORY-0001-first.md", false},
 	} {
 		if got := test.kind.IsRecordName(test.name); got != test.want {
 			t.Errorf("%s: IsRecordName(%q) = %v, want %v", test.kind.Name, test.name, got, test.want)
@@ -156,6 +164,9 @@ func TestCanonicalName(t *testing.T) {
 		{prefixed, "epic-0001-first.md", "", false},
 		{prefixed, "README.md", "", false},
 		{unprefixed, "0001-first.md", "0001-first.md", true},
+		{renamed, "PIOSEE-0001-first.md", "PROBLEM-0001-first.md", true},
+		{renamed, "piosee-0001-first.md", "PROBLEM-0001-first.md", true},
+		{renamed, "PROBLEM-0001-first.md", "PROBLEM-0001-first.md", true},
 	} {
 		got, ok := test.kind.CanonicalName(test.name)
 		if got != test.want || ok != test.ok {

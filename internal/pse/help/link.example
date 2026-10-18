@@ -1,5 +1,0 @@
-  # Record that playbook 3 updates playbook 2:
-  pse link --update 3 2
-
-  # Record that playbook 5 replaces playbook 4:
-  pse link -r 5 4

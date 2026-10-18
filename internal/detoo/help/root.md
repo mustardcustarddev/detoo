@@ -1,5 +1,5 @@
-Looks after a project's logs as a whole: the logs that adr, rfc, sty and pse
-keep.
+Looks after a project's logs as a whole: the logs that adr, rfc, sty, plm and
+sop keep.
 
 Run "detoo doctor" to check that each log is where its tool looks for it, and
 named and numbered as its tool names documents today, and "detoo doctor --fix"

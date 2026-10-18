@@ -917,7 +917,7 @@ func count(n int, singular, plural string) string {
 }
 
 // series joins words as a list in prose: "adr", "adr or rfc", "adr, rfc or
-// pse".
+// plm".
 func series(words []string) string {
 	if len(words) < 2 {
 		return strings.Join(words, "")

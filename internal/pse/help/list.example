@@ -1,5 +1,0 @@
-  # Publish a table of contents beside the playbooks:
-  pse list --toc > docs/piosee/README.md
-
-  # Publish one elsewhere, with an introduction, linking back to the playbooks:
-  pse list --toc -i intro.md -p ../docs/piosee/ > site/playbooks.md

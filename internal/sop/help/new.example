@@ -1,0 +1,8 @@
+  # Create a new SOP with the title "Roll back a release":
+  sop new "Roll back a release"
+
+  # Create a new SOP that supersedes SOP 4, after the deployment changed:
+  sop new -s 4 "Roll back a release"
+
+  # Create a new SOP that updates SOP 7, for a case it left out:
+  sop new -u 7 "Roll back a database migration"

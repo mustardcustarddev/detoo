@@ -1,0 +1,132 @@
+cat > docs/piosee/PIOSEE-0001-plan-for-incidents-with-piosee.md <<EOF
+# 1. Plan for incidents with PIOSEE
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+Updated by [2. Checkout fails](PIOSEE-0002-checkout-fails.md)
+EOF
+cat > docs/piosee/PIOSEE-0002-checkout-fails.md <<EOF
+# 2. Checkout fails
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+Updates [1. Plan for incidents with PIOSEE](PIOSEE-0001-plan-for-incidents-with-piosee.md)
+EOF
+cat > docs/sop/SOP-0001-roll-back-a-release.md <<EOF
+# 1. Roll back a release
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+## Steps
+
+1. Follow [the playbook](../piosee/PIOSEE-0002-checkout-fails.md) to decide first.
+EOF
+detoo doctor
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
+█████████████▄    checked   3 documents in 2 directories
+
+╭─ ✗ plm  docs/piosee ────────────────────────────── 2 playbooks · 3 problems ─╮
+│ ✗ Kept in a former directory: playbooks now live in docs/problem             │
+│   plm no longer finds the 2 playbooks in docs/piosee.                        │
+│   docs/piosee  →  docs/problem                                               │
+│ ✗ File names do not begin with PROBLEM-                                      │
+│   PIOSEE-0001-plan-for-incidents-with-piosee.md                              │
+│     → PROBLEM-0001-plan-for-incidents-with-piosee.md                         │
+│   PIOSEE-0002-checkout-fails.md                                              │
+│     → PROBLEM-0002-checkout-fails.md                                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ sop  docs/sop ──────────────────────────────────────────────────── 1 SOP ─╮
+│ ✓ In place. File names begin with SOP-.                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc or sty log found.
+
+→ Run detoo doctor --fix to fix them.
+
+ DOCTOR  ✗ 3 problems in 1 log  Nothing was changed.                     EXIT 1 
+echo $?
+1
+detoo doctor --fix
+█▄                 detoo  dev
+███▄
+█████▄            doctor helps maintain and troubleshoot decision record logs
+███ ▀██▄
+███   ▀██▄        project   ~
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
+█████████████▄    checked   3 documents in 2 directories
+
+╭─ ✓ plm  docs/problem ──────────────────────────────── 2 playbooks · 3 fixed ─╮
+│ ✓ Moved from a former directory to docs/problem                              │
+│   docs/piosee  →  docs/problem                                               │
+│ ✓ Renamed to begin with PROBLEM-                                             │
+│   PIOSEE-0001-plan-for-incidents-with-piosee.md                              │
+│     → PROBLEM-0001-plan-for-incidents-with-piosee.md                         │
+│   PIOSEE-0002-checkout-fails.md                                              │
+│     → PROBLEM-0002-checkout-fails.md                                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ sop  docs/sop ──────────────────────────────────────────────────── 1 SOP ─╮
+│ ✓ In place. File names begin with SOP-.                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ✓ links ─────────────────────────────────────────── 3 links in 3 documents ─╮
+│ ✓ Changed to lead to the documents where they are now.                       │
+│   docs/problem/PROBLEM-0001-plan-for-incidents-with-piosee.md  1 link        │
+│   docs/problem/PROBLEM-0002-checkout-fails.md                  1 link        │
+│   docs/sop/SOP-0001-roll-back-a-release.md                     1 link        │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc or sty log found.
+
+ DOCTOR  ✓ Fixed 3 problems. All is well.  Made 6 changes.               EXIT 0 
+echo $?
+0
+ls docs
+problem
+sop
+ls docs/problem
+PROBLEM-0001-plan-for-incidents-with-piosee.md
+PROBLEM-0002-checkout-fails.md
+cat docs/problem/PROBLEM-0002-checkout-fails.md
+# 2. Checkout fails
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+Updates [1. Plan for incidents with PIOSEE](PROBLEM-0001-plan-for-incidents-with-piosee.md)
+cat docs/sop/SOP-0001-roll-back-a-release.md
+# 1. Roll back a release
+
+Date: 2026-10-16
+
+## Status
+
+Draft
+
+## Steps
+
+1. Follow [the playbook](../problem/PROBLEM-0002-checkout-fails.md) to decide first.
+plm list
+docs/problem/PROBLEM-0001-plan-for-incidents-with-piosee.md
+docs/problem/PROBLEM-0002-checkout-fails.md

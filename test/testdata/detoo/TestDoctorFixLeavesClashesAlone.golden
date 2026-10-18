@@ -8,7 +8,7 @@ detoo doctor --fix
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
 █████████████▄    checked   5 documents in 4 directories
 
 ╭─ ! adr  docs/adr   BY HAND  ───── 2 decision records · 1 fixed · 2 problems ─╮
@@ -35,7 +35,7 @@ detoo doctor --fix
 │   docs/userstory  1 user story  · current directory, where sty looks         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc or pse log found.
+– No rfc, plm or sop log found.
 
  DOCTOR  ✓ Fixed 3 problems.  ! 4 need fixing by hand  Made 3 changes.   EXIT 1 
 echo $?

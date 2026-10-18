@@ -106,10 +106,16 @@ func (w *workspace) sty(args ...string) {
 	w.run("sty", args...)
 }
 
-// pse runs the pse command.
-func (w *workspace) pse(args ...string) {
+// plm runs the plm command.
+func (w *workspace) plm(args ...string) {
 	w.t.Helper()
-	w.run("pse", args...)
+	w.run("plm", args...)
+}
+
+// sop runs the sop command.
+func (w *workspace) sop(args ...string) {
+	w.t.Helper()
+	w.run("sop", args...)
 }
 
 // detoo runs the detoo command, and records its exit status, as echo $? would

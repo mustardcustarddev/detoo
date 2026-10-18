@@ -89,7 +89,7 @@ func (k Kind) Number(file string) int {
 // CanonicalName returns the file name a record of this kind is given today,
 // and whether name is a record's at all.  A record named in an older way,
 // story-0001-reorder.md or 0001-reorder.md, has the canonical name
-// STORY-0001-reorder.md.
+// STORY-0001-reorder.md, and so does one named with a former prefix.
 func (k Kind) CanonicalName(name string) (string, bool) {
 	rest, _ := k.unprefixed(name)
 	if !recordName.MatchString(rest) {
@@ -101,17 +101,19 @@ func (k Kind) CanonicalName(name string) (string, bool) {
 	return k.Prefix + "-" + rest, true
 }
 
-// unprefixed returns a file name without this kind's prefix and the hyphen
-// after it, and whether the name had them.  The prefix is matched in any
-// case, and a name without one is returned whole, so that records named
-// before today's prefixes are still found.
+// unprefixed returns a file name without this kind's prefix, or a former
+// one, and the hyphen after it, and whether the name had them.  The prefix is
+// matched in any case, and a name without one is returned whole, so that
+// records named before today's prefixes are still found.
 func (k Kind) unprefixed(name string) (string, bool) {
 	if k.Prefix == "" {
 		return name, true
 	}
-	n := len(k.Prefix) + 1
-	if len(name) >= n && strings.EqualFold(name[:n], k.Prefix+"-") {
-		return name[n:], true
+	for _, prefix := range append([]string{k.Prefix}, k.FormerPrefixes...) {
+		n := len(prefix) + 1
+		if len(name) >= n && strings.EqualFold(name[:n], prefix+"-") {
+			return name[n:], true
+		}
 	}
 	return name, false
 }

@@ -1,0 +1,62 @@
+sop new "Roll back a release"
+docs/sop/SOP-0001-roll-back-a-release.md
+sop new "Rotate the signing key"
+docs/sop/SOP-0002-rotate-the-signing-key.md
+cat > docs/sop/SOP-0002-rotate-the-signing-key.md <<EOF
+# 2. Rotate the signing key
+
+Date: 2026-10-16
+
+## Status
+
+Approved
+
+## Steps
+
+1. Rotate it.
+EOF
+sop new -s 1 "Roll back a release"
+docs/sop/SOP-0003-roll-back-a-release.md
+sop new --supersede 2 "Rotate the signing keys"
+docs/sop/SOP-0004-rotate-the-signing-keys.md
+sop link -u 4 3
+head -10 docs/sop/SOP-0001-roll-back-a-release.md
+# 1. Roll back a release
+
+Date: 1992-01-12
+
+## Status
+
+Superseded by [3. Roll back a release](SOP-0003-roll-back-a-release.md)
+
+## Steps
+
+head -10 docs/sop/SOP-0002-rotate-the-signing-key.md
+# 2. Rotate the signing key
+
+Date: 2026-10-16
+
+## Status
+
+Superseded by [4. Rotate the signing keys](SOP-0004-rotate-the-signing-keys.md)
+
+## Steps
+
+head -12 docs/sop/SOP-0003-roll-back-a-release.md
+# 3. Roll back a release
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Supersedes [1. Roll back a release](SOP-0001-roll-back-a-release.md)
+
+Updated by [4. Rotate the signing keys](SOP-0004-rotate-the-signing-keys.md)
+
+sop list
+docs/sop/SOP-0001-roll-back-a-release.md
+docs/sop/SOP-0002-rotate-the-signing-key.md
+docs/sop/SOP-0003-roll-back-a-release.md
+docs/sop/SOP-0004-rotate-the-signing-keys.md

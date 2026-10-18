@@ -1,0 +1,99 @@
+plm help
+Command-line tools for working with a log of problem playbooks.  Each playbook
+plans, with PIOSEE, how to respond to a problem, such as an incident, before
+it arises: the Scenario, the Problem to decide, the Immediate action to take,
+the Counter-indicated actions to avoid, the Information to gather, the
+Options, how to make the Selection, the steps of Execution, and the
+Evaluation of the result.  A playbook refers to standard operating procedures,
+kept with the sop tool, for the routine steps.
+
+Problem playbooks are stored as Markdown files in a subdirectory of the
+project, by default `docs/problem`.  Each playbook's file name begins with
+`PROBLEM-` and its number, such as
+`PROBLEM-0001-plan-for-incidents-with-piosee.md`.  Run "plm init" to start a
+log, and "plm new" to add to it.
+
+Playbooks kept by pse, the tool plm replaces, in `docs/piosee` and named
+`PIOSEE-`, are moved and renamed by "detoo doctor --fix".
+
+Usage:
+  plm [flags]
+  plm [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  config      Print the configuration in use
+  graph       Draw the links between records in Mermaid or Graphviz format
+  help        Help about any command
+  init        Start a log of playbooks
+  link        Record that one playbook replaces or updates another
+  list        List the playbooks, or write a table of contents
+  new         Create the next numbered playbook
+
+Flags:
+  -h, --help   help for plm
+
+Use "plm [command] --help" for more information about a command.
+plm help new
+Creates a new, numbered problem playbook, in draft.  The title is a single
+argument, so it must be quoted if it contains spaces.  The playbook is opened
+for editing in the editor specified by the VISUAL or EDITOR environment
+variable (VISUAL is preferred; EDITOR is used if VISUAL is not set).  After
+editing, the file name of the playbook is output to stdout, so the command can
+be used in scripts.
+
+If the playbook directory contains a file `templates/template.md`, this is
+used as the template for the new playbook.  Otherwise a built-in template is
+used, with a section for the scenario and for each step of PIOSEE: problem,
+immediate action, counter-indicated actions (optional), information, options,
+selection, execution and evaluation.
+
+Multiple --replace and --update options can be given, so that the new
+playbook can replace or update multiple existing playbooks.  A replaced
+playbook loses its Draft status; an updated one keeps its status.
+
+Usage:
+  plm new TITLE [flags]
+
+Examples:
+  # Create a new playbook with the title "Unexpected charge after deletion":
+  plm new "Unexpected charge after deletion"
+
+  # Create a new playbook that replaces playbook 4, after it was used:
+  plm new -r 4 "Customer cannot cancel a subscription"
+
+  # Create a new playbook that updates playbook 7, for a case it left out:
+  plm new -u 7 "Refund a charge in a retired currency"
+
+Flags:
+  -h, --help                help for new
+  -r, --replace REFERENCE   a REFERENCE (number or partial filename) to a record this one replaces
+  -u, --update REFERENCE    a REFERENCE (number or partial filename) to a record this one updates
+plm help link
+Records, in both playbooks, that SOURCE replaces or updates TARGET.
+
+SOURCE and TARGET are both a reference (number or partial filename) to a
+problem playbook.  Exactly one of --replace and --update must be given.
+
+With --replace, SOURCE is a new plan for the problem TARGET planned for, and
+TARGET is marked "Replaced by" SOURCE and loses its Draft status.
+
+With --update, SOURCE changes part of TARGET, such as a case it left out, and
+TARGET is marked "Updated by" SOURCE and keeps its status.
+
+Usage:
+  plm link (--replace | --update) SOURCE TARGET [flags]
+
+Examples:
+  # Record that playbook 3 updates playbook 2:
+  plm link --update 3 2
+
+  # Record that playbook 5 replaces playbook 4:
+  plm link -r 5 4
+
+Flags:
+  -h, --help      help for link
+  -r, --replace   SOURCE replaces TARGET, which loses its Draft status
+  -u, --update    SOURCE makes substantive changes to TARGET
+plm nonsense
+plm: unknown command "nonsense" for "plm"

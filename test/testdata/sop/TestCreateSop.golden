@@ -1,0 +1,15 @@
+sop new "Roll back a release"
+docs/sop/SOP-0001-roll-back-a-release.md
+cat docs/sop/SOP-0001-roll-back-a-release.md
+# 1. Roll back a release
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+## Steps
+
+1. The first step, as an instruction: what to do, and where, naming the exact command, page or setting.
+2. The next step, with how to check that it worked before going on.

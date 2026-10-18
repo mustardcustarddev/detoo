@@ -1,0 +1,5 @@
+  # Publish a table of contents beside the SOPs:
+  sop list --toc > docs/sop/README.md
+
+  # Publish one elsewhere, with an introduction, linking back to the SOPs:
+  sop list --toc -i intro.md -p ../docs/sop/ > site/procedures.md

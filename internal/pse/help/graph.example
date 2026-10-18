@@ -1,8 +1,0 @@
-  # Draw the PIOSEE playbooks as an SVG image, with Mermaid:
-  pse graph | mmdc -i - -o graph.svg
-
-  # Draw them with Graphviz instead:
-  pse graph --graphviz | dot -Tsvg > graph.svg
-
-  # Draw a PDF with Graphviz, in which each playbook links to a .pdf file:
-  pse graph --graphviz -e .pdf | dot -Tpdf > graph.pdf

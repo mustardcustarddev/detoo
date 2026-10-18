@@ -8,7 +8,7 @@ detoo doctor
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
 █████████████▄    checked   4 documents in 4 directories
 
 ╭─ ✗ adr  doc/adr ───────────────────────────── 1 decision record · 1 problem ─╮
@@ -27,7 +27,7 @@ detoo doctor
 │ both would clash.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc or pse log found.
+– No rfc, plm or sop log found.
 
 → Run detoo doctor --fix to fix 2 of the 4 problems; 2 need fixing by hand.
 

@@ -26,9 +26,11 @@ It finds, for example:
 
 * a log kept under `doc/` instead of `docs/`;
 * a log in a directory its tool no longer looks in, such as user stories in
-  `docs/sty` instead of `docs/userstory`;
+  `docs/sty` instead of `docs/userstory`, or playbooks kept by `pse` in
+  `docs/piosee` instead of `docs/problem`;
 * documents whose names do not begin with their log's prefix in upper case,
-  such as `STOY-0003-title.md` among the user stories;
+  such as `STOY-0003-title.md` among the user stories, or `PIOSEE-` among the
+  playbooks;
 * documents that share a number.
 
 ## Fix
@@ -45,6 +47,12 @@ order git added them. `--git` and `--renumber` say yes without asking.
 Renumbering renames documents, so check anything else that refers to them.
 Commit before fixing, so that you can review the changes with `git status`
 and `git diff`.
+
+`plm` replaced `pse`, so `detoo doctor --fix` is how to move a log of PIOSEE
+playbooks to where `plm` keeps them: it moves `docs/piosee` to
+`docs/problem`, renames each `PIOSEE-` playbook to begin `PROBLEM-`, and
+updates the links to them, including those from SOPs. If a `.pse-dir` file
+names another directory, rename it to `.plm-dir` first.
 
 When a move would clash, such as when both `docs/sty` and `docs/userstory`
 exist, `doctor` reports the problem as needing fixing by hand.

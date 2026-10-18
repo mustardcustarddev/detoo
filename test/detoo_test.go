@@ -20,7 +20,8 @@ func TestDoctorFindsNothingWrong(t *testing.T) {
 
 // The logs of the design: decision records named before their prefix, RFCs
 // under doc/, stories split between the directory sty used to look in and
-// the one it looks in now, and PIOSEE records in their place.
+// the one it looks in now, playbooks where pse kept them, and SOPs in their
+// place.
 func TestDoctorReportsLogsInTheWrongPlace(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	w.touch(
@@ -31,6 +32,7 @@ func TestDoctorReportsLogsInTheWrongPlace(t *testing.T) {
 		"docs/userstory/story-0001-describe-work-in-user-stories.md",
 		"docs/sty/0002-find-documents-in-the-wrong-place.md",
 		"docs/piosee/PIOSEE-0001-make-decisions-with-piosee.md",
+		"docs/sop/SOP-0001-write-a-standard-operating-procedure.md",
 	)
 	w.detoo("doctor")
 	w.ls("docs/sty")
@@ -89,6 +91,28 @@ func TestDoctorFixMovesAndRenamesLogs(t *testing.T) {
 	w.cat("docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md")
 	w.sty("list")
 	w.detoo("doctor")
+	w.check()
+}
+
+// A log kept by pse, the tool plm replaces, is in docs/piosee, named PIOSEE-.
+// A fix moves it to docs/problem, renames each playbook to begin PROBLEM-,
+// and changes the links between them, and to them from elsewhere, such as an
+// SOP, so that plm finds them and adds to them.
+func TestDoctorFixMigratesFromPse(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.write("docs/piosee/PIOSEE-0001-plan-for-incidents-with-piosee.md",
+		"# 1. Plan for incidents with PIOSEE\n\nDate: 2026-10-16\n\n## Status\n\nDraft\n\nUpdated by [2. Checkout fails](PIOSEE-0002-checkout-fails.md)\n")
+	w.write("docs/piosee/PIOSEE-0002-checkout-fails.md",
+		"# 2. Checkout fails\n\nDate: 2026-10-16\n\n## Status\n\nDraft\n\nUpdates [1. Plan for incidents with PIOSEE](PIOSEE-0001-plan-for-incidents-with-piosee.md)\n")
+	w.write("docs/sop/SOP-0001-roll-back-a-release.md",
+		"# 1. Roll back a release\n\nDate: 2026-10-16\n\n## Status\n\nDraft\n\n## Steps\n\n1. Follow [the playbook](../piosee/PIOSEE-0002-checkout-fails.md) to decide first.\n")
+	w.detoo("doctor")
+	w.detoo("doctor", "--fix")
+	w.ls("docs")
+	w.ls("docs/problem")
+	w.cat("docs/problem/PROBLEM-0002-checkout-fails.md")
+	w.cat("docs/sop/SOP-0001-roll-back-a-release.md")
+	w.plm("list")
 	w.check()
 }
 

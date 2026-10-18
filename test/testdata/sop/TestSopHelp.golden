@@ -1,0 +1,90 @@
+sop help
+Command-line tools for working with a log of standard operating procedures
+(SOPs).  Each SOP is the steps of a routine task, such as rolling back a
+release, as an ordered list, so that it is done the same way each time.
+Problem playbooks, kept with the plm tool, refer to SOPs for their routine
+steps.
+
+SOPs are stored as Markdown files in a subdirectory of the project, by
+default `docs/sop`.  Each SOP's file name begins with `SOP-` and its number,
+such as `SOP-0001-write-a-standard-operating-procedure.md`.  Run "sop init"
+to start a log, and "sop new" to add to it.
+
+Usage:
+  sop [flags]
+  sop [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  config      Print the configuration in use
+  graph       Draw the links between records in Mermaid or Graphviz format
+  help        Help about any command
+  init        Start a log of SOPs
+  link        Record that one SOP supersedes or updates another
+  list        List the SOPs, or write a table of contents
+  new         Create the next numbered SOP
+
+Flags:
+  -h, --help   help for sop
+
+Use "sop [command] --help" for more information about a command.
+sop help new
+Creates a new, numbered standard operating procedure (SOP), in draft.  The
+title is a single argument, so it must be quoted if it contains spaces.  The
+SOP is opened for editing in the editor specified by the VISUAL or EDITOR
+environment variable (VISUAL is preferred; EDITOR is used if VISUAL is not
+set).  After editing, the file name of the SOP is output to stdout, so the
+command can be used in scripts.
+
+If the SOP directory contains a file `templates/template.md`, this is used as
+the template for the new SOP.  Otherwise a built-in template is used: a
+title, a date, a status, and the steps, as an ordered list.
+
+Multiple --supersede and --update options can be given, so that the new SOP
+can supersede or update multiple existing SOPs.  A superseded SOP loses its
+Draft or Approved status; an updated one keeps its status.
+
+Usage:
+  sop new TITLE [flags]
+
+Examples:
+  # Create a new SOP with the title "Roll back a release":
+  sop new "Roll back a release"
+
+  # Create a new SOP that supersedes SOP 4, after the deployment changed:
+  sop new -s 4 "Roll back a release"
+
+  # Create a new SOP that updates SOP 7, for a case it left out:
+  sop new -u 7 "Roll back a database migration"
+
+Flags:
+  -h, --help                  help for new
+  -s, --supersede REFERENCE   a REFERENCE (number or partial filename) to a record this one supersedes
+  -u, --update REFERENCE      a REFERENCE (number or partial filename) to a record this one updates
+sop help link
+Records, in both SOPs, that SOURCE supersedes or updates TARGET.
+
+SOURCE and TARGET are both a reference (number or partial filename) to an
+SOP.  Exactly one of --supersede and --update must be given.
+
+With --supersede, SOURCE is a new procedure for the task TARGET set out, and
+TARGET is marked "Superseded by" SOURCE and loses its Draft or Approved
+status.
+
+With --update, SOURCE changes part of TARGET, such as a step for a case it
+left out, and TARGET is marked "Updated by" SOURCE and keeps its status.
+
+Usage:
+  sop link (--supersede | --update) SOURCE TARGET [flags]
+
+Examples:
+  # Record that SOP 3 updates SOP 2:
+  sop link --update 3 2
+
+  # Record that SOP 5 supersedes SOP 4:
+  sop link -s 5 4
+
+Flags:
+  -h, --help        help for link
+  -s, --supersede   SOURCE supersedes TARGET, which loses its Draft or Approved status
+  -u, --update      SOURCE makes substantive changes to TARGET

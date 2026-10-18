@@ -2,9 +2,9 @@
 
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
-comments with `rfc`, user stories with `sty`, and PIOSEE playbooks with
-`pse`. Each directory is one skill, and is self-contained, so it can be
-installed on its own.
+comments with `rfc`, user stories with `sty`, problem playbooks with `plm`,
+and standard operating procedures with `sop`. Each directory is one skill,
+and is self-contained, so it can be installed on its own.
 
 ## Catalogue
 
@@ -40,39 +40,48 @@ This needs the `sty` tool.
   need, why, and how they will know it is done. Splits epics into smaller
   stories.
 
-### PIOSEE playbooks
+### Problem response
 
-This needs the `pse` tool.
+These need the `plm` and `sop` tools.
 
-* [**create-piosee**](create-piosee/SKILL.md): write a PIOSEE playbook with
-  `pse`: a plan, made in advance, for a situation the team expects to face.
-  It covers the scenario, the decision it calls for, the information to
-  gather, the options, the rules for selecting one, the steps to execute it,
-  and how to evaluate the result. It asks the user about the problem, then
-  researches the code and the documentation of the systems involved, such as
-  a payment provider's, to propose the investigation, the options and the
-  steps for the user to confirm. It interviews the user step by step only
-  where its research finds nothing. It also revises a playbook after it has
-  been used.
+* [**create-playbook**](create-playbook/SKILL.md): write a problem playbook
+  with `plm`, by the PIOSEE method: a plan, made in advance, for responding
+  to a problem the team expects to face, such as an incident. It covers the
+  scenario, the decision it calls for, the immediate action to take (or that
+  none is indicated), the actions that would make things worse, the
+  information to gather, the options, the rules for selecting one, the steps
+  to execute it, and how to evaluate the result, and refers to SOPs for the
+  routine steps. It asks the user about the problem, then researches the
+  code, the SOPs and the documentation of the systems involved, such as a
+  payment provider's, to propose the rest for the user to confirm. It
+  interviews the user step by step only where its research finds nothing. It
+  also revises a playbook after it has been used.
+* [**create-sop**](create-sop/SKILL.md): write a standard operating procedure
+  with `sop`: the steps of a routine task, such as rolling back a release,
+  as an ordered list. Unlike the other skills, it works from research rather
+  than interview: it reads the scripts, the CI and deployment configuration
+  and the documentation of the tools involved, drafts the steps with their
+  sources, and asks the user only what research cannot settle.
 
 ### What they have in common
 
 Each skill writes only what it has a source for: the repository, the
-documentation it has read, or the user. It asks the user for anything else. Each also keeps its log to what belongs
-there. Only architectural decisions go in the ADR log, and only changes that
+documentation it has read, or the user. It asks the user for anything else.
+Each also keeps its log to what belongs there. Only architectural decisions go in the ADR log, and only changes that
 others would want a say in need an RFC. A user story describes an outcome
-someone wants. A PIOSEE playbook plans for a situation before it arises, by
-rules the team sets.
+someone wants. A problem playbook plans the response to a problem before it
+arises, by rules the team sets. An SOP holds the steps of a routine task,
+with no decision in it.
 
-Every ADR, RFC, user story and PIOSEE playbook an agent creates has the status
+Every ADR, RFC, user story, playbook and SOP an agent creates has the status
 `Draft`. Accepting one is for people to do.
 
 ## Installing
 
 ### 1. Install the tools
 
-Each skill drives `adr`, `rfc`, `sty` or `pse`, which must be on the `PATH` of
-the machine the agent runs on. Build and install them as described in the
+Each skill drives `adr`, `rfc`, `sty`, `plm` or `sop`, which must be on the
+`PATH` of the machine the agent runs on. Build and install them as described in the
 [README](../README.md#install).
 
 ### 2. Install the skills
@@ -87,14 +96,8 @@ npx skills add mustardcustarddev/detoo --list
 npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
 
 # Install all of them
-npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
-  --skill find-missing-adrs --skill check-adrs --skill create-rfc \
-  --skill create-user-story --skill create-piosee
+npx skills add mustardcustarddev/detoo --skill '*'
 ```
-
-Name the skills you want. `--skill '*'` would also install
-`feature-driven-vertical-slices`, from `.claude/skills/`, which is for working
-on detoo itself.
 
 Some useful options:
 

@@ -28,6 +28,11 @@ type Kind struct {
 	// 0001-reorder.md, are still records of the kind: see CanonicalName.
 	Prefix string
 
+	// FormerPrefixes are the prefixes the log's records began with before
+	// Prefix: "PIOSEE", for PIOSEE-0001-outage.md.  A record named with one
+	// is still a record of the kind, and its canonical name has Prefix.
+	FormerPrefixes []string
+
 	// Former names the directories, under docs, that the log was kept in by
 	// default before Dir: "sty", for docs/sty.  A tool no longer looks there.
 	Former []string

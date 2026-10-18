@@ -1,0 +1,28 @@
+# 1. Write a standard operating procedure
+
+Date: DATE
+
+## Status
+
+Draft
+
+## Steps
+
+1. Check that the task is routine: done the same way each time, with no
+   decision to make. A task that needs a decision belongs in a playbook,
+   which refers to the procedure for its routine steps.
+2. Check that no procedure in this directory covers the task already, with
+   `sop list`.
+3. Create the procedure in this directory with `sop new`, titled with the
+   task, as an instruction, such as "Roll back a release". Each procedure is
+   a Markdown file, numbered in sequence. Numbers are not reused.
+4. Write the steps as an ordered list of instructions, from the code, the
+   configuration and the documentation of the systems involved. Name the
+   exact command, page or setting in each step, and how to check that it
+   worked.
+5. Have someone who does the task follow the procedure, and correct it
+   where it differs from what they do.
+6. Have the people who own the task review it. A new procedure is a draft
+   until they approve it, when its status becomes Approved.
+7. Keep it current. A procedure rewritten for the same task supersedes the
+   one it rewrites, with `sop new --supersede`, and both say so.

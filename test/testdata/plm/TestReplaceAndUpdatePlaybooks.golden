@@ -1,0 +1,62 @@
+plm new "Checkout errors after a release"
+docs/problem/PROBLEM-0001-checkout-errors-after-a-release.md
+plm new "Crossing the VAT threshold"
+docs/problem/PROBLEM-0002-crossing-the-vat-threshold.md
+plm new -r 1 "Checkout fails"
+docs/problem/PROBLEM-0003-checkout-fails.md
+plm new --update 2 "Registering for VAT abroad"
+docs/problem/PROBLEM-0004-registering-for-vat-abroad.md
+plm link -u 3 2
+head -10 docs/problem/PROBLEM-0001-checkout-errors-after-a-release.md
+# 1. Checkout errors after a release
+
+Date: 1992-01-12
+
+## Status
+
+Replaced by [3. Checkout fails](PROBLEM-0003-checkout-fails.md)
+
+## Scenario
+
+head -12 docs/problem/PROBLEM-0002-crossing-the-vat-threshold.md
+# 2. Crossing the VAT threshold
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [4. Registering for VAT abroad](PROBLEM-0004-registering-for-vat-abroad.md)
+
+Updated by [3. Checkout fails](PROBLEM-0003-checkout-fails.md)
+
+head -12 docs/problem/PROBLEM-0003-checkout-fails.md
+# 3. Checkout fails
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Replaces [1. Checkout errors after a release](PROBLEM-0001-checkout-errors-after-a-release.md)
+
+Updates [2. Crossing the VAT threshold](PROBLEM-0002-crossing-the-vat-threshold.md)
+
+head -10 docs/problem/PROBLEM-0004-registering-for-vat-abroad.md
+# 4. Registering for VAT abroad
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updates [2. Crossing the VAT threshold](PROBLEM-0002-crossing-the-vat-threshold.md)
+
+plm list
+docs/problem/PROBLEM-0001-checkout-errors-after-a-release.md
+docs/problem/PROBLEM-0002-crossing-the-vat-threshold.md
+docs/problem/PROBLEM-0003-checkout-fails.md
+docs/problem/PROBLEM-0004-registering-for-vat-abroad.md

@@ -1,0 +1,5 @@
+  # Record that SOP 3 updates SOP 2:
+  sop link --update 3 2
+
+  # Record that SOP 5 supersedes SOP 4:
+  sop link -s 5 4

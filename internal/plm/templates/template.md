@@ -1,0 +1,43 @@
+# NUMBER. TITLE
+
+Date: DATE
+
+## Status
+
+STATUS
+
+## Scenario
+
+The situation this playbook is for, in one to three sentences: what happens, or is reported, that calls for it.
+
+## Problem
+
+The decision to make when the scenario arises, as one clear question, and the main risks if it is decided wrongly. No solutions here.
+
+## Immediate action
+
+The action to take at once, before gathering information, to make the situation safe or stop it getting worse, and who takes it, or the standard operating procedure (SOP) that sets it out. If there is none, write "No immediate action is indicated."
+
+## Counter-indicated actions
+
+Optional. The actions known to make the situation worse, or to waste time, that someone under pressure may be tempted to take, and why each is wrong. Delete this section if none are known.
+
+## Information
+
+The facts to gather before deciding: what to collect, where each is found, and who owns it, or the SOP that says how to collect it. Separate what is known from what is assumed, and say how to settle the critical unknowns quickly.
+
+## Options
+
+The realistic courses of action, distinct and actionable, including at least one conservative fallback. For each, when it applies and its tradeoffs.
+
+## Selection
+
+How to choose an option: the criteria, which option each finding of the investigation leads to, the default, and the confidence and assumptions behind the rule.
+
+## Execution
+
+The steps to carry out the option chosen, in order: who takes each, what each depends on, what to record and tell whom, and how to roll back. Refer to an SOP for a routine procedure, rather than repeating its steps.
+
+## Evaluation
+
+How to tell, after the playbook is used, whether it worked: the measurable outcomes, the SOP for any routine check, when and by whom they are reviewed, and what to do if they are missed.

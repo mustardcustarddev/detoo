@@ -1,0 +1,22 @@
+plm new "First Playbook"
+docs/problem/PROBLEM-0001-first-playbook.md
+plm new "Second Playbook"
+docs/problem/PROBLEM-0002-second-playbook.md
+plm link 2 1
+plm: give either --replace or --update
+plm link -s 2 1
+plm: unknown shorthand flag: 's' in -s
+plm new --reverse 1 "Third Playbook"
+plm: unknown flag: --reverse
+ls docs/problem
+PROBLEM-0001-first-playbook.md
+PROBLEM-0002-second-playbook.md
+head -8 docs/problem/PROBLEM-0001-first-playbook.md
+# 1. First Playbook
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+

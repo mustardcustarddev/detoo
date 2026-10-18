@@ -18,7 +18,7 @@ make deploy                 # install into /usr/local
 ```
 
 `make deploy` builds first, so it is enough on its own. It installs `adr`,
-`rfc`, `sty`, `pse` and `detoo` into `/usr/local/bin`. To install somewhere
+`rfc`, `sty`, `plm`, `sop` and `detoo` into `/usr/local/bin`. To install somewhere
 else, such as your home directory, set `PREFIX`:
 
 ```bash

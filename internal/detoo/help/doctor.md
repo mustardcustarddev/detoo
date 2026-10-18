@@ -1,12 +1,14 @@
-Checks the project's adr, rfc, sty and pse logs together, and reports any log
-the tools would not find, or whose file names are out of date:
+Checks the project's adr, rfc, sty, plm and sop logs together, and reports
+any log the tools would not find, or whose file names are out of date:
 
 * a log kept under `doc/` instead of `docs/`;
 * a log kept in a directory its tool no longer looks in, such as user stories
-  in `docs/sty` instead of `docs/userstory`;
+  in `docs/sty` instead of `docs/userstory`, or playbooks in `docs/piosee`
+  instead of `docs/problem`;
 * documents whose file names do not begin with their log's prefix in upper
-  case: `ADR-`, `RFC-`, `STORY-` or `PIOSEE-`, including a slip of the prefix,
-  such as `STOY-0003-title.md` among the user stories;
+  case: `ADR-`, `RFC-`, `STORY-`, `PROBLEM-` or `SOP-`, including a slip of
+  the prefix, such as `STOY-0003-title.md` among the user stories, and a
+  prefix the log had before, such as `PIOSEE-` among the playbooks;
 * documents that share a number, such as `STORY-0003-first.md` and
   `STORY-0003-second.md`.
 

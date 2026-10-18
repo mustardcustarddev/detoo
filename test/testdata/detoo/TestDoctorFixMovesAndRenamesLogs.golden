@@ -51,7 +51,7 @@ detoo doctor --fix
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
 █████████████▄    checked   4 documents in 3 directories
 
 ╭─ ✓ adr  docs/adr ────────────────────────────── 1 decision record · 1 fixed ─╮
@@ -88,7 +88,7 @@ detoo doctor --fix
 │   docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md  1 link     │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No pse log found.
+– No plm or sop log found.
 
  DOCTOR  ✓ Fixed 6 problems. All is well.  Made 12 changes.              EXIT 0 
 echo $?
@@ -142,14 +142,15 @@ detoo doctor
 █████▄            doctor helps maintain and troubleshoot decision record logs
 ███ ▀██▄
 ███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  pse
+███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
 █████████████▄    checked   4 documents in 3 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ ✓  adr  docs/adr        1 decision record  ADR-0001                          │
 │ ✓  rfc  docs/rfc        1 RFC              RFC-0001                          │
 │ ✓  sty  docs/userstory  2 user stories     STORY-0001 … STORY-0002           │
-│ –  pse  docs/piosee     no log                                               │
+│ –  plm  docs/problem    no log                                               │
+│ –  sop  docs/sop        no log                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
  DOCTOR  ✓ The 3 logs found are in place and named with their prefix.    EXIT 0 

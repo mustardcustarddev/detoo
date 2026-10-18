@@ -7,8 +7,8 @@ order: 2
 
 ## 1. Install the tools
 
-Each skill drives `adr`, `rfc`, `sty` or `pse`, which must be on the `PATH`
-of the machine the agent runs on. [Install](../../install/) them first.
+Each skill drives `adr`, `rfc`, `sty`, `plm` or `sop`, which must be on the
+`PATH` of the machine the agent runs on. [Install](../../install/) them first.
 
 ## 2. Install the skills
 
@@ -22,13 +22,8 @@ npx skills add mustardcustarddev/detoo --list
 npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
 
 # Install all of them
-npx skills add mustardcustarddev/detoo --skill create-adr --skill review-adrs \
-  --skill find-missing-adrs --skill check-adrs --skill create-rfc \
-  --skill create-user-story --skill create-piosee
+npx skills add mustardcustarddev/detoo --skill '*'
 ```
-
-Name the skills you want. `--skill '*'` would also install
-`feature-driven-vertical-slices`, which is for working on detoo itself.
 
 Some useful options:
 

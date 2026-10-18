@@ -23,8 +23,9 @@ import (
 	"github.com/mustardcustard/detoo/internal/cli/output"
 	"github.com/mustardcustard/detoo/internal/detoo"
 	"github.com/mustardcustard/detoo/internal/domain/record"
-	"github.com/mustardcustard/detoo/internal/pse"
+	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
+	"github.com/mustardcustard/detoo/internal/sop"
 	"github.com/mustardcustard/detoo/internal/sty"
 )
 
@@ -81,7 +82,8 @@ func tools() []tool {
 		recordTool(adr.Kind, adr.Files),
 		recordTool(rfc.Kind, rfc.Files),
 		recordTool(sty.Kind, sty.Files),
-		recordTool(pse.Kind, pse.Files),
+		recordTool(plm.Kind, plm.Files),
+		recordTool(sop.Kind, sop.Files),
 		doctor,
 	}
 }

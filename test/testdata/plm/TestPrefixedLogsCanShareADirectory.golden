@@ -1,0 +1,21 @@
+plm init docs/work
+docs/work/PROBLEM-0001-plan-for-incidents-with-piosee.md
+sty init docs/work
+docs/work/STORY-0001-describe-work-in-user-stories.md
+plm new "A Playbook"
+docs/work/PROBLEM-0002-a-playbook.md
+sty new "A Story"
+docs/work/STORY-0002-a-story.md
+ls docs/work
+PROBLEM-0001-plan-for-incidents-with-piosee.md
+PROBLEM-0002-a-playbook.md
+STORY-0001-describe-work-in-user-stories.md
+STORY-0002-a-story.md
+plm list
+docs/work/PROBLEM-0001-plan-for-incidents-with-piosee.md
+docs/work/PROBLEM-0002-a-playbook.md
+sty list
+docs/work/STORY-0001-describe-work-in-user-stories.md
+docs/work/STORY-0002-a-story.md
+plm link -u 2 a-story
+plm: no playbook matches "a-story"
