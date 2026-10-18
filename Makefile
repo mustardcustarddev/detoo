@@ -61,10 +61,35 @@ deploy: build ## install the commands and their shell completion under $(PREFIX)
 .PHONY: install
 install: deploy
 
+#############################################################################
+# Release
+#############################################################################
+
+# svu works out the next version from the conventional commits since the last
+# release: a fix makes a patch release, a feature a minor one, and a breaking
+# change a major one.  Set VERSION to choose it yourself, as in
+# `make release VERSION=v1.0.0`.
+SVU     ?= $(GO) run github.com/caarlos0/svu/v3@v3.4.1
+VERSION ?=
+
+# Pushing the tag starts the Release workflow, which builds the commands,
+# publishes them as a GitHub release, and updates the Homebrew formula.  The
+# version comes from the tag, so the tree must be clean: a build with changes
+# reports its commit instead.
 .PHONY: release
-release: build ## tag the current commit and publish a release
-	git tag `git rev-parse --short HEAD` && git push --tags origin main
-	gh release create `git rev-parse --short HEAD` --generate-notes
+release: build ## tag the next version, and push it for CI to publish
+	@test "`git branch --show-current`" = main || { echo "release: switch to main first" >&2; exit 1; }
+	@test -z "`git status --porcelain`" || { echo "release: commit or stash your changes first" >&2; exit 1; }
+	@version="$(VERSION)"; version="$${version:-`$(SVU) next`}"; \
+	case "$$version" in \
+	v[0-9]*.[0-9]*.[0-9]*) ;; \
+	*) echo "release: $$version is not a version such as v1.0.0" >&2; exit 1 ;; \
+	esac; \
+	if git rev-parse --quiet --verify "refs/tags/$$version" >/dev/null; then \
+		echo "release: $$version is already tagged, and no fix or feature since needs a release" >&2; exit 1; \
+	fi; \
+	echo "Releasing $$version"; \
+	git tag --annotate --message "detoo $$version" "$$version" && git push origin main "$$version"
 
 #############################################################################
 # Documentation site

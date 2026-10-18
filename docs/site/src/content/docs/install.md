@@ -1,14 +1,35 @@
 ---
 title: Install
-description: Build and install the detoo tools from source with Go, with shell completion, and check that they work.
+description: Install the detoo tools with Homebrew, or build them from source with Go, with shell completion, and check that they work.
 section: getting-started
 order: 2
 ---
 
-The tools are built from source, so you need [Go](https://go.dev/dl/) 1.26 or
-later, `make` and `git`.
+On an Apple silicon Mac, install the tools with Homebrew. On other machines,
+build them from source.
 
-## Build and install
+## Install with Homebrew
+
+detoo is in the Mustard Custard tap, a repository of Homebrew formulae
+alongside Homebrew's own. With [Homebrew](https://brew.sh) installed, add the
+tap, once:
+
+```bash
+brew tap mustardcustarddev/tap
+```
+
+Then install detoo from it:
+
+```bash
+brew install detoo
+```
+
+This installs `adr`, `rfc`, `sty`, `plm`, `sop` and `detoo`, ready built, so
+it needs no Go. `brew upgrade` installs each new release.
+
+## Build from source
+
+Building needs [Go](https://go.dev/dl/) 1.26 or later, `make` and `git`.
 
 ```bash
 git clone https://github.com/mustardcustarddev/detoo.git
@@ -29,10 +50,14 @@ Make sure the `bin` directory under `PREFIX` is on your `PATH`.
 
 ## Shell completion
 
-Each tool generates its own bash completion. `make deploy` installs it into
-`$PREFIX/etc/bash_completion.d`, where bash-completion picks it up. Each
-tool also writes completion for zsh, fish and PowerShell, and explains how to
-load it:
+Homebrew installs each tool's completion for bash, zsh and fish. Your shell
+loads it once it is set up for Homebrew's completion, as
+[Homebrew's guide](https://docs.brew.sh/Shell-Completion) describes.
+
+Built from source, each tool generates its own bash completion. `make deploy`
+installs it into `$PREFIX/etc/bash_completion.d`, where bash-completion picks
+it up. Each tool also writes completion for zsh, fish and PowerShell, and
+explains how to load it:
 
 ```bash
 adr completion zsh --help

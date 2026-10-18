@@ -13,7 +13,7 @@ what differs, and `detoo doctor --fix` fixes it:
 
 ```bash
 detoo doctor                # report what is out of place
-detoo doctor --fix --git    # git mv doc/adr to docs/adr, rename to ADR-0001-…, update links
+detoo doctor --fix          # move doc/adr to docs/adr, rename to ADR-0001-…, update links
 adr list                    # adr finds the decisions again
 ```
 
@@ -27,4 +27,5 @@ If that is `doc/adr`, delete `.adr-dir` before fixing, or `doctor` will ask
 you to fix it by hand.
 
 Commit before fixing, so you can review the changes with `git status` and
-`git diff`. With `--git`, git shows each file as renamed.
+`git diff`. In a git repository, `--fix` offers to use `git mv`, so that git
+shows each file as renamed.

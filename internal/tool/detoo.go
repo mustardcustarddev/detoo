@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime/debug"
 	"strconv"
 
@@ -79,12 +80,26 @@ func terminal() output.Terminal {
 	return t
 }
 
-// version is the commit detoo was built from, as a release is tagged, or
-// "dev" when that is not known.
+// version is the version of the release detoo was built from, such as
+// "1.0.0", or else the commit it was built from, or "dev" when that is not
+// known.
 func version() string {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		return "dev"
+	}
+	return versionOf(info)
+}
+
+// release matches the version Go records for a build of a commit that is
+// tagged as a release, such as v1.0.0, with nothing changed.  A build of any
+// other commit has a pseudo-version, such as
+// v0.0.0-20261018151304-eb82bb5ed344, and one with changes ends in +dirty.
+var release = regexp.MustCompile(`^v([0-9]+\.[0-9]+\.[0-9]+)$`)
+
+func versionOf(info *debug.BuildInfo) string {
+	if m := release.FindStringSubmatch(info.Main.Version); m != nil {
+		return m[1]
 	}
 	var revision string
 	var modified bool

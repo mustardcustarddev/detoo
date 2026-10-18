@@ -3,7 +3,8 @@
 <img src="https://github.com/user-attachments/assets/43a08c20-05b9-4365-a7d7-ff14c3360a1d" alt="Detoo robot drawing with a set square" width="320">
 
 [![Apache License 2.0](https://img.shields.io/:license-Apache%20License%202.0-blue.svg?style=shield)](LICENSE.md)
-[![Documentation](https://img.shields.io/badge/docs-mustardcustarddev.github.io%2Fdetoo-6366f1.svg)](https://mustardcustarddev.github.io/detoo/)
+[![Build](https://github.com/mustardcustarddev/detoo/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/mustardcustarddev/detoo/actions/workflows/build.yml)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-ea580c.svg)](https://mustardcustarddev.github.io/detoo/)
 
 Command-line tools and agentic skills for working with decision records:
 
@@ -23,12 +24,17 @@ Command-line tools and agentic skills for working with decision records:
 
 ## Install
 
-Build from source with Go, which also builds shell completion for each tool:
+On an Apple silicon Mac, install the tools with [Homebrew](https://brew.sh).
+Add the Mustard Custard tap, once, then install detoo from it:
 
 ```bash
-make build                  # vet, test and compile into build/
-make deploy                 # install into /usr/local (override with PREFIX=)
+brew tap mustardcustarddev/tap
+brew install detoo
 ```
+
+This installs `adr`, `rfc`, `sty`, `plm`, `sop` and `detoo`, with shell
+completion for bash, zsh and fish. On other machines, build them from source,
+as [For developers](#for-developers) describes.
 
 ## Usage
 
@@ -111,7 +117,7 @@ Ask your agent in your own words, for example:
 ## Troubleshooting
 
 <div style="display: flex; justify-content: center;">
-<img src="https://github.com/user-attachments/assets/c9b1549f-0582-49db-a943-54948be08e62" alt="detoo doctor in a terminal, reporting that the adr, rfc, sty and pse logs are all in place and named with their prefix" width="1024">
+<img src="https://mustardcustarddev.github.io/detoo/_astro/detoo-doctor.C33HMgiX_Z24PRTX.webp" alt="detoo doctor in a terminal, reporting that the adr, rfc, sty and pse logs are all in place and named with their prefix" width="1024">
 </div>
 
 ```bash
@@ -138,7 +144,7 @@ numbered without a prefix, such as `0001-record-architecture-decisions.md`.
 
 ```bash
 detoo doctor                # report what is out of place
-detoo doctor --fix --git    # git mv doc/adr to docs/adr, rename to ADR-0001-…, update links
+detoo doctor --fix          # move doc/adr to docs/adr, rename to ADR-0001-…, update links
 adr list                    # adr finds the decisions again
 ```
 
@@ -147,7 +153,20 @@ files, and so do links to them from a `README.md` or other documents. If you
 started adr-tools with a directory of your own, `.adr-dir` names it: if that
 is `doc/adr`, delete `.adr-dir` before fixing, or `doctor` will ask you to fix
 it by hand. Commit before fixing, so you can review the changes with
-`git status` and `git diff`: with `--git`, git shows each file as renamed.
+`git status` and `git diff`. In a git repository, `--fix` offers to use
+`git mv`, so that git shows each file as renamed.
+
+## For developers
+
+Building needs [Go](https://go.dev/dl/) 1.26 or later, `make` and `git`. It
+also builds shell completion for each tool:
+
+```bash
+make build                  # vet, test and compile into build/
+make deploy                 # install into /usr/local (override with PREFIX=)
+```
+
+To release the tools, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Thanks
 

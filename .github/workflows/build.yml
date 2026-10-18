@@ -1,0 +1,32 @@
+# Vets, tests and builds the commands, as `make build` does, for each push to
+# main and each pull request.  The README's build badge shows the result on
+# main.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push replaces a build still running for the same branch.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # An Apple silicon Mac, where the released commands run.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+
+      - run: make build

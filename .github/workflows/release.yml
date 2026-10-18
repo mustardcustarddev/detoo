@@ -1,0 +1,117 @@
+# Publishes a release when `make release` pushes its tag, such as v1.0.0.  It
+# builds the commands for Apple silicon Macs, attaches them to a GitHub
+# release, and publishes the Homebrew formula for that release to the
+# mustardcustarddev/homebrew-tap repository, from packaging/homebrew/detoo.rb.
+#
+# Pushing to the tap needs a deploy key with write access to it, whose private
+# key is this repository's HOMEBREW_TAP_DEPLOY_KEY secret.  CONTRIBUTING.md
+# says how to make one.
+#
+# A run that fails can be run again: it replaces the release's files, and the
+# formula with them.
+
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+permissions:
+  contents: read
+
+# One release at a time, so that the tap's formula is the latest release's.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # An Apple silicon Mac, so that the commands are tested where they run.
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+
+      - run: make build
+
+      # Go takes the version from the tag only when the commit has nothing
+      # changed, and the commands report the version Go records.  Without it,
+      # they would report the commit instead.
+      - name: Check the version
+        run: |
+          recorded=$(go version -m build/detoo | awk '$1 == "mod" { print $3 }')
+          if [ "$recorded" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::detoo records version $recorded, not $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+      - name: Package
+        id: package
+        run: |
+          name="detoo_${GITHUB_REF_NAME#v}_darwin_arm64"
+          mkdir -p "build/$name/bin"
+          for command in cmd/*; do
+            cp "build/${command#cmd/}" "build/$name/bin"
+          done
+          cp LICENSE.md README.md "build/$name"
+          tar -czf "build/$name.tar.gz" -C build "$name"
+          (cd build && shasum -a 256 "$name.tar.gz" > checksums.txt)
+          echo "archive=build/$name.tar.gz" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(cut -d ' ' -f 1 build/checksums.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the release
+        env:
+          ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$ARCHIVE" build/checksums.txt --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$ARCHIVE" build/checksums.txt \
+              --verify-tag --title "detoo ${GITHUB_REF_NAME#v}" --generate-notes
+          fi
+
+      - name: Write the formula
+        env:
+          SHA256: ${{ steps.package.outputs.sha256 }}
+        run: |
+          sed -e "s/@VERSION@/${GITHUB_REF_NAME#v}/g" -e "s/@SHA256@/$SHA256/g" \
+            packaging/homebrew/detoo.rb > build/detoo.rb
+
+      # Install from the release just published, in a tap of its own, and run
+      # the formula's test, before anyone else can install it.
+      - name: Test the formula
+        run: |
+          brew tap-new --no-git detoo/release
+          cp build/detoo.rb "$(brew --repository detoo/release)/Formula/detoo.rb"
+          brew install detoo/release/detoo
+          brew test detoo/release/detoo
+
+      - uses: actions/checkout@v7
+        with:
+          repository: mustardcustarddev/homebrew-tap
+          ssh-key: ${{ secrets.HOMEBREW_TAP_DEPLOY_KEY }}
+          path: build/homebrew-tap
+
+      - name: Publish the formula
+        working-directory: build/homebrew-tap
+        run: |
+          mkdir -p Formula
+          cp ../detoo.rb Formula/detoo.rb
+          git add Formula/detoo.rb
+          if git diff --cached --quiet; then
+            echo "The formula is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --message "detoo ${GITHUB_REF_NAME#v}"
+          git push
