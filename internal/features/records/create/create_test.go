@@ -8,7 +8,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/adapters/memlog"
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/rfc"
-	"github.com/mustardcustard/detoo/internal/sty"
+	"github.com/mustardcustard/detoo/internal/ust"
 )
 
 // Nothing here builds a binary, parses a flag or writes a file.  The slice's
@@ -177,7 +177,7 @@ func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
 // case, numbers its records from those named in any of its ways, such as the
 // lower-case story-0001-first.md, and links them by those names.
 func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
-	log := memlog.Of(sty.Kind)
+	log := memlog.Of(ust.Kind)
 	if err := log.Write(context.Background(), "docs/userstory/story-0001-first.md", "# 1. First\n\n## Status\n\nDraft\n\n## Story\n\nStory.\n"); err != nil {
 		t.Fatal(err)
 	}
@@ -185,7 +185,7 @@ func TestHandleNamesRecordsWithTheKindsPrefix(t *testing.T) {
 		t.Fatal(err)
 	}
 	handler := newHandler(log, &spyEditor{})
-	handler.Kind = sty.Kind
+	handler.Kind = ust.Kind
 
 	result, err := handler.Handle(context.Background(), Command{Title: "Second", Updates: []string{"1"}})
 	if err != nil {

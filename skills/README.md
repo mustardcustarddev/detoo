@@ -2,7 +2,7 @@
 
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
-comments with `rfc`, user stories with `sty`, problem playbooks with `plm`,
+comments with `rfc`, user stories with `ust`, problem playbooks with `plm`,
 and standard operating procedures with `sop`. Each directory is one skill,
 and is self-contained, so it can be installed on its own.
 
@@ -33,10 +33,10 @@ This needs the `rfc` tool.
 
 ### User stories
 
-This needs the `sty` tool.
+This needs the `ust` tool.
 
 * [**create-user-story**](create-user-story/SKILL.md): write a user story with
-  `sty` from a one-line subject, asking the user who it is for, what they
+  `ust` from a one-line subject, asking the user who it is for, what they
   need, why, and how they will know it is done. Splits epics into smaller
   stories.
 
@@ -80,7 +80,7 @@ Every ADR, RFC, user story, playbook and SOP an agent creates has the status
 
 ### 1. Install the tools
 
-Each skill drives `adr`, `rfc`, `sty`, `plm` or `sop`, which must be on the
+Each skill drives `adr`, `rfc`, `ust`, `plm` or `sop`, which must be on the
 `PATH` of the machine the agent runs on. Build and install them as described in the
 [README](../README.md#install).
 

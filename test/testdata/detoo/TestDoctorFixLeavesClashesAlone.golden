@@ -1,4 +1,4 @@
-cat > .sty-dir <<EOF
+cat > .ust-dir <<EOF
 docs/sty
 EOF
 touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/story-0003-third.md doc/adr/0001-first.md doc/adr/adr-0001-first.md
@@ -8,7 +8,7 @@ detoo doctor --fix
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   5 documents in 4 directories
 
 ╭─ ! adr  docs/adr   BY HAND  ───── 2 decision records · 1 fixed · 2 problems ─╮
@@ -21,18 +21,18 @@ detoo doctor --fix
 │     ! 0001-first.md would have the same name: fix by hand                    │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ! sty  docs/sty   BY HAND  ───────── 3 user stories · 2 fixed · 2 problems ─╮
+╭─ ! ust  docs/sty   BY HAND  ───────── 3 user stories · 2 fixed · 2 problems ─╮
 │ ✓ Moved from doc/ to docs/                                                   │
 │   doc/userstory  →  docs/userstory                                           │
 │ ✓ Renamed to begin with STORY-                                               │
 │   story-0003-third.md  →  STORY-0003-third.md                                │
 │ ✗ Kept in a former directory: user stories now live in docs/userstory        │
-│ ! Needs fixing by hand: .sty-dir names docs/sty, so sty still looks there.   │
+│ ! Needs fixing by hand: .ust-dir names docs/sty, so ust still looks there.   │
 │ ✗ Kept in a former directory: user stories now live in docs/userstory        │
-│   sty no longer finds the user story in doc/sty.                             │
+│   ust no longer finds the user story in doc/sty.                             │
 │ ! Needs fixing by hand: both directories exist, so moving one would clash.   │
 │   doc/sty         1 user story  · former directory                           │
-│   docs/userstory  1 user story  · current directory, where sty looks         │
+│   docs/userstory  1 user story  · current directory, where ust looks         │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 – No rfc, plm or sop log found.

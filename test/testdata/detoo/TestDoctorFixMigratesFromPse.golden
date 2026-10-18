@@ -39,7 +39,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✗ plm  docs/piosee ────────────────────────────── 2 playbooks · 3 problems ─╮
@@ -57,7 +57,7 @@ detoo doctor
 │ ✓ In place. File names begin with SOP-.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No adr, rfc or sty log found.
+– No adr, rfc or ust log found.
 
 → Run detoo doctor --fix to fix them.
 
@@ -70,7 +70,7 @@ detoo doctor --fix
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✓ plm  docs/problem ──────────────────────────────── 2 playbooks · 3 fixed ─╮
@@ -94,7 +94,7 @@ detoo doctor --fix
 │   docs/sop/SOP-0001-roll-back-a-release.md                     1 link        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No adr, rfc or sty log found.
+– No adr, rfc or ust log found.
 
  DOCTOR  ✓ Fixed 3 problems. All is well.  Made 6 changes.               EXIT 0 
 echo $?

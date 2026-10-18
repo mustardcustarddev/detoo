@@ -5,7 +5,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   7 documents in 6 directories
 
 ╭─ ✗ adr  docs/adr ────────────────────────── 2 decision records · 2 problems ─╮
@@ -24,12 +24,12 @@ detoo doctor
 │     → RFC-0001-adopt-a-single-detoo-command.md                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ! sty  docs/sty   BY HAND  ─────────────────── 2 user stories · 3 problems ─╮
+╭─ ! ust  docs/sty   BY HAND  ─────────────────── 2 user stories · 3 problems ─╮
 │ ✗ Kept in a former directory: user stories now live in docs/userstory        │
-│   sty no longer finds the user story in docs/sty.                            │
+│   ust no longer finds the user story in docs/sty.                            │
 │ ! Needs fixing by hand: both directories exist, so moving one would clash.   │
 │   docs/sty        1 user story  · former directory                           │
-│   docs/userstory  1 user story  · current directory, where sty looks         │
+│   docs/userstory  1 user story  · current directory, where ust looks         │
 │ ✗ File names do not begin with STORY-                                        │
 │   docs/userstory/story-0001-describe-work-in-user-stories.md                 │
 │     → STORY-0001-describe-work-in-user-stories.md                            │

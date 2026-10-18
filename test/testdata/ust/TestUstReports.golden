@@ -1,0 +1,17 @@
+ust new "First Story"
+docs/userstory/STORY-0001-first-story.md
+ust new -r 1 "Second Story"
+docs/userstory/STORY-0002-second-story.md
+ust list --toc
+# User Stories
+
+* [1. First Story](STORY-0001-first-story.md)
+* [2. Second Story](STORY-0002-second-story.md)
+ust graph
+flowchart TD
+  ust1["1. First Story"]
+  ust2["2. Second Story"]
+  ust1 -.-> ust2
+  ust2 -->|"Replaces"| ust1
+  click ust1 "STORY-0001-first-story.html"
+  click ust2 "STORY-0002-second-story.html"

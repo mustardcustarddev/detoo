@@ -10,10 +10,10 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/domain/record"
-	"github.com/mustardcustard/detoo/internal/sty"
+	"github.com/mustardcustard/detoo/internal/ust"
 )
 
-var kinds = []record.Kind{adr.Kind, sty.Kind}
+var kinds = []record.Kind{adr.Kind, ust.Kind}
 
 func write(t *testing.T, name, content string) {
 	t.Helper()
@@ -37,14 +37,16 @@ func resolved(t *testing.T, dir string) string {
 }
 
 // The project is the nearest directory above the working one that holds a
-// docs directory, a doc directory or a marker file.
+// docs directory, a doc directory or a marker file, under its name or a
+// former one.
 func TestRootIsTheNearestDirectoryHoldingALog(t *testing.T) {
 	for _, test := range []struct {
 		name, file string
 	}{
 		{"docs", "docs/adr/ADR-0001-first.md"},
 		{"doc", "doc/adr/ADR-0001-first.md"},
-		{"marker", ".sty-dir"},
+		{"marker", ".ust-dir"},
+		{"former marker", ".sty-dir"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			root := resolved(t, t.TempDir())
@@ -79,15 +81,15 @@ func TestRootIsTheWorkingDirectoryWhenNothingIsFound(t *testing.T) {
 
 func TestMarkerReadsTheNamedDirectory(t *testing.T) {
 	root := t.TempDir()
-	write(t, filepath.Join(root, ".sty-dir"), "docs/sty/\n")
+	write(t, filepath.Join(root, ".ust-dir"), "docs/sty/\n")
 	p := New(root, kinds)
 
-	dir, ok, err := p.Marker(context.Background(), sty.Kind)
+	dir, ok, err := p.Marker(context.Background(), ust.Kind.Marker())
 	if err != nil || !ok || dir != "docs/sty" {
-		t.Errorf("Marker(sty) = %q, %v, %v, want docs/sty, true, nil", dir, ok, err)
+		t.Errorf("Marker(.ust-dir) = %q, %v, %v, want docs/sty, true, nil", dir, ok, err)
 	}
-	if _, ok, err := p.Marker(context.Background(), adr.Kind); err != nil || ok {
-		t.Errorf("Marker(adr) = %v, %v, want no marker", ok, err)
+	if _, ok, err := p.Marker(context.Background(), adr.Kind.Marker()); err != nil || ok {
+		t.Errorf("Marker(.adr-dir) = %v, %v, want no marker", ok, err)
 	}
 }
 

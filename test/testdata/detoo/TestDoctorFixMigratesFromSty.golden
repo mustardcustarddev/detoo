@@ -1,0 +1,63 @@
+cat > .sty-dir <<EOF
+stories
+EOF
+cat > stories/STORY-0001-describe-work-in-user-stories.md <<EOF
+# 1. Describe work in user stories
+
+Date: 2026-10-18
+
+## Status
+
+Draft
+EOF
+ust config
+ust_dir="docs/userstory"
+ust_template=""
+detoo doctor
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
+ ▄███▀█████▀███▄     checked   1 document in 1 directory
+
+╭─ ✗ ust  stories ────────────────────────────────── 1 user story · 1 problem ─╮
+│ ✗ Marker file has a former name: ust reads .ust-dir                          │
+│   ust no longer reads .sty-dir, which names stories.                         │
+│   .sty-dir  →  .ust-dir                                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc, plm or sop log found.
+
+→ Run detoo doctor --fix to fix it.
+
+ DOCTOR  ✗ 1 problem in 1 log  Nothing was changed.                      EXIT 1 
+echo $?
+1
+detoo doctor --fix
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
+ ▄███▀█████▀███▄     checked   1 document in 1 directory
+
+╭─ ✓ ust  stories ──────────────────────────────────── 1 user story · 1 fixed ─╮
+│ ✓ Renamed from a former name to .ust-dir                                     │
+│   .sty-dir  →  .ust-dir                                                      │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No adr, rfc, plm or sop log found.
+
+ DOCTOR  ✓ Fixed 1 problem. All is well.  Made 1 change.                 EXIT 0 
+echo $?
+0
+cat .ust-dir
+stories
+ust config
+ust_dir="stories"
+ust_template=""
+ust list
+stories/STORY-0001-describe-work-in-user-stories.md

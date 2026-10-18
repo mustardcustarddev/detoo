@@ -2,7 +2,7 @@ adr init
 docs/adr/ADR-0001-record-architecture-decisions.md
 adr new "Use PostgreSQL for persistence"
 docs/adr/ADR-0002-use-postgresql-for-persistence.md
-sty init
+ust init
 docs/userstory/STORY-0001-describe-work-in-user-stories.md
 detoo doctor
   ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
@@ -10,13 +10,13 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ ✓  adr  docs/adr        2 decision records  ADR-0001 … ADR-0002              │
 │ –  rfc  docs/rfc        no log                                               │
-│ ✓  sty  docs/userstory  1 user story        STORY-0001                       │
+│ ✓  ust  docs/userstory  1 user story        STORY-0001                       │
 │ –  plm  docs/problem    no log                                               │
 │ –  sop  docs/sop        no log                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯

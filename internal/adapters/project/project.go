@@ -37,8 +37,9 @@ func New(workdir string, kinds []record.Kind) *Project {
 
 // Root returns the project's directory, by its real path: the nearest of the
 // working directory and its ancestors that holds a marker file of one of the
-// kinds, a docs directory or a doc directory.  A working directory with none
-// of them above it is the project's directory itself.
+// kinds, under its name or a former one, a docs directory or a doc directory.
+// A working directory with none of them above it is the project's directory
+// itself.
 func (p *Project) Root(context.Context) (string, error) {
 	if p.root != "" {
 		return p.root, nil
@@ -67,8 +68,10 @@ func (p *Project) Root(context.Context) (string, error) {
 
 func (p *Project) isRoot(dir string) bool {
 	for _, kind := range p.kinds {
-		if _, err := os.Stat(filepath.Join(dir, markerFile(kind))); err == nil {
-			return true
+		for _, marker := range append([]string{kind.Marker()}, kind.FormerMarkers()...) {
+			if _, err := os.Stat(filepath.Join(dir, marker)); err == nil {
+				return true
+			}
 		}
 	}
 	for _, name := range []string{"docs", "doc"} {
@@ -77,12 +80,6 @@ func (p *Project) isRoot(dir string) bool {
 		}
 	}
 	return false
-}
-
-// markerFile names the file that records where a project keeps a log of
-// kind: .adr-dir for adr's.
-func markerFile(kind record.Kind) string {
-	return "." + kind.Name + "-dir"
 }
 
 // path resolves a path relative to the project's root to a path on disk.  An
@@ -99,10 +96,10 @@ func (p *Project) path(ctx context.Context, name string) (string, error) {
 	return filepath.Join(root, name), nil
 }
 
-// Marker returns the directory the marker file of kind, in the project's
+// Marker returns the directory the marker file of that name, in the project's
 // root, names.
-func (p *Project) Marker(ctx context.Context, kind record.Kind) (string, bool, error) {
-	file, err := p.path(ctx, markerFile(kind))
+func (p *Project) Marker(ctx context.Context, name string) (string, bool, error) {
+	file, err := p.path(ctx, name)
 	if err != nil {
 		return "", false, err
 	}

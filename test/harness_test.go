@@ -100,10 +100,10 @@ func (w *workspace) git(args ...string) {
 	}
 }
 
-// sty runs the sty command.
-func (w *workspace) sty(args ...string) {
+// ust runs the ust command.
+func (w *workspace) ust(args ...string) {
 	w.t.Helper()
-	w.run("sty", args...)
+	w.run("ust", args...)
 }
 
 // plm runs the plm command.

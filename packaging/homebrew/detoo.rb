@@ -27,7 +27,7 @@ class Detoo < Formula
   end
 
   test do
-    system bin/"sty", "init"
+    system bin/"ust", "init"
     assert_path_exists testpath/"docs/userstory/STORY-0001-describe-work-in-user-stories.md"
   end
 end

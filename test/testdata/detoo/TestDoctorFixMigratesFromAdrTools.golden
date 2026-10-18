@@ -45,7 +45,7 @@ detoo doctor --fix
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 1 directory
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 3 decision records · 4 fixed ─╮
@@ -67,7 +67,7 @@ detoo doctor --fix
 │   docs/adr/ADR-0003-use-postgresql.md  1 link                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc, sty, plm or sop log found.
+– No rfc, ust, plm or sop log found.
 
  DOCTOR  ✓ Fixed 4 problems. All is well.  Made 7 changes.               EXIT 0 
 echo $?

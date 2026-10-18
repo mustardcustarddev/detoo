@@ -51,7 +51,7 @@ detoo doctor --fix
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   4 documents in 3 directories
 
 ╭─ ✓ adr  docs/adr ────────────────────────────── 1 decision record · 1 fixed ─╮
@@ -69,7 +69,7 @@ detoo doctor --fix
 │     → RFC-0001-adopt-a-single-detoo-command.md                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ✓ sty  docs/userstory ─────────────────────────── 2 user stories · 3 fixed ─╮
+╭─ ✓ ust  docs/userstory ─────────────────────────── 2 user stories · 3 fixed ─╮
 │ ✓ Moved from a former directory to docs/userstory                            │
 │   docs/sty  →  docs/userstory                                                │
 │ ✓ Renamed to begin with STORY-                                               │
@@ -133,7 +133,7 @@ Date: 1992-01-12
 Draft
 
 Updates [1. Describe work in user stories](STORY-0001-describe-work-in-user-stories.md)
-sty list
+ust list
 docs/userstory/STORY-0001-describe-work-in-user-stories.md
 docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md
 detoo doctor
@@ -142,13 +142,13 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   4 documents in 3 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ ✓  adr  docs/adr        1 decision record  ADR-0001                          │
 │ ✓  rfc  docs/rfc        1 RFC              RFC-0001                          │
-│ ✓  sty  docs/userstory  2 user stories     STORY-0001 … STORY-0002           │
+│ ✓  ust  docs/userstory  2 user stories     STORY-0001 … STORY-0002           │
 │ –  plm  docs/problem    no log                                               │
 │ –  sop  docs/sop        no log                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯

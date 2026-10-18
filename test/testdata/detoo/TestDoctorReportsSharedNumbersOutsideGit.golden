@@ -5,10 +5,10 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 1 directory
 
-╭─ ! sty  docs/userstory   BY HAND  ───────────── 3 user stories · 2 problems ─╮
+╭─ ! ust  docs/userstory   BY HAND  ───────────── 3 user stories · 2 problems ─╮
 │ ✗ File names do not begin with STORY-                                        │
 │   STOY-0002-fix-documents-in-the-wrong-place.md                              │
 │     → STORY-0002-fix-documents-in-the-wrong-place.md                         │
@@ -37,10 +37,10 @@ detoo doctor --fix --renumber
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 1 directory
 
-╭─ ! sty  docs/userstory   BY HAND  ──── 3 user stories · 1 fixed · 1 problem ─╮
+╭─ ! ust  docs/userstory   BY HAND  ──── 3 user stories · 1 fixed · 1 problem ─╮
 │ ✓ Renamed to begin with STORY-                                               │
 │   STOY-0002-fix-documents-in-the-wrong-place.md                              │
 │     → STORY-0002-fix-documents-in-the-wrong-place.md                         │

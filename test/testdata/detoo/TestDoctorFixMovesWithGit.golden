@@ -7,7 +7,7 @@ detoo doctor --fix --git
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 2 decision records · 3 fixed ─╮
@@ -21,7 +21,7 @@ detoo doctor --fix --git
 │     → ADR-0002-use-markdown-for-documents.md                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-╭─ ✓ sty  docs/userstory ───────────────────────────── 1 user story · 1 fixed ─╮
+╭─ ✓ ust  docs/userstory ───────────────────────────── 1 user story · 1 fixed ─╮
 │ ✓ Renamed to begin with STORY-                                               │
 │   story-0001-describe-work-in-user-stories.md                                │
 │     → STORY-0001-describe-work-in-user-stories.md                            │

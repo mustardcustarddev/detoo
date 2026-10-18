@@ -38,7 +38,7 @@ GitHub draws a Mermaid diagram in Markdown inside a `mermaid` code block. To
 make an image, use the [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli):
 
 ```bash
-sty graph | mmdc --input - --output docs/userstory/graph.svg
+ust graph | mmdc --input - --output docs/userstory/graph.svg
 ```
 
 Or draw it with [Graphviz](https://graphviz.org/):

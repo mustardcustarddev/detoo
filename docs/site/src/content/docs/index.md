@@ -13,7 +13,7 @@ Markdown files in your repository, next to the code it is about.
 | --- | --- | --- |
 | [`adr`](adr/) | Architecture decision records: decisions, and why they were made. | `docs/adr` |
 | [`rfc`](rfc/) | Requests for comments: proposed changes, written down for comment before they are made. | `docs/rfc` |
-| [`sty`](sty/) | User stories: who wants something of the software, what, and why, with the acceptance criteria that say when it is done. | `docs/userstory` |
+| [`ust`](ust/) | User stories: who wants something of the software, what, and why, with the acceptance criteria that say when it is done. | `docs/userstory` |
 | [`plm`](plm/) | Problem playbooks, each a plan, by the PIOSEE method, for responding to a problem such as an incident, before it arises. | `docs/problem` |
 | [`sop`](sop/) | Standard operating procedures: the steps of a routine task, such as rolling back a release, which playbooks refer to. | `docs/sop` |
 

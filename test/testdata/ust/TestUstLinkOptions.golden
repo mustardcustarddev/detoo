@@ -1,13 +1,13 @@
-sty new "First Story"
+ust new "First Story"
 docs/userstory/STORY-0001-first-story.md
-sty new "Second Story"
+ust new "Second Story"
 docs/userstory/STORY-0002-second-story.md
-sty link 2 1
-sty: give either --replace or --update
-sty link -o 2 1
-sty: unknown shorthand flag: 'o' in -o
-sty new --supersede 1 "Third Story"
-sty: unknown flag: --supersede
+ust link 2 1
+ust: give either --replace or --update
+ust link -o 2 1
+ust: unknown shorthand flag: 'o' in -o
+ust new --supersede 1 "Third Story"
+ust: unknown flag: --supersede
 ls docs/userstory
 STORY-0001-first-story.md
 STORY-0002-second-story.md

@@ -13,7 +13,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
 	"github.com/mustardcustard/detoo/internal/sop"
-	"github.com/mustardcustard/detoo/internal/sty"
+	"github.com/mustardcustard/detoo/internal/ust"
 )
 
 // fakeHistory is a git repository's history: the day of 1992 each file was
@@ -30,7 +30,7 @@ func (h fakeHistory) Added(_ context.Context, name string) (time.Time, bool, err
 	return time.Date(1992, 1, day, 0, 0, 0, 0, time.UTC), true, nil
 }
 
-var allKinds = []record.Kind{adr.Kind, rfc.Kind, sty.Kind, plm.Kind, sop.Kind}
+var allKinds = []record.Kind{adr.Kind, rfc.Kind, ust.Kind, plm.Kind, sop.Kind}
 
 func checkAll(t *testing.T, kind record.Kind, project fakeProject, history History) Log {
 	t.Helper()
@@ -50,7 +50,7 @@ func checkAll(t *testing.T, kind record.Kind, project fakeProject, history Histo
 // A slip of a log's prefix is renamed to the prefix.  Another kind's prefix
 // is not a slip, nor is a prefix far from any.
 func TestASlipOfThePrefixIsMisnamed(t *testing.T) {
-	log := checkAll(t, sty.Kind, fakeProject{dirs: map[string][]string{
+	log := checkAll(t, ust.Kind, fakeProject{dirs: map[string][]string{
 		"docs/userstory": {"STORY-0001-first.md", "STOY-0002-second.md", "Stories-0003-third.md", "RFC-0001-elsewhere.md", "TICKET-0004-fourth.md"},
 	}}, nil)
 	want := []Rename{{Dir: "docs/userstory", From: "STOY-0002-second.md", To: "STORY-0002-second.md"}}
@@ -77,7 +77,7 @@ func TestASlipOfThePrefixIsMisnamed(t *testing.T) {
 // by name is shown with a number after the last, and a slip of the prefix
 // counts by the name it is renamed to.
 func TestASharedNumberWithoutHistoryNeedsFixingByHand(t *testing.T) {
-	log := checkAll(t, sty.Kind, fakeProject{dirs: map[string][]string{
+	log := checkAll(t, ust.Kind, fakeProject{dirs: map[string][]string{
 		"docs/userstory": {"STORY-0001-first.md", "STORY-0002-second.md", "STOY-0002-another.md", "STORY-0003-third.md"},
 	}}, nil)
 	wantDuplicates := []Duplicate{{
@@ -134,7 +134,7 @@ func TestASharedNumberIsPlacedByHistory(t *testing.T) {
 // A document git has not committed came last, so it takes the number after
 // the last, and nothing else moves.
 func TestAnUncommittedDocumentSharingANumberGoesLast(t *testing.T) {
-	log := checkAll(t, sty.Kind, fakeProject{dirs: map[string][]string{
+	log := checkAll(t, ust.Kind, fakeProject{dirs: map[string][]string{
 		"docs/userstory": {"STORY-0001-first.md", "STORY-0002-second.md", "STOY-0001-new.md"},
 	}}, fakeHistory{
 		"docs/userstory/STORY-0001-first.md":  1,

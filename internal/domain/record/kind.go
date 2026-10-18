@@ -15,6 +15,10 @@ type Kind struct {
 	// variables, the .NAME-dir marker file, and the nodes of a graph.
 	Name string
 
+	// FormerNames are the names the tool had before Name: "sty", for ust.  A
+	// tool no longer reads a marker file named after one, such as .sty-dir.
+	FormerNames []string
+
 	// Dir names the directory, under docs, that a project keeps its log in
 	// unless it chooses another: "adr", for docs/adr.  It need not be the
 	// tool's name.
@@ -81,6 +85,23 @@ func (k Kind) WordsFor(r Relation) Words {
 	}
 	return k.Updates
 }
+
+// Marker names the file, in a project's root, that records where the project
+// keeps a log of the kind when it keeps it somewhere other than docs/<Dir>:
+// .adr-dir, for adr.
+func (k Kind) Marker() string { return marker(k.Name) }
+
+// FormerMarkers name the marker files the tool read under each of its
+// FormerNames: .sty-dir, for ust.
+func (k Kind) FormerMarkers() []string {
+	markers := make([]string, len(k.FormerNames))
+	for i, name := range k.FormerNames {
+		markers[i] = marker(name)
+	}
+	return markers
+}
+
+func marker(name string) string { return "." + name + "-dir" }
 
 // Variable returns the name of the environment variable that configures a
 // setting of the tool: ADR_DATE, for adr's DATE.

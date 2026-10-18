@@ -58,12 +58,12 @@ more.
 
 ```bash
 rfc init && rfc new "Adopt Connect for internal services"
-sty init && sty new "Reorder a previous purchase"
+ust init && ust new "Reorder a previous purchase"
 plm init && plm new "Customer charged twice"
 sop init && sop new "Roll back a release"
 ```
 
-`rfc new --obsolete`, `sty new --replace`, `plm new --replace` and
+`rfc new --obsolete`, `ust new --replace`, `plm new --replace` and
 `sop new --supersede` replace an earlier document, as `adr new --supersede`
 does.
 

@@ -18,7 +18,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   5 documents in 2 directories
 
 ╭─ ! adr  docs/adr   BY HAND  ─────────────── 3 decision records · 2 problems ─╮
@@ -39,7 +39,7 @@ detoo doctor
 │   to it, whichever is wrong.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc, sty or plm log found.
+– No rfc, ust or plm log found.
 
  DOCTOR  ✗ 3 problems in 2 logs  ! 3 need fixing by hand                 EXIT 1 
 echo $?

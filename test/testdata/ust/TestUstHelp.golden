@@ -1,14 +1,14 @@
-sty help
+ust help
 Command-line tools for working with a log of user stories.
 
 User stories are stored as Markdown files in a subdirectory of the project, by
 default `docs/userstory`.  Each story's file name begins with `STORY-` and its
-number, such as `STORY-0001-describe-work-in-user-stories.md`.  Run "sty init"
-to start a log, and "sty new" to add to it.
+number, such as `STORY-0001-describe-work-in-user-stories.md`.  Run "ust init"
+to start a log, and "ust new" to add to it.
 
 Usage:
-  sty [flags]
-  sty [command]
+  ust [flags]
+  ust [command]
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
@@ -21,10 +21,10 @@ Available Commands:
   new         Create the next numbered user story
 
 Flags:
-  -h, --help   help for sty
+  -h, --help   help for ust
 
-Use "sty [command] --help" for more information about a command.
-sty help new
+Use "ust [command] --help" for more information about a command.
+ust help new
 Creates a new, numbered user story, in draft.  The title is a single argument,
 so it must be quoted if it contains spaces.  The story is opened for editing in
 the editor specified by the VISUAL or EDITOR environment variable (VISUAL is
@@ -43,24 +43,24 @@ can replace or update multiple existing stories.  A replaced story loses its
 Draft status; an updated one keeps its status.
 
 Usage:
-  sty new TITLE [flags]
+  ust new TITLE [flags]
 
 Examples:
   # Create a new story with the title "Export invoices for a month":
-  sty new "Export invoices for a month"
+  ust new "Export invoices for a month"
 
   # Split story 4 in two, replacing it with two smaller stories:
-  sty new -r 4 "Reorder a previous purchase"
-  sty new -r 4 "Adjust quantities when reordering"
+  ust new -r 4 "Reorder a previous purchase"
+  ust new -r 4 "Adjust quantities when reordering"
 
   # Create a new story that updates story 7:
-  sty new -u 7 "Warn of clashing sessions"
+  ust new -u 7 "Warn of clashing sessions"
 
 Flags:
   -h, --help                help for new
   -r, --replace REFERENCE   a REFERENCE (number or partial filename) to a record this one replaces
   -u, --update REFERENCE    a REFERENCE (number or partial filename) to a record this one updates
-sty help link
+ust help link
 Records, in both stories, that SOURCE replaces or updates TARGET.
 
 SOURCE and TARGET are both a reference (number or partial filename) to a user
@@ -74,19 +74,19 @@ With --update, SOURCE makes substantive changes to TARGET, which is marked
 "Updated by" SOURCE and keeps its status.
 
 Usage:
-  sty link (--replace | --update) SOURCE TARGET [flags]
+  ust link (--replace | --update) SOURCE TARGET [flags]
 
 Examples:
   # Record that story 3 updates story 2:
-  sty link --update 3 2
+  ust link --update 3 2
 
   # Record that stories 11 and 12 replace story 10, which was split:
-  sty link -r 11 10
-  sty link -r 12 10
+  ust link -r 11 10
+  ust link -r 12 10
 
 Flags:
   -h, --help      help for link
   -r, --replace   SOURCE replaces TARGET, which loses its Draft status
   -u, --update    SOURCE makes substantive changes to TARGET
-sty nonsense
-sty: unknown command "nonsense" for "sty"
+ust nonsense
+ust: unknown command "nonsense" for "ust"

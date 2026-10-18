@@ -2,7 +2,7 @@
 //
 // Every record tool is the same program given a different definition, so the
 // program is written once, here, and each package main is a single call: see
-// cmd/adr, cmd/rfc and cmd/sty.  Nothing below this package calls os.Exit, and
+// cmd/adr, cmd/rfc and cmd/ust.  Nothing below this package calls os.Exit, and
 // nothing below it chooses an adapter.
 package tool
 

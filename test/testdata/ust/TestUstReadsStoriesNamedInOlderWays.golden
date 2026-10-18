@@ -21,9 +21,9 @@ Draft
 
 Story.
 EOF
-sty new --replace 1 "Reorder a previous purchase"
+ust new --replace 1 "Reorder a previous purchase"
 docs/userstory/STORY-0003-reorder-a-previous-purchase.md
-sty list
+ust list
 docs/userstory/story-0001-reorder.md
 docs/userstory/0002-save-sessions.md
 docs/userstory/STORY-0003-reorder-a-previous-purchase.md

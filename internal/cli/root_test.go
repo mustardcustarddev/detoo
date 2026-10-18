@@ -12,7 +12,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/domain/record"
 	"github.com/mustardcustard/detoo/internal/features/reports/graph"
 	"github.com/mustardcustard/detoo/internal/rfc"
-	"github.com/mustardcustard/detoo/internal/sty"
+	"github.com/mustardcustard/detoo/internal/ust"
 )
 
 // These tests cover what belongs to the CLI: that the tree is assembled, that
@@ -28,7 +28,7 @@ func testRoots(t *testing.T) []*cobra.Command {
 	return []*cobra.Command{
 		NewRootCommand(adr.Kind, adr.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewRootCommand(rfc.Kind, rfc.Files, &app.Application{}, io.Discard, io.Discard, getenv),
-		NewRootCommand(sty.Kind, sty.Files, &app.Application{}, io.Discard, io.Discard, getenv),
+		NewRootCommand(ust.Kind, ust.Files, &app.Application{}, io.Discard, io.Discard, getenv),
 		NewDetooCommand(detoo.Files, &app.Detoo{}, nil, nil, io.Discard, io.Discard, getenv),
 	}
 }
@@ -144,8 +144,8 @@ func TestRelationFlagNeedsExactlyOneSwitch(t *testing.T) {
 		{"both", adr.Kind, true, true, 0, "give either --supersede or --update"},
 		{"obsolete", rfc.Kind, true, false, record.Replaces, ""},
 		{"neither, for an RFC", rfc.Kind, false, false, 0, "give either --obsolete or --update"},
-		{"replace", sty.Kind, true, false, record.Replaces, ""},
-		{"neither, for a user story", sty.Kind, false, false, 0, "give either --replace or --update"},
+		{"replace", ust.Kind, true, false, record.Replaces, ""},
+		{"neither, for a user story", ust.Kind, false, false, 0, "give either --replace or --update"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			got, err := relationFlag(test.kind, test.replace, test.update)

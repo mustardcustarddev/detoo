@@ -1,5 +1,5 @@
   # Publish a table of contents beside the stories:
-  sty list --toc > docs/userstory/README.md
+  ust list --toc > docs/userstory/README.md
 
   # Publish one elsewhere, with an introduction, linking back to the stories:
-  sty list --toc -i intro.md -p ../docs/userstory/ > site/stories.md
+  ust list --toc -i intro.md -p ../docs/userstory/ > site/stories.md

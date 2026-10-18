@@ -46,7 +46,7 @@ func TestTheKindNamesTheLogsFiles(t *testing.T) {
 // A kind whose records are prefixed sees the files named in any of its ways,
 // in order of their numbers, and none that carry another prefix.
 func TestAPrefixedKindSeesOnlyItsOwnRecords(t *testing.T) {
-	s := New(t.TempDir(), record.Kind{Name: "sty", Dir: "userstory", Prefix: "STORY", Noun: "user story"})
+	s := New(t.TempDir(), record.Kind{Name: "ust", Dir: "userstory", Prefix: "STORY", Noun: "user story"})
 	writeRecord(t, s, "docs/userstory/story-0001-first.md", "# 1. First\n")
 	writeRecord(t, s, "docs/userstory/STORY-0002-second.md", "# 2. Second\n")
 	writeRecord(t, s, "docs/userstory/0003-unprefixed.md", "# 3. Unprefixed\n")

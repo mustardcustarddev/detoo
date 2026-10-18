@@ -24,7 +24,7 @@ Then install detoo from it:
 brew install detoo
 ```
 
-This installs `adr`, `rfc`, `sty`, `plm`, `sop` and `detoo`, ready built, so
+This installs `adr`, `rfc`, `ust`, `plm`, `sop` and `detoo`, ready built, so
 it needs no Go. `brew upgrade` installs each new release.
 
 ## Build from source
@@ -39,7 +39,7 @@ make deploy                 # install into /usr/local
 ```
 
 `make deploy` builds first, so it is enough on its own. It installs `adr`,
-`rfc`, `sty`, `plm`, `sop` and `detoo` into `/usr/local/bin`. To install somewhere
+`rfc`, `ust`, `plm`, `sop` and `detoo` into `/usr/local/bin`. To install somewhere
 else, such as your home directory, set `PREFIX`:
 
 ```bash

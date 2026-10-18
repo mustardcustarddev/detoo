@@ -42,6 +42,16 @@ func TestVariableIsNamedAfterTheTool(t *testing.T) {
 	}
 }
 
+func TestMarkersAreNamedAfterTheTool(t *testing.T) {
+	kind := Kind{Name: "ust", FormerNames: []string{"sty"}}
+	if got, want := kind.Marker(), ".ust-dir"; got != want {
+		t.Errorf("Marker() = %q, want %q", got, want)
+	}
+	if got, want := kind.FormerMarkers(), []string{".sty-dir"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("FormerMarkers() = %q, want %q", got, want)
+	}
+}
+
 func TestSlug(t *testing.T) {
 	for _, test := range []struct {
 		title string
@@ -65,7 +75,7 @@ func TestSlug(t *testing.T) {
 // and may have begun them with another prefix before.
 var (
 	unprefixed = Kind{Name: "adr"}
-	prefixed   = Kind{Name: "sty", Prefix: "STORY"}
+	prefixed   = Kind{Name: "ust", Prefix: "STORY"}
 	renamed    = Kind{Name: "plm", Prefix: "PROBLEM", FormerPrefixes: []string{"PIOSEE"}}
 )
 

@@ -13,13 +13,13 @@ func TestDoctorFindsNothingWrong(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	w.adr("init")
 	w.adr("new", "Use PostgreSQL for persistence")
-	w.sty("init")
+	w.ust("init")
 	w.detoo("doctor")
 	w.check()
 }
 
 // The logs of the design: decision records named before their prefix, RFCs
-// under doc/, stories split between the directory sty used to look in and
+// under doc/, stories split between the directory ust used to look in and
 // the one it looks in now, playbooks where pse kept them, and SOPs in their
 // place.
 func TestDoctorReportsLogsInTheWrongPlace(t *testing.T) {
@@ -40,11 +40,13 @@ func TestDoctorReportsLogsInTheWrongPlace(t *testing.T) {
 	w.check()
 }
 
-// A marker file naming a former directory, and two directories that would
-// move to the same place, need fixing by hand.  A log moved alone does not.
+// A marker file naming a former directory, a marker file under a former name
+// beside the current one, and two directories that would move to the same
+// place, need fixing by hand.  A log moved alone does not.
 func TestDoctorReportsClashesAsNeedingFixingByHand(t *testing.T) {
 	w := newWorkspace(t, "detoo")
-	w.write(".sty-dir", "docs/sty\n")
+	w.write(".ust-dir", "docs/sty\n")
+	w.write(".sty-dir", "docs/stories\n")
 	w.touch(
 		"docs/sty/STORY-0001-first.md",
 		"doc/userstory/STORY-0002-second.md",
@@ -79,7 +81,7 @@ func TestDoctorReportsTitlesThatDoNotMatchFileNames(t *testing.T) {
 	w.check()
 }
 
-// A fix moves RFCs from doc/ to docs/, and stories from the directory sty
+// A fix moves RFCs from doc/ to docs/, and stories from the directory ust
 // used to look in, renames every document to begin with its prefix, and
 // changes the links to them, so that the tools find them again and doctor
 // finds nothing wrong.
@@ -102,7 +104,7 @@ func TestDoctorFixMovesAndRenamesLogs(t *testing.T) {
 	w.cat("docs/adr/ADR-0001-record-architecture-decisions.md")
 	w.cat("docs/rfc/RFC-0001-adopt-a-single-detoo-command.md")
 	w.cat("docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md")
-	w.sty("list")
+	w.ust("list")
 	w.detoo("doctor")
 	w.check()
 }
@@ -129,11 +131,28 @@ func TestDoctorFixMigratesFromPse(t *testing.T) {
 	w.check()
 }
 
+// A project that kept its stories elsewhere named the directory in .sty-dir,
+// which sty read and ust, the tool that replaces it, does not.  A fix renames
+// the marker file to .ust-dir, so that ust finds the stories again.
+func TestDoctorFixMigratesFromSty(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.write(".sty-dir", "stories\n")
+	w.write("stories/STORY-0001-describe-work-in-user-stories.md",
+		"# 1. Describe work in user stories\n\nDate: 2026-10-18\n\n## Status\n\nDraft\n")
+	w.ust("config")
+	w.detoo("doctor")
+	w.detoo("doctor", "--fix")
+	w.cat(".ust-dir")
+	w.ust("config")
+	w.ust("list")
+	w.check()
+}
+
 // A fix leaves the clashes as they are, fixes what it can around them, and
 // exits 1, since problems remain.
 func TestDoctorFixLeavesClashesAlone(t *testing.T) {
 	w := newWorkspace(t, "detoo")
-	w.write(".sty-dir", "docs/sty\n")
+	w.write(".ust-dir", "docs/sty\n")
 	w.touch(
 		"docs/sty/STORY-0001-first.md",
 		"doc/userstory/STORY-0002-second.md",

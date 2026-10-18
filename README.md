@@ -12,7 +12,7 @@ Command-line tools and agentic skills for working with decision records:
   were made.
 * `rfc` keeps requests for comments: proposed changes, written down for
   comment before they are made.
-* `sty` keeps [user stories][stories]: who wants something of the software,
+* `ust` keeps [user stories][stories]: who wants something of the software,
   what, and why, with the acceptance criteria that say when it is done.
 * `plm` keeps problem playbooks, each a plan, made in advance, for responding
   to a problem such as an incident. It follows the [PIOSEE][piosee] method:
@@ -32,7 +32,7 @@ brew tap mustardcustarddev/tap
 brew install detoo
 ```
 
-This installs `adr`, `rfc`, `sty`, `plm`, `sop` and `detoo`, with shell
+This installs `adr`, `rfc`, `ust`, `plm`, `sop` and `detoo`, with shell
 completion for bash, zsh and fish. On other machines, build them from source,
 as [For developers](#for-developers) describes.
 
@@ -63,7 +63,7 @@ in both:
 ```bash
 adr new --supersede 9 "Use Rust for performance-critical functionality"
 rfc new --obsolete 4 "Adopt Connect for internal services"
-sty new --replace 12 "Reorder a previous purchase"
+ust new --replace 12 "Reorder a previous purchase"
 plm new --replace 4 "Customer cannot cancel a subscription"
 sop new --supersede 3 "Roll back a release"
 ```
@@ -73,10 +73,10 @@ or Graphviz:
 
 ```bash
 adr list --toc > docs/adr/README.md
-sty graph | mmdc --input - --output docs/userstory/graph.svg
+ust graph | mmdc --input - --output docs/userstory/graph.svg
 ```
 
-Run `adr help`, or `sty help new`, for each tool's commands and options, or
+Run `adr help`, or `ust help new`, for each tool's commands and options, or
 read them all on the [documentation site](https://mustardcustarddev.github.io/detoo/).
 
 ## Agent skills

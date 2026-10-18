@@ -25,7 +25,7 @@ they cannot find, and fill in your project's template.
 | [find-missing-adrs](find-missing-adrs/) | Reads the whole codebase once, and proposes records for the architectural decisions in the code that the log does not record. | `adr` |
 | [check-adrs](check-adrs/) | Checks that the code follows one record, or every record in force, and suggests fixes where it does not. | `adr` |
 | [create-rfc](create-rfc/) | Drafts an RFC from a one-line request, reading the code for the facts, and asking you what you intend and why. | `rfc` |
-| [create-user-story](create-user-story/) | Writes a user story from a one-line subject, asking who it is for, what they need, why, and how you will know it is done. | `sty` |
+| [create-user-story](create-user-story/) | Writes a user story from a one-line subject, asking who it is for, what they need, why, and how you will know it is done. | `ust` |
 | [create-playbook](create-playbook/) | Writes a problem playbook, by the PIOSEE method: a plan, made in advance, for responding to a problem such as an incident, with the immediate action to take, and referring to SOPs for the routine steps. | `plm`, `sop` |
 | [create-sop](create-sop/) | Writes a standard operating procedure, the steps of a routine task, from the scripts, the configuration and the tools' documentation, with few questions. | `sop` |
 

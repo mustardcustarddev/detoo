@@ -1,16 +1,16 @@
 ---
 title: create-user-story
-description: Write a user story with sty from a one-line subject, asking who it is for, what they need, why, and how you will know it is done.
+description: Write a user story with ust from a one-line subject, asking who it is for, what they need, why, and how you will know it is done.
 section: skills
 order: 8
 ---
 
-`create-user-story` writes user stories with [`sty`](../../sty/). It turns a
+`create-user-story` writes user stories with [`ust`](../../ust/). It turns a
 short subject into a draft story with acceptance criteria, by reading the
 project's story template afresh, gathering facts from the code, and
 interviewing you for who the story is for, what they need and why.
 
-**Needs:** `sty` on the `PATH`.
+**Needs:** `ust` on the `PATH`.
 
 ## Ask for it
 
@@ -26,7 +26,7 @@ interviewing you for who the story is for, what they need and why.
 3. Gathers the facts from the code.
 4. Interviews you for who wants it, what, why, and how you will know it is
    done.
-5. Shows you a draft for approval, then creates it with `sty new`.
+5. Shows you a draft for approval, then creates it with `ust new`.
 
 ## What you get
 

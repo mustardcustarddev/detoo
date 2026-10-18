@@ -22,7 +22,7 @@ detoo doctor --fix
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   4 documents in 1 directory
 
 ╭─ ✗ adr  docs/adr ─────────────────────────── 4 decision records · 1 problem ─╮
@@ -36,7 +36,7 @@ detoo doctor --fix
 │   Markdown are updated, but other references to it could be affected.        │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc, sty, plm or sop log found.
+– No rfc, ust, plm or sop log found.
 
 → Run detoo doctor --fix --renumber to renumber the documents that share a number.
 
@@ -49,7 +49,7 @@ detoo doctor --fix --renumber --git
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   4 documents in 1 directory
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 4 decision records · 1 fixed ─╮
@@ -68,7 +68,7 @@ detoo doctor --fix --renumber --git
 │   docs/adr/ADR-0004-use-sqlite-for-tests.md  title                           │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No rfc, sty, plm or sop log found.
+– No rfc, ust, plm or sop log found.
 
 ✓ Used git mv, so git records the moves and renames. Review with git status.
 

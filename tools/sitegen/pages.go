@@ -26,7 +26,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
 	"github.com/mustardcustard/detoo/internal/sop"
-	"github.com/mustardcustard/detoo/internal/sty"
+	"github.com/mustardcustard/detoo/internal/ust"
 )
 
 // Page is one page of the site's command reference: what a tool, or one of
@@ -81,7 +81,7 @@ func tools() []tool {
 	return []tool{
 		recordTool(adr.Kind, adr.Files),
 		recordTool(rfc.Kind, rfc.Files),
-		recordTool(sty.Kind, sty.Files),
+		recordTool(ust.Kind, ust.Files),
 		recordTool(plm.Kind, plm.Files),
 		recordTool(sop.Kind, sop.Files),
 		doctor,

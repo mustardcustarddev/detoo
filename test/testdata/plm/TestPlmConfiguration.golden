@@ -19,16 +19,16 @@ STATUS
 
 ## Problem
 EOF
-STY_TEMPLATE=custom.md
-STY_DATE=2000-01-01
-plm new "Ignores the sty settings"
-decisions/PROBLEM-0002-ignores-the-sty-settings.md
+UST_TEMPLATE=custom.md
+UST_DATE=2000-01-01
+plm new "Ignores the ust settings"
+decisions/PROBLEM-0002-ignores-the-ust-settings.md
 PLM_TEMPLATE=custom.md
 PLM_DATE=2026-10-16
 plm new "Uses the plm settings"
 decisions/PROBLEM-0003-uses-the-plm-settings.md
-cat decisions/PROBLEM-0002-ignores-the-sty-settings.md
-# 2. Ignores the sty settings
+cat decisions/PROBLEM-0002-ignores-the-ust-settings.md
+# 2. Ignores the ust settings
 
 Date: 1992-01-12
 

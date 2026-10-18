@@ -1,4 +1,4 @@
-Looks after a project's logs as a whole: the logs that adr, rfc, sty, plm and
+Looks after a project's logs as a whole: the logs that adr, rfc, ust, plm and
 sop keep.
 
 Run "detoo doctor" to check that each log is where its tool looks for it, and

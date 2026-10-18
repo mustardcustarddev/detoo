@@ -2,15 +2,16 @@
 // them, and named as the tools name them today, and fixes them.
 //
 // Handler reports and changes nothing.  A log the tools have lost after a
-// rename, such as user stories left in docs/sty, is found here, and so is a
-// document named before its log's prefix was upper case, or with a slip of
-// it, two documents that share a number, and a document whose title does not
-// match its file name.  When moving or renaming would
+// rename, such as user stories left in docs/sty, or named by a marker file
+// that sty read and ust does not, is found here, and so is a document named
+// before its log's prefix was upper case, or with a slip of it, two documents
+// that share a number, and a document whose title does not match its file
+// name.  When moving or renaming would
 // clash with something already there, the problem is reported as needing
 // fixing by hand, and so are documents that share a number when there is no
 // git history to say which came first, and every title that does not match.
 //
-// Fixer moves and renames what Handler finds, renumbers the documents that
+// Fixer moves and renames what Handler finds, marker files among them, renumbers the documents that
 // share a number when asked to, and updates the links to what it moved,
 // leaving the clashes alone.
 package doctor
@@ -33,9 +34,9 @@ type Project interface {
 	// Root returns the project's directory.
 	Root(ctx context.Context) (string, error)
 
-	// Marker returns the directory that kind's marker file, such as
-	// .adr-dir, names, and whether the project has one.
-	Marker(ctx context.Context, kind record.Kind) (string, bool, error)
+	// Marker returns the directory that the marker file of that name, such
+	// as .adr-dir, names, and whether the project has one.
+	Marker(ctx context.Context, name string) (string, bool, error)
 
 	// Files returns the names of the files in dir, and whether dir exists.
 	Files(ctx context.Context, dir string) ([]string, bool, error)
@@ -82,8 +83,13 @@ type Log struct {
 	Dir string
 
 	// Marker is the name of the marker file that names Dir, such as
-	// .sty-dir, or empty when there is none.
+	// .ust-dir, or empty when there is none.  It is a former marker, such as
+	// .sty-dir, when the project has only that.
 	Marker string
+
+	// FormerMarkers are the marker files named after a former name of the
+	// tool, which it no longer reads.
+	FormerMarkers []MarkerRename
 
 	// Dirs are the directories that hold the log's documents, Dir first if it
 	// exists, then each in Misplaced.
@@ -172,6 +178,14 @@ type Move struct {
 	ClashWith string
 }
 
+// MarkerRename is a marker file named after a former name of its tool, such
+// as .sty-dir, the name it should have, such as .ust-dir, and the directory it
+// names.  Clash reports that a marker file of that name is there already.
+type MarkerRename struct {
+	From, To, Dir string
+	Clash         bool
+}
+
 // Rename is a document not named with its log's prefix, and the name it
 // should have.  Clash reports that a document of that name is there already,
 // or that another would be renamed to it too: ClashWith names that document.
@@ -239,19 +253,25 @@ type Mistitle struct {
 	Words bool
 }
 
-// Found reports whether the project keeps the log anywhere.
-func (l Log) Found() bool { return len(l.Dirs) > 0 }
+// Found reports whether the project keeps the log anywhere, or has a marker
+// file for it under a former name.
+func (l Log) Found() bool { return len(l.Dirs) > 0 || len(l.FormerMarkers) > 0 }
 
-// Problems counts what is wrong with the log: each misplaced directory, each
-// misnamed document, each number that documents share, and each mistitled
-// document.
+// Problems counts what is wrong with the log: each former marker file, each
+// misplaced directory, each misnamed document, each number that documents
+// share, and each mistitled document.
 func (l Log) Problems() int {
-	return len(l.Misplaced) + len(l.Misnamed) + len(l.Duplicates) + len(l.Mistitled)
+	return len(l.FormerMarkers) + len(l.Misplaced) + len(l.Misnamed) + len(l.Duplicates) + len(l.Mistitled)
 }
 
 // ByHand counts the problems that need fixing by hand.
 func (l Log) ByHand() int {
 	n := 0
+	for _, m := range l.FormerMarkers {
+		if m.Clash {
+			n++
+		}
+	}
 	for _, m := range l.Misplaced {
 		if m.Clash != NoClash {
 			n++
@@ -420,13 +440,32 @@ func (h Handler) history(ctx context.Context) (History, error) {
 func (h Handler) check(ctx context.Context, kind record.Kind, history History) (Log, error) {
 	standard := path.Join("docs", kind.Dir)
 	log := Log{Kind: kind, Dir: standard}
-	named, ok, err := h.Project.Marker(ctx, kind)
+	named, ok, err := h.Project.Marker(ctx, kind.Marker())
 	if err != nil {
 		return Log{}, err
 	}
 	if ok {
 		log.Dir = path.Clean(named)
-		log.Marker = "." + kind.Name + "-dir"
+		log.Marker = kind.Marker()
+	}
+
+	// A marker file named after a former name of the tool is to be renamed,
+	// and names where the log is kept, unless the tool's own is there too.
+	for _, former := range kind.FormerMarkers() {
+		named, ok, err := h.Project.Marker(ctx, former)
+		if err != nil {
+			return Log{}, err
+		}
+		if !ok {
+			continue
+		}
+		rename := MarkerRename{From: former, To: kind.Marker(), Dir: path.Clean(named)}
+		if log.Marker == "" {
+			log.Dir, log.Marker = rename.Dir, former
+		} else {
+			rename.Clash = true
+		}
+		log.FormerMarkers = append(log.FormerMarkers, rename)
 	}
 
 	// Where the documents belong.  A marker file that names one of the wrong

@@ -39,7 +39,7 @@ func New(workdir string, kind record.Kind) *Store {
 // .adr-dir for adr's.  Each tool has its own, so that one project can keep the
 // logs of several.
 func (s *Store) markerFile() string {
-	return "." + s.kind.Name + "-dir"
+	return s.kind.Marker()
 }
 
 // defaultDir is the directory a project without a marker file keeps its log in:

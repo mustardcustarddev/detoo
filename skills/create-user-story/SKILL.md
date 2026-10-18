@@ -1,8 +1,8 @@
 ---
 name: create-user-story
-description: Writes user stories with the sty command-line tool. Turns a short subject, such as "write a user story for exporting invoices", into a draft story with acceptance criteria, by reading the project's story template afresh, gathering facts from the code, and interviewing the user for who the story is for, what they need and why, rather than guessing. Every story it creates has the status Draft. Use when the user asks to write, draft, create or add a user story, a backlog item or acceptance criteria, to split an epic or a large story into smaller ones, to replace or update an existing story, or to start a story log with sty init.
+description: Writes user stories with the ust command-line tool. Turns a short subject, such as "write a user story for exporting invoices", into a draft story with acceptance criteria, by reading the project's story template afresh, gathering facts from the code, and interviewing the user for who the story is for, what they need and why, rather than guessing. Every story it creates has the status Draft. Use when the user asks to write, draft, create or add a user story, a backlog item or acceptance criteria, to split an epic or a large story into smaller ones, to replace or update an existing story, or to start a story log with ust init.
 license: Apache-2.0
-compatibility: Requires the sty command-line tool on PATH.
+compatibility: Requires the ust command-line tool on PATH.
 ---
 
 # Create a user story
@@ -51,13 +51,13 @@ Before you start, read:
 ### 1. Find the log
 
 ```bash
-sty config        # sty_dir and sty_template
-sty list          # existing stories
+ust config        # ust_dir and ust_template
+ust list          # existing stories
 ```
 
-If there is no log yet (`sty list` fails with `the docs/userstory directory
+If there is no log yet (`ust list` fails with `the docs/userstory directory
 does not exist`, or names another missing directory), ask the user whether to
-start one, and where. `sty init [DIR]` creates the directory and writes story
+start one, and where. `ust init [DIR]` creates the directory and writes story
 1, which describes the practice of keeping stories.
 
 Read story 1, and any story or document that sets out the project's
@@ -68,9 +68,9 @@ them, or duplicate it.
 ### 2. Read the template, every time
 
 Read the template in use, afresh, for every story: the file named by
-`$STY_TEMPLATE` if it is set (`sty config` does not report it), otherwise the
-file in `sty_template` if it is set, otherwise the built-in one in
-[sty-tool.md](references/sty-tool.md#templates). Do not work from memory of
+`$UST_TEMPLATE` if it is set (`ust config` does not report it), otherwise the
+file in `ust_template` if it is set, otherwise the built-in one in
+[ust-tool.md](references/ust-tool.md#templates). Do not work from memory of
 the built-in template or of an earlier story; projects change their templates.
 
 List its sections, and the guidance under each. These are what the interview
@@ -166,13 +166,13 @@ list the sources: each claim, and where it came from. Ask the user to approve
 it or correct it. Revise until they approve. When there are several stories,
 draft them all, and get approval for the set.
 
-Do not create a file before approval: `sty new` takes the next number and,
+Do not create a file before approval: `ust new` takes the next number and,
 with `-r` or `-u`, changes other stories too.
 
 ### 8. Create the story
 
 ```bash
-VISUAL= EDITOR= sty new "Title of the story"
+VISUAL= EDITOR= ust new "Title of the story"
 ```
 
 Clearing `VISUAL` and `EDITOR` stops the tool waiting on an editor. It prints
@@ -182,9 +182,9 @@ If the story replaces or updates an existing one, tell the user that the tool
 records the link in **both** stories at once, and that with `-r` the old story
 loses its `Draft` line. Then:
 
-* **replace**: `VISUAL= EDITOR= sty new -r 4 "Title"`, for each story that
+* **replace**: `VISUAL= EDITOR= ust new -r 4 "Title"`, for each story that
   replaces story 4, such as each part of a split;
-* **update**: `VISUAL= EDITOR= sty new -u 4 "Title"`, for a story that
+* **update**: `VISUAL= EDITOR= ust new -u 4 "Title"`, for a story that
   changes what story 4 asked for.
 
 Then edit each new file in place:
@@ -196,7 +196,7 @@ Then edit each new file in place:
 * Replace the guidance text under each heading with the approved content,
   one section at a time.
 
-Never write link lines by hand. See [sty-tool.md](references/sty-tool.md) for
+Never write link lines by hand. See [ust-tool.md](references/ust-tool.md) for
 every command and its effects.
 
 ### 9. Finish
@@ -205,9 +205,9 @@ every command and its effects.
   [writing-user-stories.md](references/writing-user-stories.md#before-you-finish).
 * Check that the number in each title, `# N.`, is the number in its file
   name, `STORY-000N-...`. If they differ, put the tool's title line back.
-* Run `sty list` to confirm the stories are in the log.
+* Run `ust list` to confirm the stories are in the log.
 * If the project keeps a generated table of contents (look for one made by
-  `sty list --toc`, such as a `README.md` in the log directory), offer to
+  `ust list --toc`, such as a `README.md` in the log directory), offer to
   regenerate it.
 * Tell the user the paths, that the stories are drafts, any stories the tool
   changed, and the open questions left for refinement. Leave committing to
@@ -232,7 +232,7 @@ every command and its effects.
 * **The user wants many stories at once**, such as from an epic or a
   document. Interview once for what they share, then for each story what is
   its own. Keep a fact sheet per story.
-* **The `sty` command is missing.** Tell the user. Do not create stories by
+* **The `ust` command is missing.** Tell the user. Do not create stories by
   hand, since the numbering and links would not be maintained.
 * **The tool reports an error.** Show the user the message, which begins
-  `sty:`, rather than working around it.
+  `ust:`, rather than working around it.

@@ -19,6 +19,7 @@ import (
 // used and found wanting, replaces the one it rewrites.
 var Kind = record.Kind{
 	Name:           "plm",
+	FormerNames:    []string{"pse"},
 	Dir:            "problem",
 	Prefix:         "PROBLEM",
 	FormerPrefixes: []string{"PIOSEE"},

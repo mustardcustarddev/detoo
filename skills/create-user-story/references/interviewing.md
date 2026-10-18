@@ -114,7 +114,7 @@ For the built-in template. Adapt to the template in use, and to the subject.
 * Does it depend on anything: another story, a decision, a system, a person?
 * What is still open, that the team should settle in refinement?
 * Does it replace or change an existing story? (See
-  [sty-tool.md](sty-tool.md#links).)
+  [ust-tool.md](ust-tool.md#links).)
 
 ## Subject lenses
 
@@ -157,7 +157,7 @@ The user says: "Write a user story for exporting invoices."
 Read in proportion to the subject; here, the invoice feature and who can use
 it.
 
-* `sty config`, `sty list`, story 1 for the project's conventions, and any
+* `ust config`, `ust list`, story 1 for the project's conventions, and any
   story, RFC or ADR about invoices or exports.
 * Where invoices are shown and stored, and what fields they have.
 * Which roles can see invoices, and any existing exports elsewhere in the
