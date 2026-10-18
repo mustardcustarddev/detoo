@@ -1,0 +1,8 @@
+  # Update every skill installed in this project:
+  detoo skills update
+
+  # Update one skill:
+  detoo skills update create-adr
+
+  # Update the skills installed for your user:
+  detoo skills update --global

@@ -156,4 +156,5 @@ Each pair shows what to write instead, if the evidence supports it.
   left.
 * The status is `Draft`.
 * Links between records were made by the tool, not by hand.
+* The number in the title is the number in the file name.
 * The user has seen the draft with its sources, and approved it.

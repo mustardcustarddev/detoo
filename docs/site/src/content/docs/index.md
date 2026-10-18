@@ -19,7 +19,8 @@ Markdown files in your repository, next to the code it is about.
 
 A sixth tool, [`detoo`](detoo/), looks after the logs as a whole. `detoo
 doctor` checks that each log is where its tool looks for it, and that its
-documents are named and numbered as the tool expects.
+documents are named and numbered as the tool expects. `detoo skills`
+[installs the agent skills](skills/install/) that drive the tools.
 
 The five record tools work the same way. `init` starts a log, `new` adds the
 next numbered document from a template, `link` records that one document

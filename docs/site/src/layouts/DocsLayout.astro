@@ -31,10 +31,11 @@ const { title, description } = page.entry.data;
 const groups = await sidebar();
 
 // Where to change what the page says: a hand-written page is its Markdown; a
-// command's page is the tool's help, which the page is generated from.
+// command's page is the tool's help, which the page is generated from.  The
+// help of a command beneath another, such as "skills install", is skills-install.md.
 const source =
   page.entry.collection === 'reference'
-    ? `internal/${page.entry.data.tool}/help/${page.entry.data.command || 'root'}.md`
+    ? `internal/${page.entry.data.tool}/help/${page.entry.data.command.replaceAll(' ', '-') || 'root'}.md`
     : `docs/site/${page.entry.filePath}`;
 
 const crumbs = [{ label: 'Docs', href: url('docs/') }, ...(page.slug ? [{ label: page.group }, { label: title }] : [])];

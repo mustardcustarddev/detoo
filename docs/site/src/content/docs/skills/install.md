@@ -1,6 +1,6 @@
 ---
 title: Installing skills
-description: Install the detoo agent skills into a project, or for every project, with the skills CLI or by copying them.
+description: Install the detoo agent skills into a project, or for every project, with detoo skills, and keep them up to date.
 section: skills
 order: 2
 ---
@@ -12,18 +12,27 @@ Each skill drives `adr`, `rfc`, `ust`, `plm` or `sop`, which must be on the
 
 ## 2. Install the skills
 
-Install with the [skills](https://github.com/vercel-labs/skills) CLI:
+Install them with `detoo skills`, which comes with the tools:
 
 ```bash
-# See which skills the repository offers, without installing
-npx skills add mustardcustarddev/detoo --list
+# See which skills there are, without installing any
+detoo skills install --list
 
-# Install some of them into the current project
-npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
+# Install all of them into the current project
+detoo skills install
 
-# Install all of them
-npx skills add mustardcustarddev/detoo --skill '*'
+# Install some of them
+detoo skills install create-adr create-rfc
 ```
+
+`detoo skills install` downloads the skills from the
+[repository](https://github.com/mustardcustarddev/detoo/tree/main/skills) on
+GitHub. It installs each one in `.agents/skills`, which Codex, Cursor, Gemini
+CLI, GitHub Copilot, OpenCode, Amp and Cline read. Then it links it into the
+directory of each other agent it finds, such as Claude Code's
+`.claude/skills`. It links it for Kiro CLI and Junie only when you name them
+with `--agent`. It records what it installed in `skills-lock.json`. Commit
+that file with the skills.
 
 Some useful options:
 
@@ -31,12 +40,18 @@ Some useful options:
 | --- | --- |
 | `--global` | Install for your user, in every project. |
 | `--agent AGENT` | Install for a particular agent, such as `--agent claude-code` or `--agent codex`. Repeat for more than one. |
-| `--yes` | Skip the confirmation prompts. |
+| `--source SOURCE` | Install from another source: a branch, tag or commit, such as `mustardcustarddev/detoo#v1.2.0`, a fork on GitHub, or a directory, such as `../detoo`. |
 
-Later, `npx skills list` shows what is installed, `npx skills update` brings
-it up to date, and `npx skills remove` removes it.
+Later, `detoo skills update` brings the skills up to date, and
+`detoo skills remove` removes them. The
+[command reference](../../detoo/skills/) has every option.
 
-## Without the CLI
+`detoo skills` keeps the same files as the
+[skills](https://github.com/vercel-labs/skills) CLI, so if you installed the
+skills with `npx skills add`, `detoo skills` can update and remove them, and
+the other way round.
+
+## Without detoo skills
 
 Each skill is a self-contained directory under
 [`skills/`](https://github.com/mustardcustarddev/detoo/tree/main/skills) in

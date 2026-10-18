@@ -76,11 +76,20 @@ research finds nothing for it.
    names of services, logs, paths and fields, the steps through a dashboard
    or an API, links, and reason codes. Someone will follow these under
    pressure, and an invented one sends them the wrong way.
-4. **Policy is the team's.** Authority limits, owners, deadlines, targets,
+4. **Say what to do, not which tool to do it with.** Assume the reader can
+   use whatever tools they like. Name a command, page or setting where it is
+   how a fact is found or a result checked, such as `brew list --versions
+   <formula>` for the version installed, or where it is the only way to make
+   the change, such as the project's own release target or an SOP. Do not
+   prescribe a tool for an everyday action the reader can take any way they
+   like: replying to, labelling or closing an issue, sending a message,
+   editing a file. Write "Reply on the issue with the version that fixes
+   it", not a `gh issue comment` command.
+5. **Policy is the team's.** Authority limits, owners, deadlines, targets,
    the default option, and whether any immediate action is warranted are the
    team's to set. Propose one only when a policy, a contract, an SOP or the
    system's documentation states it, and say which. Where none does, ask.
-5. **Every playbook you create is a Draft.** The tool writes `Draft`; never
+6. **Every playbook you create is a Draft.** The tool writes `Draft`; never
    change it. Whether a playbook is agreed is for the team to record.
 
 When you want to make a claim and have no evidence for it, **stop and ask the
@@ -322,11 +331,14 @@ that the tool records the link in **both** playbooks at once, and that with
 * **update**: `VISUAL= EDITOR= plm new -u 4 "Title"`, for a playbook that
   changes part of playbook 4, such as a case it left out.
 
-Then edit the new file:
+Then edit the new file in place:
 
 * Keep the lines the tool wrote: the title, the date, `Draft`, and any link
-  lines in the Status section.
-* Replace the guidance text under each heading with the approved content.
+  lines in the Status section. Do not rewrite the whole file, and never
+  retype the title: its number is the tool's, and must stay the number in
+  the file name.
+* Replace the guidance text under each heading with the approved content,
+  one section at a time.
 * Delete the **Counter-indicated actions** section if the approved draft
   has none.
 
@@ -337,7 +349,10 @@ every command and its effects.
 
 * Read the file back, and check it against the list at the end of
   [writing-playbooks.md](references/writing-playbooks.md#before-you-finish).
-* Check that every SOP it links to exists, at the path linked.
+* Check that the number in the title, `# N.`, is the number in the file
+  name, `PROBLEM-000N-...`. If they differ, put the tool's title line back.
+* Check that every SOP it links to exists, at the path linked, and that the
+  link text gives its number and title as its own title line does.
 * Run `plm list` to confirm the playbook is in the log.
 * The project may keep a table of contents made by `plm list --toc`, such as
   a `README.md` in the log directory. If so, offer to regenerate it.

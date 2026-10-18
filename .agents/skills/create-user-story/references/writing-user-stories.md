@@ -98,12 +98,12 @@ guidance written in it, with the same standard of evidence.
 A short phrase naming what the user can do, from their side: "Export invoices
 for a month", "Reorder a previous purchase", "Warn of clashing sessions". Not
 a task ("Add CSV endpoint") or a component ("Invoice exporter"). Run
-`sty list` and follow the style of the existing titles. The title becomes the
+`ust list` and follow the style of the existing titles. The title becomes the
 file name, so keep it short.
 
 ### Date
 
-The tool writes today's date: the day the story is written. Set `STY_DATE`
+The tool writes today's date: the day the story is written. Set `UST_DATE`
 only if the user asks for another.
 
 ### Status
@@ -169,7 +169,7 @@ Keep it short; a story is not a specification.
 * **Open questions**, each specific enough to answer in refinement: "Should
   credit notes be in the export, or a separate one?" not "Credit notes?".
 * **Links** to related stories, RFCs, ADRs, issues or designs, by name. Links
-  between stories are made by the tool; see [sty-tool.md](sty-tool.md#links).
+  between stories are made by the tool; see [ust-tool.md](ust-tool.md#links).
 
 If there is nothing to say under a heading, leave the heading out. If there is
 nothing at all, write "None."
@@ -188,7 +188,7 @@ several goals with "and", it is probably an epic:
 * Offer your split as a suggestion, and let the user choose.
 * Ask whether to record the large story too. If they want it, create it first,
   then each smaller story with `-r` on the large one; see
-  [sty-tool.md](sty-tool.md#links).
+  [ust-tool.md](ust-tool.md#links).
 
 ## Style
 
@@ -236,4 +236,5 @@ Each pair shows what to write instead, if the evidence supports it.
   left.
 * The status is `Draft`.
 * Links between stories were made by the tool, not by hand.
+* The number in the title is the number in the file name.
 * The user has seen the draft with its sources, and approved it.

@@ -1,0 +1,15 @@
+  # See which skills detoo offers, without installing any:
+  detoo skills install --list
+
+  # Install every skill in this project:
+  detoo skills install
+
+  # Install two skills, for Claude Code and Codex only:
+  detoo skills install --agent claude-code --agent codex create-adr create-rfc
+
+  # Install every skill for your user, in every project:
+  detoo skills install --global
+
+  # Install the skills of a release, or of a clone of the repository:
+  detoo skills install --source mustardcustarddev/detoo#v1.2.0
+  detoo skills install --source ../detoo

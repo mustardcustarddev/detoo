@@ -1,0 +1,114 @@
+cat > src/skills/alpha/SKILL.md <<EOF
+---
+name: alpha
+description: Does the first thing.
+---
+# Alpha
+EOF
+cat > src/skills/alpha/references/notes.md <<EOF
+Notes
+EOF
+cat > src/skills/beta/SKILL.md <<EOF
+---
+name: beta
+description: Does the second thing.
+---
+# Beta
+EOF
+mkdir -p app
+cd app
+detoo skills
+Installs the agent skills that drive adr, rfc, ust, plm and sop, keeps them up
+to date, and removes them.  The skills come from detoo's repository on
+GitHub, mustardcustarddev/detoo, unless you name another source.
+
+detoo installs skills where the skills CLI (`npx skills`) does, and records
+them in the same lock files, so either tool can update or remove what the
+other installed:
+
+* each skill is installed once, in `.agents/skills`, which Codex, Cursor,
+  Gemini CLI, GitHub Copilot, OpenCode, Amp and Cline read;
+* the directory of each agent that looks elsewhere, such as Claude Code's
+  `.claude/skills`, gets a link to it;
+* `skills-lock.json`, in the project's directory, records where each skill
+  came from, so that `detoo skills update` can update it.  Commit it with the
+  skills.
+
+The project is the nearest of the current directory and its parents that
+holds `skills-lock.json`, `.agents` or `.git`, below your home directory.  If
+none does, it is the current directory.
+
+With `--global`, skills are installed for your user, in every project:
+in `~/.agents/skills`, linked into each agent's own directory, such as
+`~/.claude/skills`, and recorded in `~/.agents/.skill-lock.json`.
+
+Each command says what it is doing as it goes, on stderr.
+
+Usage:
+  detoo skills [flags]
+  detoo skills [command]
+
+Examples:
+  # Install every skill in this project, for Claude Code and the agents found:
+  detoo skills install
+
+  # Bring the installed skills up to date:
+  detoo skills update
+
+  # Remove a skill:
+  detoo skills remove create-adr
+
+Available Commands:
+  install     Install agent skills, by default every skill detoo offers
+  remove      Remove installed agent skills
+  update      Update installed agent skills from their sources, by default every one
+
+Flags:
+  -h, --help   help for skills
+
+Use "detoo skills [command] --help" for more information about a command.
+echo $?
+1
+detoo skills install --source ~/src alpha gamma
+Reading skills from ~/src…
+Found 2 skills.
+detoo: unknown skill gamma: ~/src offers alpha, beta
+echo $?
+1
+detoo skills install --source ~/src --agent vim
+detoo: unknown agent "vim": choose from claude-code, codex, cursor, gemini-cli, github-copilot, opencode, amp, cline, windsurf, roo, kiro-cli, goose, continue, junie, qwen-code, augment, trae
+echo $?
+1
+detoo skills install --source nowhere
+detoo: "nowhere" is not a source: give a repository on GitHub, such as mustardcustarddev/detoo, or a directory, such as ./skills
+echo $?
+1
+detoo skills install --source ./missing
+Reading skills from ./missing…
+detoo: cannot read skills from ./missing: there is no such directory
+echo $?
+1
+detoo skills install --source ~/src --list alpha
+detoo: give --list alone, or with --source
+echo $?
+1
+detoo skills update
+No skills are recorded in skills-lock.json. Install them with detoo skills install.
+echo $?
+0
+detoo skills update alpha
+detoo: unknown skill alpha: skills-lock.json does not record it
+echo $?
+1
+detoo skills remove
+detoo: name the skills to remove, or give --all
+echo $?
+1
+detoo skills remove --all alpha
+detoo: give --all, or name the skills to remove, not both
+echo $?
+1
+detoo skills remove alpha
+detoo: unknown skill alpha: it is not installed in .agents/skills
+echo $?
+1

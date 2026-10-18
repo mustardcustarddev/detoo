@@ -183,11 +183,14 @@ new RFC is only a draft that may never be accepted. Ask whether to:
 * **link on acceptance**: name the old RFC in the text of the new one, and
   have whoever accepts it run `rfc link -o NEW OLD` (or `-u`) then.
 
-Then edit the new file:
+Then edit the new file in place:
 
 * Keep the lines the tool wrote: the title, the date, `Draft`, and any link
-  lines in the Status section.
-* Replace the guidance text under each heading with the approved content.
+  lines in the Status section. Do not rewrite the whole file, and never
+  retype the title: its number is the tool's, and must stay the number in
+  the file name.
+* Replace the guidance text under each heading with the approved content,
+  one section at a time.
 
 Never write link lines by hand. See [rfc-tool.md](references/rfc-tool.md) for
 every command and its effects.
@@ -196,6 +199,8 @@ every command and its effects.
 
 * Read the file back, and check it against the list at the end of
   [writing-rfcs.md](references/writing-rfcs.md#before-you-finish).
+* Check that the number in the title, `# N.`, is the number in the file
+  name, `RFC-000N-...`. If they differ, put the tool's title line back.
 * Run `rfc list` to confirm the RFC is in the log.
 * If the project keeps a generated table of contents (look for one made by
   `rfc list --toc`, such as a `README.md` in the log directory), offer to

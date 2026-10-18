@@ -117,6 +117,11 @@ An ordered list, under the template's heading for them.
   reader will type it, with placeholders in angle brackets for what changes
   each time: `make deploy VERSION=<tag>`. Write menu paths and identifiers
   in backticks: `Settings` → `Webhooks`.
+* **Exact about the task, not about everyday tools.** Give the commands that
+  carry out the task and check it. Where any tool will do, as for replying
+  to an issue or telling the team, say what to do, and leave the tool to the
+  reader: "Reply on the issue with a link to the notice", not a
+  `gh issue comment` command.
 * **Preconditions first.** If the task needs access, a tool or an approval,
   the first steps say so: "Make sure you can run `kubectl` against the
   production cluster."
@@ -157,6 +162,9 @@ house style of the existing SOPs uses them.
 * Every command, path, page and name was read from a source, or given by the
   user.
 * No step was run to test it.
+* No step prescribes a tool for an action any tool will do, such as replying
+  to an issue.
+* The number in the title is the number in the file name.
 * There is no decision in the SOP; a check says only to stop and escalate.
 * Every Unknown and Conflict was asked about or is an open question.
 * No guidance text from the template is left.

@@ -26,7 +26,7 @@ func NewDetooCommand(files fs.FS, application *app.Detoo, terminal func() output
 	t := tool{Kind: record.Kind{Name: "detoo"}, files: files}
 	root := &cobra.Command{
 		Use:           t.Name,
-		Short:         "Look after a project's logs as a whole",
+		Short:         "Look after a project's logs as a whole, and the agent skills that drive the tools",
 		Long:          t.help("root.md"),
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -37,7 +37,7 @@ func NewDetooCommand(files fs.FS, application *app.Detoo, terminal func() output
 	}
 	root.SetOut(stdout)
 	root.SetErr(stderr)
-	root.AddCommand(newDoctorCommand(t, application, terminal, confirm))
+	root.AddCommand(newDoctorCommand(t, application, terminal, confirm), newSkillsCommand(t, application, terminal))
 	optionsFirst(root)
 	usePagedHelp(root, t, stdout, stderr, getenv)
 	return root

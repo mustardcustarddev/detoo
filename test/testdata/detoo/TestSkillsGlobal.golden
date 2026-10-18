@@ -1,0 +1,50 @@
+cat > src/skills/alpha/SKILL.md <<EOF
+---
+name: alpha
+description: Does the first thing.
+---
+# Alpha
+EOF
+cat > src/skills/alpha/references/notes.md <<EOF
+Notes
+EOF
+cat > src/skills/beta/SKILL.md <<EOF
+---
+name: beta
+description: Does the second thing.
+---
+# Beta
+EOF
+mkdir -p app
+cd app
+detoo skills install --global --source ~/src beta
+Reading skills from ~/src…
+Found 2 skills.
+Installing into ~/.agents/skills
+Linking from ~/.claude/skills, for Claude Code
+  ✓ beta
+✓ Installed 1 skill for every project. ~/.agents/.skill-lock.json records it.
+echo $?
+0
+ls ../.agents/skills
+beta
+cat ../.claude/skills/beta/SKILL.md
+---
+name: beta
+description: Does the second thing.
+---
+# Beta
+detoo skills update --global
+Reading skills from ~/src…
+Found 2 skills.
+  – beta up to date
+✓ The skill is up to date.
+echo $?
+0
+detoo skills remove --global beta
+  ✓ beta removed from ~/.claude/skills, ~/.agents/skills
+✓ Removed 1 skill.
+✓ Removed ~/.claude/skills and ~/.agents/skills, which are empty now.
+echo $?
+0
+ls ../.claude

@@ -169,15 +169,19 @@ SOP loses its `Draft` or `Approved` line. Then:
 * **update**: `VISUAL= EDITOR= sop new -u 4 "Title"`, for an SOP that changes
   part of SOP 4, such as a step for a case it left out.
 
-Then edit the new file: keep the lines the tool wrote (the title, the date,
-`Draft`, and any link lines in the Status section), and replace the guidance
-text with the approved steps. Never write link lines by hand. See
+Then edit the new file in place: keep the lines the tool wrote (the title,
+the date, `Draft`, and any link lines in the Status section), and replace the
+guidance text with the approved steps. Do not rewrite the whole file, and
+never retype the title: its number is the tool's, and must stay the number in
+the file name. Never write link lines by hand. See
 [sop-tool.md](references/sop-tool.md) for every command and its effects.
 
 ### 8. Finish
 
 * Read the file back, and check it against
   [writing-sops.md](references/writing-sops.md#before-you-finish).
+* Check that the number in the title, `# N.`, is the number in the file
+  name, `SOP-000N-...`. If they differ, put the tool's title line back.
 * Run `sop list` to confirm the SOP is in the log.
 * The project may keep a table of contents made by `sop list --toc`, such as
   a `README.md` in the log directory. If so, offer to regenerate it.

@@ -23,6 +23,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/cli/output"
 	"github.com/mustardcustard/detoo/internal/detoo"
 	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/features/agents/skills"
 	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
 	"github.com/mustardcustard/detoo/internal/sop"
@@ -43,7 +44,7 @@ type Page struct {
 // workflow is the order a reader meets the commands in, which is the order
 // the sidebar lists them.  A command not named here goes after these, in
 // alphabetical order, so that a new command is never left out.
-var workflow = []string{"init", "new", "link", "list", "graph", "config", "doctor"}
+var workflow = []string{"init", "new", "link", "list", "graph", "config", "doctor", "skills", "install", "update", "remove"}
 
 // tool is a command-line tool the site documents, and a way to build its
 // command tree, writing to stdout.
@@ -74,7 +75,7 @@ func tools() []tool {
 	}
 	doctor := tool{"detoo", func(stdout io.Writer) *cobra.Command {
 		p := project.New(os.TempDir(), detoo.Kinds)
-		application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p))
+		application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p), nil, skills.Installations{})
 		terminal := func() output.Terminal { return output.Terminal{} }
 		return cli.NewDetooCommand(detoo.Files, application, terminal, nil, stdout, io.Discard, none)
 	}}
@@ -111,24 +112,17 @@ func Pages() ([]Page, error) {
 			Help:        help,
 		})
 
-		var commands []*cobra.Command
-		for _, cmd := range root.Commands() {
-			if documented(cmd) {
-				commands = append(commands, cmd)
-			}
-		}
-		slices.SortStableFunc(commands, func(a, b *cobra.Command) int {
-			return rank(a.Name()) - rank(b.Name())
-		})
-		for i, cmd := range commands {
-			help, err := t.help(cmd.Name())
+		for i, cmd := range commandsUnder(root) {
+			// The command's path below the tool, such as "skills install".
+			command := strings.TrimPrefix(cmd.CommandPath(), root.Name()+" ")
+			help, err := t.help(strings.Fields(command)...)
 			if err != nil {
 				return nil, err
 			}
 			pages = append(pages, Page{
 				Tool:        t.name,
-				Command:     cmd.Name(),
-				Title:       t.name + " " + cmd.Name(),
+				Command:     command,
+				Title:       t.name + " " + command,
 				Description: cmd.Short,
 				Order:       i + 1,
 				Help:        help,
@@ -136,6 +130,26 @@ func Pages() ([]Page, error) {
 		}
 	}
 	return pages, nil
+}
+
+// commandsUnder returns the documented commands beneath cmd, in the order of
+// the workflow, each followed by those beneath it.
+func commandsUnder(cmd *cobra.Command) []*cobra.Command {
+	var commands []*cobra.Command
+	for _, sub := range cmd.Commands() {
+		if documented(sub) {
+			commands = append(commands, sub)
+		}
+	}
+	slices.SortStableFunc(commands, func(a, b *cobra.Command) int {
+		return rank(a.Name()) - rank(b.Name())
+	})
+	var all []*cobra.Command
+	for _, sub := range commands {
+		all = append(all, sub)
+		all = append(all, commandsUnder(sub)...)
+	}
+	return all
 }
 
 // help runs `<tool> help <command>` on a fresh command tree, the same code a
@@ -169,12 +183,13 @@ func firstSentence(text string) string {
 }
 
 // Path returns where the page is written, relative to the reference
-// collection: the tool's overview is its index.
+// collection: the tool's overview is its index, and a command beneath
+// another is in a directory named after it, as detoo/skills/install.md.
 func (p Page) Path() string {
 	if p.Command == "" {
 		return p.Tool + "/index.md"
 	}
-	return p.Tool + "/" + p.Command + ".md"
+	return p.Tool + "/" + strings.ReplaceAll(p.Command, " ", "/") + ".md"
 }
 
 // Markdown returns the page as the site reads it: frontmatter, then the help

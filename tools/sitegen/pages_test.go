@@ -24,9 +24,9 @@ func TestEveryCommandHasAPage(t *testing.T) {
 		if !have[tl.name+" "] {
 			t.Errorf("no overview page for %s", tl.name)
 		}
-		for _, cmd := range tl.root(&strings.Builder{}).Commands() {
-			if documented(cmd) && !have[tl.name+" "+cmd.Name()] {
-				t.Errorf("no page for %s %s", tl.name, cmd.Name())
+		for _, cmd := range commandsUnder(tl.root(&strings.Builder{})) {
+			if command := strings.TrimPrefix(cmd.CommandPath(), tl.name+" "); !have[tl.name+" "+command] {
+				t.Errorf("no page for %s %s", tl.name, command)
 			}
 		}
 	}
@@ -48,6 +48,7 @@ func TestPageShowsBuiltInHelp(t *testing.T) {
 	}{
 		{"adr", "new", "../../internal/adr/help/new.md", []string{"Usage:\n  adr new TITLE [flags]", "--supersede REFERENCE"}},
 		{"detoo", "doctor", "../../internal/detoo/help/doctor.md", []string{"Usage:\n  detoo doctor"}},
+		{"detoo", "skills install", "../../internal/detoo/help/skills-install.md", []string{"Usage:\n  detoo skills install [SKILL...]", "--source SOURCE"}},
 	}
 	for _, tt := range tests {
 		p := page(t, tt.tool, tt.command)

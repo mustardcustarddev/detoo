@@ -16,6 +16,7 @@ import (
 	"github.com/mustardcustard/detoo/internal/app"
 	"github.com/mustardcustard/detoo/internal/cli/output"
 	"github.com/mustardcustard/detoo/internal/detoo"
+	"github.com/mustardcustard/detoo/internal/features/agents/skills"
 )
 
 // --git and --renumber say how to fix, so they are no use without --fix.  No
@@ -76,7 +77,7 @@ func TestFixOffersOnlyWhatItCanDo(t *testing.T) {
 				}
 			}
 			p := project.New(root, detoo.Kinds)
-			application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p))
+			application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p), nil, skills.Installations{})
 			var asked []string
 			confirm := func(q output.Question) (bool, error) {
 				asked = append(asked, q.Title)

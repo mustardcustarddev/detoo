@@ -1,0 +1,8 @@
+  # Install every skill in this project, for Claude Code and the agents found:
+  detoo skills install
+
+  # Bring the installed skills up to date:
+  detoo skills update
+
+  # Remove a skill:
+  detoo skills remove create-adr

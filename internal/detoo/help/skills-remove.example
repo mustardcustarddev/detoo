@@ -1,0 +1,8 @@
+  # Remove two skills from this project:
+  detoo skills remove create-adr create-rfc
+
+  # Remove every skill installed in this project:
+  detoo skills remove --all
+
+  # Remove a skill installed for your user:
+  detoo skills remove --global create-adr

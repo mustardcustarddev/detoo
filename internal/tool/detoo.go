@@ -4,21 +4,26 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"runtime/debug"
 	"strconv"
+	"time"
 
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/colorprofile"
 	"github.com/charmbracelet/x/term"
 
 	"github.com/mustardcustard/detoo/internal/adapters/project"
+	"github.com/mustardcustard/detoo/internal/adapters/skillsource"
+	"github.com/mustardcustard/detoo/internal/adapters/skillstore"
 	"github.com/mustardcustard/detoo/internal/app"
 	"github.com/mustardcustard/detoo/internal/cli"
 	"github.com/mustardcustard/detoo/internal/cli/output"
 	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/features/agents/skills"
 )
 
 // RunDetoo runs detoo, which looks across the logs of kinds and whose help is
@@ -29,10 +34,20 @@ func RunDetoo(kinds []record.Kind, files fs.FS) int {
 		return failDetoo(err)
 	}
 
-	// The composition root, as in Run: the disk and the terminal are chosen
-	// here, once.
+	// The composition root, as in Run: the disk, the network and the
+	// terminal are chosen here, once.
 	p := project.New(workdir, kinds)
-	application := app.NewDetoo(kinds, p, project.NewGit(p))
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return failDetoo(err)
+	}
+	source := skillsource.New(workdir, home, os.Getenv)
+	source.Client = &http.Client{Timeout: 2 * time.Minute}
+	installations := skills.Installations{
+		Project: skillstore.Project(workdir, home, os.Getenv),
+		User:    skillstore.User(home, os.Getenv),
+	}
+	application := app.NewDetoo(kinds, p, project.NewGit(p), source, installations)
 	// A question is asked only of someone at a terminal, never of a script.
 	var confirm cli.Confirm
 	if term.IsTerminal(os.Stdin.Fd()) && term.IsTerminal(os.Stdout.Fd()) {

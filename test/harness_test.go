@@ -175,6 +175,11 @@ func (w *workspace) environ() []string {
 		env = append(env, variable(tool, "TEMPLATE")+"=", variable(tool, "PAGER")+"=cat")
 	}
 	env = append(env, variable("detoo", "PAGER")+"=cat", "COLUMNS=", "CLICOLOR_FORCE=")
+	// The directories agents keep their skills in are found in the home
+	// directory alone, and GitHub is not asked for anything as the user.
+	for _, name := range []string{"XDG_CONFIG_HOME", "XDG_STATE_HOME", "CLAUDE_CONFIG_DIR", "CODEX_HOME", "GITHUB_TOKEN", "GH_TOKEN"} {
+		env = append(env, name+"=")
+	}
 	// git, run by a test or by detoo, ignores the user's configuration, and
 	// any repository the temporary directory happens to be in.
 	env = append(env, "GIT_CONFIG_NOSYSTEM=1", "GIT_CONFIG_GLOBAL="+os.DevNull,
@@ -250,6 +255,17 @@ func (w *workspace) touch(names ...string) {
 			w.t.Fatal(err)
 		}
 		if err := os.WriteFile(w.path(name), nil, 0o644); err != nil {
+			w.t.Fatal(err)
+		}
+	}
+}
+
+// rm removes files and directories, and everything in them.
+func (w *workspace) rm(names ...string) {
+	w.t.Helper()
+	w.echo("rm -r", names...)
+	for _, name := range names {
+		if err := os.RemoveAll(w.path(name)); err != nil {
 			w.t.Fatal(err)
 		}
 	}

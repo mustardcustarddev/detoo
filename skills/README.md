@@ -86,31 +86,41 @@ Each skill drives `adr`, `rfc`, `ust`, `plm` or `sop`, which must be on the
 
 ### 2. Install the skills
 
-Install with the [skills](https://github.com/vercel-labs/skills) CLI:
+Install them with `detoo skills`, which comes with the tools:
 
 ```bash
-# See which skills the repository offers, without installing
-npx skills add mustardcustarddev/detoo --list
+# See which skills there are, without installing any
+detoo skills install --list
 
-# Install some of them into the current project
-npx skills add mustardcustarddev/detoo --skill create-adr --skill create-rfc
+# Install all of them into the current project
+detoo skills install
 
-# Install all of them
-npx skills add mustardcustarddev/detoo --skill '*'
+# Install some of them
+detoo skills install create-adr create-rfc
 ```
+
+`detoo skills install` installs each skill in `.agents/skills`, and links it into
+the directory of each other agent it finds, such as Claude Code's
+`.claude/skills`. It links it for Kiro CLI and Junie only when you name them
+with `--agent`. It records what it installed in `skills-lock.json`.
 
 Some useful options:
 
-| Option           | Effect                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------- |
-| `-g`, `--global` | Install for your user, in every project.                                                          |
-| `-a AGENT`       | Install for a particular agent, such as `-a claude-code` or `-a codex`. Repeat for more than one. |
-| `-y`, `--yes`    | Skip the confirmation prompts.                                                                    |
+| Option            | Effect                                                                                                      |
+| ----------------- | ----------------------------------------------------------------------------------------------------------- |
+| `--global`        | Install for your user, in every project.                                                                    |
+| `--agent AGENT`   | Install for a particular agent, such as `--agent claude-code` or `--agent codex`. Repeat for more than one. |
+| `--source SOURCE` | Install from another source, such as a tag (`mustardcustarddev/detoo#v1.2.0`) or a clone (`../detoo`).    |
 
-Later, `npx skills list` shows what is installed, `npx skills update` brings
-it up to date, and `npx skills remove` removes it.
+Later, `detoo skills update` brings the skills up to date, and
+`detoo skills remove` removes them. Run `detoo help skills install` for every
+option.
 
-### Without the CLI
+`detoo skills` keeps the same files as the
+[skills](https://github.com/vercel-labs/skills) CLI, so either can update or
+remove what the other installed.
+
+### Without detoo skills
 
 Each skill is a self-contained directory, so you can also copy or link it
 into wherever your agent looks for skills, such as `.claude/skills/` in a

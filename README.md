@@ -81,11 +81,10 @@ read them all on the [documentation site](https://mustardcustarddev.github.io/de
 
 ## Agent skills
 
-Install the skills into your project with the
-[skills](https://github.com/vercel-labs/skills) CLI:
+Install the skills into your project with `detoo skills`:
 
 ```bash
-npx skills add mustardcustarddev/detoo
+detoo skills install
 ```
 
 The skills use the tools to write ADRs, RFCs, user stories, problem
