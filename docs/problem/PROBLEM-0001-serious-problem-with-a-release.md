@@ -14,7 +14,7 @@ of detoo causes a serious problem, such as losing data.
 ## Problem
 
 Whether the release must be revoked, by
-[SOP 3. Revoke a detoo release](../sop/SOP-0003-revoke-a-detoo-release.md),
+[SOP 2. Revoke a detoo release](../sop/SOP-0002-revoke-a-detoo-release.md),
 or the report is dealt with otherwise.
 
 Primary risks:
@@ -76,15 +76,15 @@ The detoo maintainer takes each step.
 
 * **Option 1**
   1. Revoke the release by
-     [SOP 3. Revoke a detoo release](../sop/SOP-0003-revoke-a-detoo-release.md).
+     [SOP 2. Revoke a detoo release](../sop/SOP-0002-revoke-a-detoo-release.md).
   2. Reply on the issue, with a link to the notice SOP 3 posts on the
      documentation site.
   3. Fix the problem, and release the fix by
-     [SOP 2. Release detoo](../sop/SOP-0002-release-detoo.md).
+     [SOP 1. Release detoo](../sop/SOP-0001-release-detoo.md).
   4. Reply on the issue with the version that fixes it.
 * **Option 2**
   1. Fix the problem, and release the fix by
-     [SOP 2. Release detoo](../sop/SOP-0002-release-detoo.md).
+     [SOP 1. Release detoo](../sop/SOP-0001-release-detoo.md).
   2. Reply on the issue with the version that fixes it.
 * **Option 3**
   1. Reply on the issue with what was found.

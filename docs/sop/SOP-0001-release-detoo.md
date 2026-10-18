@@ -1,4 +1,4 @@
-# 2. Release detoo
+# 1. Release detoo
 
 Date: 2026-10-18
 
