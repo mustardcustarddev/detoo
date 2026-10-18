@@ -16,11 +16,8 @@ const blog = defineCollection({
       author: z.string().default('tom-regan'),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false),
-      /**
-       * The tool the post is about, which its call to action points to.  A
-       * tool's former name is kept, so that older posts need not change.
-       */
-      tool: z.enum([...SITE.tools, ...(Object.keys(SITE.renamed) as (keyof typeof SITE.renamed)[])]).optional(),
+      /** The tool the post is about, which its call to action points to. */
+      tool: z.enum(SITE.tools).optional(),
       canonicalUrl: z.url().optional(),
       noindex: z.boolean().default(false),
     }),

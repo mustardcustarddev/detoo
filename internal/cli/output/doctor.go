@@ -258,7 +258,7 @@ func (r *report) header() string {
 	}, "\n")
 
 	const gap = "    "
-	if markSize+len(gap)+lipgloss.Width(info) > r.width {
+	if markWidth+len(gap)+lipgloss.Width(info) > r.width {
 		return info
 	}
 	// Joining pads every line to the longest; the padding is dropped again.
@@ -279,22 +279,44 @@ func (r *report) home(dir string) string {
 	return dir
 }
 
-// markSize is the width and height of the mark, in pixels.  Two pixels share
-// a character, one above the other, so it is markSize columns by half as many
-// lines.
-const markSize = 14
+// Two vertical pixels share a character, so the portrait occupies markWidth
+// columns and markHeight/2 lines.
+const (
+	markWidth  = 17
+	markHeight = 14
+)
 
-// markPalette is the mark's bands, from the amber of the avatar's set square
-// at its corner to the orange of its shoulder.
-var markPalette = []string{"#fdd08a", "#fcbf5a", "#fba200", "#f59024", "#e57929", "#d66f24", "#b85a1a"}
+// markPixels is a front-facing portrait of the mascot: cream helmet, dark
+// visor and orange shoulders. Each character is one pixel.
+var markPixels = [markHeight]string{
+	"                 ",
+	"  ccccccccccccc  ",
+	" cwvvvvvvvvvvvwc ",
+	" cvvvvvvvvvvvvvc ",
+	" cvgvvvvvvvvvvvc ",
+	" cvgvvvvvvvvvvvc ",
+	" cvvvvvvvvvvvvvc ",
+	" cvvvvvvvvvvvvvc ",
+	" cvvvvvvvvvvvvvc ",
+	" ccvvvvvvvvvvvcc ",
+	"  ccccccccccccc  ",
+	"      ttttt      ",
+	"  ooocccccccooo  ",
+	" oooo ccccc oooo ",
+}
 
-// markPixel returns the colour of the mark's pixel at row and col, or "" for
-// none: a set square, a right triangle with its centre cut out.
+var markPalette = map[byte]string{
+	'c': "#d6cbb0", // cream shell in shadow
+	'w': "#f5eedb", // lit shell
+	'v': "#303436", // visor
+	'g': "#5a6262", // visor reflection
+	't': "#386363", // teal neck joint
+	'o': "#e98729", // orange shoulders
+}
+
+// markPixel returns the colour of a portrait pixel, or "" for empty space.
 func markPixel(row, col int) string {
-	if col > row || (row <= 10 && col >= 3 && col <= row-3) {
-		return ""
-	}
-	return markPalette[min(len(markPalette)-1, (row+col)*len(markPalette)/27)]
+	return markPalette[markPixels[row][col]]
 }
 
 // mark draws the detoo mark in half blocks.  Without colour, a character
@@ -302,11 +324,21 @@ func markPixel(row, col int) string {
 // the shape survives.
 func (r *report) mark() string {
 	colour := r.t.Profile > colorprofile.ASCII
-	lines := make([]string, 0, markSize/2)
-	for row := 0; row < markSize; row += 2 {
+	lines := make([]string, 0, markHeight/2)
+	for row := 0; row < markHeight; row += 2 {
 		var line strings.Builder
-		for col := range markSize {
-			line.WriteString(halfBlock(markPixel(row, col), markPixel(row+1, col), colour))
+		for col := range markWidth {
+			top, bottom := markPixel(row, col), markPixel(row+1, col)
+			// Leave the visor open without colour so its outline remains visible.
+			if !colour {
+				if p := markPixels[row][col]; p == 'v' || p == 'g' {
+					top = ""
+				}
+				if p := markPixels[row+1][col]; p == 'v' || p == 'g' {
+					bottom = ""
+				}
+			}
+			line.WriteString(halfBlock(top, bottom, colour))
 		}
 		lines = append(lines, line.String())
 	}

@@ -2,13 +2,13 @@ touch doc/adr/0001-record-architecture-decisions.md doc/adr/0002-use-markdown-fo
 git init --quiet --initial-branch=main
 git add doc/adr/0001-record-architecture-decisions.md docs/userstory
 detoo doctor --fix --git
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 2 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 2 decision records · 3 fixed ─╮
 │ ✓ Moved from doc/ to docs/                                                   │

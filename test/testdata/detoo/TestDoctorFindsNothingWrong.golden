@@ -5,13 +5,13 @@ docs/adr/ADR-0002-use-postgresql-for-persistence.md
 sty init
 docs/userstory/STORY-0001-describe-work-in-user-stories.md
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 2 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ ✓  adr  docs/adr        2 decision records  ADR-0001 … ADR-0002              │

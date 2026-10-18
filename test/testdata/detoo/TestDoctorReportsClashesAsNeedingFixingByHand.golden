@@ -3,13 +3,13 @@ docs/sty
 EOF
 touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/STORY-0003-third.md doc/adr/ADR-0001-record-architecture-decisions.md
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   4 documents in 4 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   4 documents in 4 directories
 
 ╭─ ✗ adr  doc/adr ───────────────────────────── 1 decision record · 1 problem ─╮
 │ ✗ Kept under doc/ instead of docs/                                           │

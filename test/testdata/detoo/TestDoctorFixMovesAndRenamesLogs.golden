@@ -46,13 +46,13 @@ cat > README.md <<EOF
 See [the stories](docs/sty/) and [the RFCs](doc/rfc/).
 EOF
 detoo doctor --fix
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   4 documents in 3 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   4 documents in 3 directories
 
 ╭─ ✓ adr  docs/adr ────────────────────────────── 1 decision record · 1 fixed ─╮
 │ ✓ Renamed to begin with ADR-                                                 │
@@ -137,13 +137,13 @@ sty list
 docs/userstory/STORY-0001-describe-work-in-user-stories.md
 docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   4 documents in 3 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   4 documents in 3 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │ ✓  adr  docs/adr        1 decision record  ADR-0001                          │

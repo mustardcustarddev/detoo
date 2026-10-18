@@ -26,19 +26,6 @@ export default defineConfig({
 
   integrations: [react(), mdx(), sitemap()],
 
-  // Pages that moved, so that links to them, from elsewhere and from posts
-  // written before the move, still lead somewhere.  pse became plm, and its
-  // skill, create-piosee, became create-playbook.
-  redirects: {
-    ...Object.fromEntries(
-      ['', 'init/', 'new/', 'link/', 'list/', 'graph/', 'config/'].map((page) => [
-        `/docs/pse/${page}`,
-        `${base}/docs/plm/${page}`,
-      ])
-    ),
-    '/docs/skills/create-piosee/': `${base}/docs/skills/create-playbook/`,
-  },
-
   prefetch: {
     prefetchAll: true,
   },

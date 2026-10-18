@@ -17,13 +17,13 @@ EOF
 git init --quiet --initial-branch=main
 git add docs
 detoo doctor --fix
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   4 documents in 1 directory
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   4 documents in 1 directory
 
 ╭─ ✗ adr  docs/adr ─────────────────────────── 4 decision records · 1 problem ─╮
 │ ✗ 2 decision records share the number 2                                      │
@@ -44,13 +44,13 @@ detoo doctor --fix
 echo $?
 1
 detoo doctor --fix --renumber --git
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   4 documents in 1 directory
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   4 documents in 1 directory
 
 ╭─ ✓ adr  docs/adr ───────────────────────────── 4 decision records · 1 fixed ─╮
 │ ✓ Renumbered by when git added each:                                         │

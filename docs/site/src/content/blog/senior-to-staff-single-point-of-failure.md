@@ -4,7 +4,7 @@ pubDate: 2026-10-18
 author: "tom-regan"
 tags: [ "staff engineering", "incident management", "decision-making", "SRE" ]
 categories: [ "Technology" ]
-tool: pse
+tool: plm
 description: "Pilots use PIOSEE, a six-step process anyone can follow under pressure. Put your incident judgement into PIOSEE playbooks and the whole rota can use it."
 heroImage: ../../assets/senior-to-staff-single-point-of-failure.jpg
 ---

@@ -4,13 +4,13 @@
  * is about one tool, that tool's documentation.
  */
 import { url } from '../../lib/url';
-import { current, type FormerTool, type Tool } from '../../lib/site';
+import type { Tool } from '../../lib/site';
 
 interface Props {
-  tool?: Tool | FormerTool;
+  tool?: Tool;
 }
 
-const tool = Astro.props.tool && current(Astro.props.tool);
+const { tool } = Astro.props;
 ---
 
 <aside class="mt-16 rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] p-6 md:p-8">

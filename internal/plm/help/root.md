@@ -11,6 +11,3 @@ project, by default `docs/problem`.  Each playbook's file name begins with
 `PROBLEM-` and its number, such as
 `PROBLEM-0001-plan-for-incidents-with-piosee.md`.  Run "plm init" to start a
 log, and "plm new" to add to it.
-
-Playbooks kept by pse, the tool plm replaces, in `docs/piosee` and named
-`PIOSEE-`, are moved and renamed by "detoo doctor --fix".

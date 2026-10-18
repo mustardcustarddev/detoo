@@ -34,13 +34,13 @@ Draft
 1. Follow [the playbook](../piosee/PIOSEE-0002-checkout-fails.md) to decide first.
 EOF
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 2 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✗ plm  docs/piosee ────────────────────────────── 2 playbooks · 3 problems ─╮
 │ ✗ Kept in a former directory: playbooks now live in docs/problem             │
@@ -65,13 +65,13 @@ detoo doctor
 echo $?
 1
 detoo doctor --fix
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 2 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭─ ✓ plm  docs/problem ──────────────────────────────── 2 playbooks · 3 fixed ─╮
 │ ✓ Moved from a former directory to docs/problem                              │

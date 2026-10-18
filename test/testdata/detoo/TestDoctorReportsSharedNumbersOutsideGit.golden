@@ -1,12 +1,12 @@
 touch docs/userstory/STORY-0001-describe-work-in-user-stories.md docs/userstory/STORY-0002-find-documents-in-the-wrong-place.md docs/userstory/STOY-0002-fix-documents-in-the-wrong-place.md
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 1 directory
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 1 directory
 
 ╭─ ! sty  docs/userstory   BY HAND  ───────────── 3 user stories · 2 problems ─╮
 │ ✗ File names do not begin with STORY-                                        │
@@ -32,13 +32,13 @@ detoo doctor
 echo $?
 1
 detoo doctor --fix --renumber
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   3 documents in 1 directory
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   3 documents in 1 directory
 
 ╭─ ! sty  docs/userstory   BY HAND  ──── 3 user stories · 1 fixed · 1 problem ─╮
 │ ✓ Renamed to begin with STORY-                                               │

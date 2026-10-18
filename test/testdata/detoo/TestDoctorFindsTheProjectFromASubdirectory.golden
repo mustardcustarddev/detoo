@@ -2,13 +2,13 @@ touch docs/rfc/0001-use-requests-for-comments.md
 mkdir -p src/app
 cd src/app
 detoo doctor
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   1 document in 1 directory
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   1 document in 1 directory
 
 ╭─ ✗ rfc  docs/rfc ──────────────────────────────────────── 1 RFC · 1 problem ─╮
 │ ✗ File names do not begin with RFC-                                          │

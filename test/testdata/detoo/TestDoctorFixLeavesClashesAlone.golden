@@ -3,13 +3,13 @@ docs/sty
 EOF
 touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/story-0003-third.md doc/adr/0001-first.md doc/adr/adr-0001-first.md
 detoo doctor --fix
-█▄                 detoo  dev
-███▄
-█████▄            doctor helps maintain and troubleshoot decision record logs
-███ ▀██▄
-███   ▀██▄        project   ~
-███▄▄▄▄▄███▄      logs      adr  rfc  sty  plm  sop
-█████████████▄    checked   5 documents in 4 directories
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   5 documents in 4 directories
 
 ╭─ ! adr  docs/adr   BY HAND  ───── 2 decision records · 1 fixed · 2 problems ─╮
 │ ✓ Moved from doc/ to docs/                                                   │
