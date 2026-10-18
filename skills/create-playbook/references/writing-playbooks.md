@@ -206,7 +206,9 @@ list of things to find out, not a list of findings.
   internal evidence, the third party's evidence, the policy that constrains
   the decision.
 * Under each, name exactly what to collect, and where: the service and the
-  log, the storage path and the fields, the dashboard page, the document.
+  log, the storage path and the fields, the dashboard page, the document. A
+  command that shows it, such as `brew list --versions <formula>` for the
+  version a reporter has installed, saves the reader looking it up.
   Where an SOP sets out how to collect it, refer to the SOP rather than
   repeating its steps.
 * Name who owns each source, or can get at it, if the user said.
@@ -252,9 +254,12 @@ The steps to carry out each option, in order, as instructions.
   back the release by [SOP 3. Roll back a release](../sop/SOP-0003-roll-back-a-release.md),
   to the version before the one that raised the alert." Do not copy its
   steps in.
-* Be exact where the reader acts: the page, the menu path, the setting, the
-  command. Write menu paths and identifiers in backticks: `Billing` →
-  `Subscriptions`.
+* Be exact where the way matters: the page, the menu path, the setting or
+  the command that makes a change only it can make. Write menu paths and
+  identifiers in backticks: `Billing` → `Subscriptions`.
+* Where any tool will do, as for replying to an issue, labelling it or
+  sending a message, say what to do, and leave the tool to the reader: the
+  team may use a browser, a command-line tool or an app.
 * What to record, and where: who acted, when (in UTC), the identifiers, and a
   reason code if the team uses one.
 * Whom to tell, and what, with the wording if a source or the user gave it.
@@ -324,6 +329,11 @@ Each pair shows what to write instead, if the evidence supports it.
   propose "No immediate action is indicated." if nothing does.
 * Instead of copying the ten steps of a rollback into Execution, refer to
   the SOP for it, or offer to write one.
+* Instead of `gh issue comment 42 --body "..."` or
+  `gh issue close 42 --reason "not planned"`, write "Reply on the issue with
+  what was found, and close it." The reader handles issues with whatever tool
+  they use. Keep a command where it finds a fact, such as
+  `brew list --versions <formula>`.
 * Instead of a dashboard path from memory, read the provider's documentation,
   or ask the user, and write the path they confirm.
 
@@ -357,6 +367,10 @@ Run `sop config` for the directory, and `sop list` for the file names.
   user confirmed.
 * Every identifier, step and link was read from a source, or given by the
   user.
+* No step prescribes a tool for an action any tool will do, such as replying
+  to an issue. Commands appear where they find a fact, check a result, or
+  are the only way to act.
+* The number in the title is the number in the file name.
 * There is a conservative fallback, named by the user.
 * The selection rules cover every case, or the gaps are open questions.
 * No entry is still Proposed.

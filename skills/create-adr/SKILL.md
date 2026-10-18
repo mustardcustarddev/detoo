@@ -128,11 +128,14 @@ line, although the new record is only a draft. Ask whether to:
 * **link on acceptance**: name the old record in the text of the new one, and
   have whoever accepts it run `adr link -s NEW OLD` (or `-u`) then.
 
-Then edit that file:
+Then edit that file in place:
 
 * Keep the lines the tool wrote: the title, the date, `Draft`, and any link
-  lines in the Status section.
-* Replace the guidance text under each heading with the approved content.
+  lines in the Status section. Do not rewrite the whole file, and never
+  retype the title: its number is the tool's, and must stay the number in
+  the file name.
+* Replace the guidance text under each heading with the approved content,
+  one section at a time.
 
 Never write link lines by hand; use the tool:
 
@@ -147,6 +150,8 @@ See [adr-tool.md](references/adr-tool.md) for every command and its effects.
 
 * Read the file back, and check it against the list at the end of
   [writing-adrs.md](references/writing-adrs.md#before-you-finish).
+* Check that the number in the title, `# N.`, is the number in the file
+  name, `ADR-000N-...`. If they differ, put the tool's title line back.
 * Run `adr list` to confirm the record is in the log.
 * If the project keeps a generated table of contents (look for one made by
   `adr list --toc`, such as a `README.md` in the log directory), offer to

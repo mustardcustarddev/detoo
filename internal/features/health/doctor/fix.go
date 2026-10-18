@@ -51,9 +51,6 @@ type Workspace interface {
 	// and every directory beneath them, leaving out hidden ones.
 	Markdown(ctx context.Context, dirs []string) ([]string, error)
 
-	// Read returns the content of a file.
-	Read(ctx context.Context, name string) (string, error)
-
 	// Write replaces the content of a file.
 	Write(ctx context.Context, name, content string) error
 }

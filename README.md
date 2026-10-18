@@ -126,8 +126,8 @@ detoo doctor --fix          # put right what it finds
 ```
 
 `detoo doctor` checks that each log directory is where its tool looks for it,
-that each document is named the way its tool expects, and that no two share a
-number. It changes nothing, and exits 1 when it finds a problem, so it can run
+that each document is named the way its tool expects, that no two share a
+number, and that each title matches its file name. It changes nothing, and exits 1 when it finds a problem, so it can run
 in CI.
 
 `detoo doctor --fix` moves and renames what is out of place, and updates the

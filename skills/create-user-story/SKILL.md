@@ -187,11 +187,14 @@ loses its `Draft` line. Then:
 * **update**: `VISUAL= EDITOR= sty new -u 4 "Title"`, for a story that
   changes what story 4 asked for.
 
-Then edit each new file:
+Then edit each new file in place:
 
 * Keep the lines the tool wrote: the title, the date, `Draft`, and any link
-  lines in the Status section.
-* Replace the guidance text under each heading with the approved content.
+  lines in the Status section. Do not rewrite the whole file, and never
+  retype the title: its number is the tool's, and must stay the number in
+  the file name.
+* Replace the guidance text under each heading with the approved content,
+  one section at a time.
 
 Never write link lines by hand. See [sty-tool.md](references/sty-tool.md) for
 every command and its effects.
@@ -200,6 +203,8 @@ every command and its effects.
 
 * Read each file back, and check it against the list at the end of
   [writing-user-stories.md](references/writing-user-stories.md#before-you-finish).
+* Check that the number in each title, `# N.`, is the number in its file
+  name, `STORY-000N-...`. If they differ, put the tool's title line back.
 * Run `sty list` to confirm the stories are in the log.
 * If the project keeps a generated table of contents (look for one made by
   `sty list --toc`, such as a `README.md` in the log directory), offer to

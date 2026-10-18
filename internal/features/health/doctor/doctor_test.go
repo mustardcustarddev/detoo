@@ -10,11 +10,13 @@ import (
 	"github.com/mustardcustard/detoo/internal/sty"
 )
 
-// fakeProject is a project held in memory: the files in each directory, and
-// the directory each marker file names.
+// fakeProject is a project held in memory: the files in each directory, the
+// directory each marker file names, and the content of the files that have
+// any, by path.
 type fakeProject struct {
-	dirs    map[string][]string
-	markers map[string]string
+	dirs     map[string][]string
+	markers  map[string]string
+	contents map[string]string
 }
 
 func (p fakeProject) Root(context.Context) (string, error) { return "/home/ann/handbook", nil }
@@ -27,6 +29,10 @@ func (p fakeProject) Marker(_ context.Context, kind record.Kind) (string, bool, 
 func (p fakeProject) Files(_ context.Context, dir string) ([]string, bool, error) {
 	files, ok := p.dirs[dir]
 	return files, ok, nil
+}
+
+func (p fakeProject) Read(_ context.Context, name string) (string, error) {
+	return p.contents[name], nil
 }
 
 func check(t *testing.T, kind record.Kind, project fakeProject) Log {

@@ -30,6 +30,7 @@ export interface Group {
 
 const sections = {
   'getting-started': 'Getting started',
+  releases: 'Releases',
   guides: 'Guides',
   skills: 'Agent skills',
 } as const;
@@ -68,9 +69,13 @@ export async function sidebar(): Promise<Group[]> {
       .map((r) => page(r, name, r.data.command || 'Overview')),
   });
 
-  return [section('getting-started'), ...SITE.tools.map(tool), section('guides'), section('skills')].filter(
-    (g) => g.pages.length > 0,
-  );
+  return [
+    section('getting-started'),
+    section('releases'),
+    ...SITE.tools.map(tool),
+    section('guides'),
+    section('skills'),
+  ].filter((g) => g.pages.length > 0);
 }
 
 /** pages returns every page of the documentation, in the sidebar's order. */

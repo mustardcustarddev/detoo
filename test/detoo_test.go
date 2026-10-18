@@ -66,6 +66,19 @@ func TestDoctorFindsTheProjectFromASubdirectory(t *testing.T) {
 	w.check()
 }
 
+// A title that does not match its file name, numbered otherwise or in other
+// words, needs fixing by hand.  Case and punctuation do not count.
+func TestDoctorReportsTitlesThatDoNotMatchFileNames(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.adr("init")
+	w.write("docs/adr/ADR-0002-do-stuff.md", "# 3. Do stuff\n")
+	w.write("docs/adr/ADR-0003-use-postgresql.md", "# 3. Use MySQL\n")
+	w.write("docs/sop/SOP-0001-roll-back-a-release.md", "# Roll back the release\n")
+	w.write("docs/sop/SOP-0002-rotate-the-key.md", "# 2. Rotate the key!\n")
+	w.detoo("doctor")
+	w.check()
+}
+
 // A fix moves RFCs from doc/ to docs/, and stories from the directory sty
 // used to look in, renames every document to begin with its prefix, and
 // changes the links to them, so that the tools find them again and doctor

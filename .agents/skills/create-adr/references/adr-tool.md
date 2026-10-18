@@ -10,9 +10,9 @@ Two things can block an agent:
 * `adr new` opens the new record in `$VISUAL` or `$EDITOR`, and waits for the
   editor to close. With neither set, it skips the editor and only prints the
   path. **Always clear both:** `VISUAL= EDITOR= adr new "Title"`.
-* On a terminal, `adr help` shows its text in a pager (`$ADR_PAGER`, then
-  `$PAGER`, then `more`). **Always set one that exits:**
-  `ADR_PAGER=cat adr help new`.
+* `adr help` prints to stdout, unless `$ADR_PAGER` names a pager, which it
+  runs on a terminal. `$PAGER` is ignored. **If it is set, clear it:**
+  `ADR_PAGER= adr help new`.
 
 Options come before operands. An operand that begins with a hyphen must follow
 `--`. A title is a single argument, so quote it.
@@ -131,7 +131,7 @@ the highest-numbered record means the next `adr new` reuses its number.
 | `VISUAL`, `EDITOR`   | Editor opened on a new record. Clear both. |
 | `ADR_TEMPLATE`       | Template for new records.                  |
 | `ADR_DATE`           | Date written into a new record, as given.  |
-| `ADR_PAGER`, `PAGER` | Pager for help. Set to `cat`.              |
+| `ADR_PAGER`          | Pager for help, if set. Clear it.          |
 
 The log directory is `docs/adr`, unless a `.adr-dir` file in the project root
 names another. The working directory and each of its ancestors are searched in

@@ -440,6 +440,9 @@ func (r *report) logBody(l doctor.Log) string {
 	if len(l.Duplicates) > 0 {
 		lines = append(lines, r.duplicates(l)...)
 	}
+	if len(l.Mistitled) > 0 {
+		lines = append(lines, r.mistitled(l)...)
+	}
 	return strings.Join(lines, "\n")
 }
 
@@ -575,6 +578,36 @@ func (r *report) duplicates(l doctor.Log) []string {
 			them(n) + ", and anything else that refers to " + them(n) + " by name or number."
 	}
 	return append(lines, r.hang(r.bang(), r.fg(r.th.yellow).Render(warning)))
+}
+
+// mistitled lists the documents whose titles do not match their file names,
+// each with what differs and, under it, its title, which may be long.  They
+// are fixed by hand: which of the two is wrong is not known.
+func (r *report) mistitled(l doctor.Log) []string {
+	subtext := r.fg(r.th.subtext)
+	lines := []string{r.cross() + " Titles do not match file names"}
+	rows := make([][]string, 0, len(l.Mistitled))
+	for _, m := range l.Mistitled {
+		name := m.File
+		if len(l.Dirs) > 1 {
+			name = r.fg(r.th.faint).Render(m.Dir+"/") + name
+		}
+		var differs string
+		switch {
+		case m.Number && m.Words:
+			differs = "· number and words differ"
+		case m.Number:
+			differs = "· number differs"
+		default:
+			differs = "· words differ"
+		}
+		rows = append(rows, []string{name, subtext.Render(differs)})
+	}
+	for i, row := range grid(rows) {
+		lines = append(lines, row, "    "+r.fg(r.th.red).Render("# "+l.Mistitled[i].Title))
+	}
+	return append(lines, r.hang(r.bang(), "Needs fixing by hand: correct the title, or rename the "+l.Kind.Noun+
+		" and the links to it, whichever is wrong."))
 }
 
 // them is the pronoun for n things.

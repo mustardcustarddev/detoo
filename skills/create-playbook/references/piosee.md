@@ -125,6 +125,9 @@ documentation, the code, an earlier incident, or the user.
   dashboard page and menu path, or the SOP that does. An Information section
   that says "check the logs" is no help at two in the morning. One that
   names the service whose logs to read, and the events to look for, is.
+  Concrete is not prescriptive: it names a command where the command is how
+  to find a fact, and leaves everyday actions, such as replying to an issue,
+  to whatever tools the reader uses.
 * **Self-contained.** Someone who was not in the conversation can follow it,
   with the SOPs it links to, without asking the author what they meant.
 * **Decidable.** The Selection rules map what the investigation finds onto an

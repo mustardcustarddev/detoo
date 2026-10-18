@@ -237,4 +237,5 @@ Each pair shows what to write instead, if the evidence supports it.
 * The status is `Draft`.
 * Links between RFCs were made by the tool, not by hand, and only when the user
   chose to make them now.
+* The number in the title is the number in the file name.
 * The user has seen the draft with its sources, and approved it.

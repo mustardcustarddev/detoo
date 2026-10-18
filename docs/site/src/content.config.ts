@@ -9,7 +9,9 @@ const blog = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      description: z.string().max(160, 'Descriptions are shown in search results: keep them to 160 characters'),
+      description: z
+        .string()
+        .max(160, 'Descriptions are shown in search results: keep them to 160 characters'),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       heroImage: image().optional(),
@@ -23,13 +25,15 @@ const blog = defineCollection({
     }),
 });
 
-/** Hand-written documentation: getting started, guides and agent skills. */
+/** Hand-written documentation: getting started, release notices, guides and agent skills. */
 const docs = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/docs' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().max(160, 'Descriptions are shown in search results: keep them to 160 characters'),
-    section: z.enum(['getting-started', 'guides', 'skills']),
+    description: z
+      .string()
+      .max(160, 'Descriptions are shown in search results: keep them to 160 characters'),
+    section: z.enum(['getting-started', 'releases', 'guides', 'skills']),
     order: z.number(),
   }),
 });

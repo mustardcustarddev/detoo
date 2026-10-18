@@ -10,9 +10,9 @@ Two things can block an agent:
 * `sty new` opens the new story in `$VISUAL` or `$EDITOR`, and waits for the
   editor to close. With neither set, it skips the editor and only prints the
   path. **Always clear both:** `VISUAL= EDITOR= sty new "Title"`.
-* On a terminal, `sty help` shows its text in a pager (`$STY_PAGER`, then
-  `$PAGER`, then `more`). **Always set one that exits:**
-  `STY_PAGER=cat sty help new`.
+* `sty help` prints to stdout, unless `$STY_PAGER` names a pager, which it
+  runs on a terminal. `$PAGER` is ignored. **If it is set, clear it:**
+  `STY_PAGER= sty help new`.
 
 Options come before operands. An operand that begins with a hyphen must follow
 `--`. A title is a single argument, so quote it.
@@ -143,7 +143,7 @@ the highest-numbered story means the next `sty new` reuses its number.
 | `VISUAL`, `EDITOR`   | Editor opened on a new story. Clear both. |
 | `STY_TEMPLATE`       | Template for new stories.                 |
 | `STY_DATE`           | Date written into a new story, as given.  |
-| `STY_PAGER`, `PAGER` | Pager for help. Set to `cat`.             |
+| `STY_PAGER`          | Pager for help, if set. Clear it.         |
 
 The log directory is `docs/userstory`, unless a `.sty-dir` file in the project
 root names another. The working directory and each of its ancestors are

@@ -1,5 +1,6 @@
 Checks the project's adr, rfc, sty, plm and sop logs together, and reports
-any log the tools would not find, or whose file names are out of date:
+any log the tools would not find, or whose file names or titles are out of
+date:
 
 * a log kept under `doc/` instead of `docs/`;
 * a log kept in a directory its tool no longer looks in, such as user stories
@@ -10,11 +11,16 @@ any log the tools would not find, or whose file names are out of date:
   the prefix, such as `STOY-0003-title.md` among the user stories, and a
   prefix the log had before, such as `PIOSEE-` among the playbooks;
 * documents that share a number, such as `STORY-0003-first.md` and
-  `STORY-0003-second.md`.
+  `STORY-0003-second.md`;
+* documents whose title does not match the file name: `ADR-0001-do-stuff.md`
+  should have the title `# 1. Do stuff`.  Case and punctuation do not count,
+  but the number and the words do.  A document whose first line is not a
+  title is not checked.
 
 When moving or renaming would clash, such as when both `docs/sty` and
 `docs/userstory` exist, or `.sty-dir` names the old directory, the problem is
-reported as needing fixing by hand.
+reported as needing fixing by hand.  So is a title that does not match its
+file name, since doctor cannot tell which of the two is wrong.
 
 In a git repository, doctor works out how to renumber documents that share a
 number from when git first committed each.  The first keeps the number.  Each

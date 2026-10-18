@@ -1,0 +1,46 @@
+adr init
+docs/adr/ADR-0001-record-architecture-decisions.md
+cat > docs/adr/ADR-0002-do-stuff.md <<EOF
+# 3. Do stuff
+EOF
+cat > docs/adr/ADR-0003-use-postgresql.md <<EOF
+# 3. Use MySQL
+EOF
+cat > docs/sop/SOP-0001-roll-back-a-release.md <<EOF
+# Roll back the release
+EOF
+cat > docs/sop/SOP-0002-rotate-the-key.md <<EOF
+# 2. Rotate the key!
+EOF
+detoo doctor
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
+ █▀           ▀█
+ █             █     doctor helps maintain and troubleshoot decision record logs
+ █             █
+ █▄           ▄█     project   ~
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  sty  plm  sop
+ ▄███▀█████▀███▄     checked   5 documents in 2 directories
+
+╭─ ! adr  docs/adr   BY HAND  ─────────────── 3 decision records · 2 problems ─╮
+│ ✗ Titles do not match file names                                             │
+│   ADR-0002-do-stuff.md        · number differs                               │
+│     # 3. Do stuff                                                            │
+│   ADR-0003-use-postgresql.md  · words differ                                 │
+│     # 3. Use MySQL                                                           │
+│ ! Needs fixing by hand: correct the title, or rename the decision record and │
+│   the links to it, whichever is wrong.                                       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ ! sop  docs/sop   BY HAND  ──────────────────────────── 2 SOPs · 1 problem ─╮
+│ ✗ Titles do not match file names                                             │
+│   SOP-0001-roll-back-a-release.md  · number and words differ                 │
+│     # Roll back the release                                                  │
+│ ! Needs fixing by hand: correct the title, or rename the SOP and the links   │
+│   to it, whichever is wrong.                                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No rfc, sty or plm log found.
+
+ DOCTOR  ✗ 3 problems in 2 logs  ! 3 need fixing by hand                 EXIT 1 
+echo $?
+1

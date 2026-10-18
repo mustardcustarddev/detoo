@@ -11,9 +11,9 @@ Two things can block an agent:
 * `rfc new` opens the new RFC in `$VISUAL` or `$EDITOR`, and waits for the
   editor to close. With neither set, it skips the editor and only prints the
   path. **Always clear both:** `VISUAL= EDITOR= rfc new "Title"`.
-* On a terminal, `rfc help` shows its text in a pager (`$RFC_PAGER`, then
-  `$PAGER`, then `more`). **Always set one that exits:**
-  `RFC_PAGER=cat rfc help new`.
+* `rfc help` prints to stdout, unless `$RFC_PAGER` names a pager, which it
+  runs on a terminal. `$PAGER` is ignored. **If it is set, clear it:**
+  `RFC_PAGER= rfc help new`.
 
 Options come before operands. An operand that begins with a hyphen must follow
 `--`. A title is a single argument, so quote it.
@@ -146,7 +146,7 @@ highest-numbered RFC means the next `rfc new` reuses its number.
 | `VISUAL`, `EDITOR`   | Editor opened on a new RFC. Clear both. |
 | `RFC_TEMPLATE`       | Template for new RFCs.                  |
 | `RFC_DATE`           | Date written into a new RFC, as given.  |
-| `RFC_PAGER`, `PAGER` | Pager for help. Set to `cat`.           |
+| `RFC_PAGER`          | Pager for help, if set. Clear it.       |
 
 The log directory is `docs/rfc`, unless a `.rfc-dir` file in the project root
 names another. The working directory and each of its ancestors are searched in

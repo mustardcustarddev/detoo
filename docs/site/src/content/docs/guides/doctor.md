@@ -18,8 +18,8 @@ detoo doctor
 ```
 
 `detoo doctor` checks that each log directory is where its tool looks for it,
-that each document is named the way its tool expects, and that no two share a
-number. It changes nothing, and exits 1 when it finds a problem, so it can run
+that each document is named the way its tool expects, that no two share a
+number, and that each title matches its file name. It changes nothing, and exits 1 when it finds a problem, so it can run
 in CI.
 
 It finds, for example:
@@ -31,7 +31,10 @@ It finds, for example:
 * documents whose names do not begin with their log's prefix in upper case,
   such as `STOY-0003-title.md` among the user stories, or `PIOSEE-` among the
   playbooks;
-* documents that share a number.
+* documents that share a number;
+* a title that does not match the file name, such as `# 2. Do stuff` in
+  `ADR-0001-do-stuff.md`. Case and punctuation do not count. Fix these by
+  hand: doctor cannot tell whether the title or the file name is wrong.
 
 ## Fix
 

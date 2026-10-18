@@ -4,10 +4,11 @@
 // Handler reports and changes nothing.  A log the tools have lost after a
 // rename, such as user stories left in docs/sty, is found here, and so is a
 // document named before its log's prefix was upper case, or with a slip of
-// it, and two documents that share a number.  When moving or renaming would
+// it, two documents that share a number, and a document whose title does not
+// match its file name.  When moving or renaming would
 // clash with something already there, the problem is reported as needing
 // fixing by hand, and so are documents that share a number when there is no
-// git history to say which came first.
+// git history to say which came first, and every title that does not match.
 //
 // Fixer moves and renames what Handler finds, renumbers the documents that
 // share a number when asked to, and updates the links to what it moved,
@@ -38,6 +39,9 @@ type Project interface {
 
 	// Files returns the names of the files in dir, and whether dir exists.
 	Files(ctx context.Context, dir string) ([]string, bool, error)
+
+	// Read returns the content of a file.
+	Read(ctx context.Context, name string) (string, error)
 }
 
 // History is the port that orders documents that share a number: when git
@@ -95,6 +99,10 @@ type Log struct {
 	// Duplicates are the numbers that more than one document in a directory
 	// of the log has.
 	Duplicates []Duplicate
+
+	// Mistitled are the documents whose titles do not match their file
+	// names.
+	Mistitled []Mistitle
 
 	// Renumbers give each document a number of its own: each document that
 	// shares a number but the first, and each that moves up to make room for
@@ -212,12 +220,34 @@ type Renumber struct {
 	Clash Clash
 }
 
+// Mistitle is a document whose title does not match its file name, as the
+// tools name a document from its number and title.  Which of the two is
+// wrong is not known, so it is fixed by hand.
+type Mistitle struct {
+	// Dir is the directory the document is in, and File its name there.
+	Dir, File string
+
+	// Title is the document's title, from its first line, without the "# ".
+	Title string
+
+	// Number reports that the title is not numbered as the file is, or not
+	// numbered at all.
+	Number bool
+
+	// Words reports that the rest of the title is not the rest of the file
+	// name, even with its case and punctuation set aside.
+	Words bool
+}
+
 // Found reports whether the project keeps the log anywhere.
 func (l Log) Found() bool { return len(l.Dirs) > 0 }
 
 // Problems counts what is wrong with the log: each misplaced directory, each
-// misnamed document, and each number that documents share.
-func (l Log) Problems() int { return len(l.Misplaced) + len(l.Misnamed) + len(l.Duplicates) }
+// misnamed document, each number that documents share, and each mistitled
+// document.
+func (l Log) Problems() int {
+	return len(l.Misplaced) + len(l.Misnamed) + len(l.Duplicates) + len(l.Mistitled)
+}
 
 // ByHand counts the problems that need fixing by hand.
 func (l Log) ByHand() int {
@@ -237,7 +267,7 @@ func (l Log) ByHand() int {
 			n++
 		}
 	}
-	return n
+	return n + len(l.Mistitled)
 }
 
 // Renumberable counts the documents a fix would renumber, if asked to.
@@ -444,6 +474,13 @@ func (h Handler) check(ctx context.Context, kind record.Kind, history History) (
 
 	for _, dir := range log.Dirs {
 		log.Misnamed = append(log.Misnamed, misnamed(kind, h.Kinds, dir)...)
+	}
+	for _, dir := range log.Dirs {
+		titles, err := mistitled(ctx, h.Project, kind, h.Kinds, dir)
+		if err != nil {
+			return Log{}, err
+		}
+		log.Mistitled = append(log.Mistitled, titles...)
 	}
 	for _, dir := range log.Dirs {
 		duplicates, renumbers, err := shared(ctx, kind, dir, log.Misnamed, history)
