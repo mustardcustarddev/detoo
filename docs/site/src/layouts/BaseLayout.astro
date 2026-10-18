@@ -1,7 +1,7 @@
 ---
 /**
  * BaseLayout.astro — the document every page shares: metadata for search
- * engines and social cards, the dark-mode switch, and slots for the header,
+ * engines and social cards, the theme, and slots for the header,
  * the content and the footer.
  */
 import '../styles/global.css';
@@ -76,18 +76,28 @@ const fullTitle = appendSiteName && title !== SITE.name ? `${title} | ${SITE.nam
     <link rel="alternate" type="application/rss+xml" title={`${SITE.name} blog`} href={url('rss.xml')} />
     <link rel="sitemap" href={url('sitemap-index.xml')} />
 
-    <!-- Dark mode is set before the page paints, so it never flashes light. -->
+    <!--
+      The theme is set before the page paints, so it never flashes light.  A
+      light or dark choice is stored; with none, the page follows the system
+      setting, and changes with it.
+    -->
     <script is:inline>
       (function () {
+        const root = document.documentElement;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
         let theme = null;
         try {
           theme = localStorage.getItem('theme');
         } catch {
           // Storage is blocked: follow the system setting.
         }
-        if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
+        root.dataset.theme = theme === 'light' || theme === 'dark' ? theme : 'system';
+        function apply() {
+          const chosen = root.dataset.theme;
+          root.classList.toggle('dark', chosen === 'dark' || (chosen === 'system' && media.matches));
         }
+        apply();
+        media.addEventListener('change', apply);
       })();
     </script>
     <slot name="head" />

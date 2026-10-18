@@ -1,10 +1,10 @@
 ---
 /**
  * Header.astro — the bar across the top of every page: the name, the two
- * halves of the site, the repository and the dark-mode switch.  There are few
+ * halves of the site, the repository and the theme switch.  There are few
  * enough links that they fit on a phone, so there is no menu to open.
  */
-import DarkModeToggle from '../ui/DarkModeToggle.tsx';
+import ThemeSelect from '../ui/ThemeSelect.tsx';
 import { url } from '../../lib/url';
 import { SITE } from '../../lib/site';
 
@@ -52,7 +52,7 @@ const links = [
           ></path>
         </svg>
       </a>
-      <DarkModeToggle client:load />
+      <ThemeSelect client:load />
     </nav>
   </div>
 </header>
