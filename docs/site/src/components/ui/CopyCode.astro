@@ -1,0 +1,73 @@
+---
+/**
+ * CopyCode.astro — a highlighted block of code with a button in its corner
+ * that copies the code to the clipboard.
+ */
+import { Code } from 'astro:components';
+import type { ComponentProps } from 'astro/types';
+
+interface Props {
+  code: string;
+  lang: ComponentProps<typeof Code>['lang'];
+  class?: string;
+}
+
+const { code, lang, class: className } = Astro.props;
+---
+
+<div class:list={['relative', className]} data-copy-code data-code={code}>
+  <Code
+    code={code}
+    lang={lang}
+    themes={{ light: 'github-light', dark: 'github-dark' }}
+    class="rounded-lg border border-[var(--border)] p-4 pr-12 text-sm"
+  />
+  <button
+    type="button"
+    data-copy
+    aria-label="Copy"
+    title="Copy"
+    class="absolute top-2 right-2 rounded-md border border-[var(--border)] bg-[var(--bg)] p-1.5 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
+  >
+    <svg data-icon="copy" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+    <svg data-icon="copied" class="hidden h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5"></path>
+    </svg>
+  </button>
+  <span data-status class="sr-only" aria-live="polite"></span>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-copy-code]')) {
+    const button = root.querySelector<HTMLButtonElement>('[data-copy]')!;
+    const copy = root.querySelector<SVGElement>('[data-icon="copy"]')!;
+    const copied = root.querySelector<SVGElement>('[data-icon="copied"]')!;
+    const status = root.querySelector<HTMLElement>('[data-status]')!;
+    let reset: number | undefined;
+
+    // show swaps the copy icon for a tick, and back after two seconds.
+    const show = (done: boolean, text: string) => {
+      copy.classList.toggle('hidden', done);
+      copied.classList.toggle('hidden', !done);
+      status.textContent = text;
+      clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        copy.classList.remove('hidden');
+        copied.classList.add('hidden');
+        status.textContent = '';
+      }, 2000);
+    };
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(root.dataset.code!);
+        show(true, 'Copied');
+      } catch {
+        show(false, 'Copy failed');
+      }
+    });
+  }
+</script>

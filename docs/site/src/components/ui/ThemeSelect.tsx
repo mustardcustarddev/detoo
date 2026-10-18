@@ -62,7 +62,7 @@ export default function ThemeSelect() {
       title={label}
       className="cursor-pointer relative flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
     >
-      {/* Monitor icon */}
+      {/* Half sun, half night icon: the system's theme, whichever it is */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className={icon('system')}
@@ -74,8 +74,9 @@ export default function ThemeSelect() {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          d="M14 2v2m0 16v2M6 12H4m3.343-6.657l1.414 1.414M7.343 18.657l1.414-1.414M14 7a5 5 0 0 0 0 10z"
         />
+        <path strokeLinecap="round" strokeLinejoin="round" fill="currentColor" d="M14 7a5 5 0 0 1 0 10z" />
       </svg>
       {/* Sun icon */}
       <svg
