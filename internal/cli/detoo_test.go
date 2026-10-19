@@ -76,7 +76,7 @@ func TestFixOffersOnlyWhatItCanDo(t *testing.T) {
 					t.Fatalf("git init: %v\n%s", err, out)
 				}
 			}
-			p := project.New(root, detoo.Kinds)
+			p := project.New(root)
 			application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p), nil, skills.Installations{})
 			var asked []string
 			confirm := func(q output.Question) (bool, error) {

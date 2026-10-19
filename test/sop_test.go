@@ -54,18 +54,17 @@ func TestSopReports(t *testing.T) {
 	w.check()
 }
 
-// sop is configured by its own variables and marker file.
+// sop is configured by its own variables.
 func TestSopConfiguration(t *testing.T) {
 	w := newWorkspace(t, "sop")
 	w.sop("config")
-	w.sop("init", "procedures")
+	w.sop("init")
 	w.sop("config")
-	w.cat(".sop-dir")
 	w.write("custom.md", "# NUMBER. TITLE, from custom.md\n\nDate: DATE\n\n## Status\n\nSTATUS\n\n## Steps\n")
 	w.setenv("SOP_TEMPLATE", "custom.md")
 	w.setenv("SOP_DATE", "2026-10-16")
 	w.sop("new", "Uses the sop settings")
-	w.cat("procedures/SOP-0002-uses-the-sop-settings.md")
+	w.cat("docs/sop/SOP-0002-uses-the-sop-settings.md")
 	w.check()
 }
 

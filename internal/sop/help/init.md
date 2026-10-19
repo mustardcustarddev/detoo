@@ -1,14 +1,8 @@
-Initialises the directory of standard operating procedures (SOPs):
+Initialises the directory of standard operating procedures (SOPs),
+`docs/sop`:
 
- * creates a subdirectory of the current working directory
- * creates the first SOP in that subdirectory, which sets out how to write
-   an SOP.
+ * creates `docs/sop` under the current working directory, unless the
+   current working directory or one of its parents already has one
+ * creates the first SOP in it, which sets out how to write an SOP.
 
-If the DIRECTORY is not given, the SOPs are stored in the directory
-`docs/sop`.
-
-If the log already has SOPs, init does nothing, and giving it a different
-DIRECTORY is an error.
-
-A DIRECTORY whose name begins with a hyphen must be preceded by `--`, so that
-it is not read as an option.
+If the log already has SOPs, init does nothing.

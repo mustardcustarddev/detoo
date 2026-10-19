@@ -7,13 +7,7 @@ import (
 	"reflect"
 	"slices"
 	"testing"
-
-	"github.com/mustardcustard/detoo/internal/adr"
-	"github.com/mustardcustard/detoo/internal/domain/record"
-	"github.com/mustardcustard/detoo/internal/ust"
 )
-
-var kinds = []record.Kind{adr.Kind, ust.Kind}
 
 func write(t *testing.T, name, content string) {
 	t.Helper()
@@ -37,25 +31,22 @@ func resolved(t *testing.T, dir string) string {
 }
 
 // The project is the nearest directory above the working one that holds a
-// docs directory, a doc directory or a marker file, under its name or a
-// former one.
+// docs directory or a doc directory.
 func TestRootIsTheNearestDirectoryHoldingALog(t *testing.T) {
 	for _, test := range []struct {
 		name, file string
 	}{
 		{"docs", "docs/adr/ADR-0001-first.md"},
 		{"doc", "doc/adr/ADR-0001-first.md"},
-		{"marker", ".ust-dir"},
-		{"former marker", ".sty-dir"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			root := resolved(t, t.TempDir())
-			write(t, filepath.Join(root, test.file), "docs/sty\n")
+			write(t, filepath.Join(root, test.file), "")
 			work := filepath.Join(root, "src", "app")
 			if err := os.MkdirAll(work, 0o755); err != nil {
 				t.Fatal(err)
 			}
-			got, err := New(work, kinds).Root(context.Background())
+			got, err := New(work).Root(context.Background())
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -68,7 +59,7 @@ func TestRootIsTheNearestDirectoryHoldingALog(t *testing.T) {
 
 func TestRootIsTheWorkingDirectoryWhenNothingIsFound(t *testing.T) {
 	work := resolved(t, t.TempDir())
-	got, err := New(work, kinds).Root(context.Background())
+	got, err := New(work).Root(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,20 +67,6 @@ func TestRootIsTheWorkingDirectoryWhenNothingIsFound(t *testing.T) {
 	// none should; if one does, the test says so.
 	if got != work {
 		t.Errorf("Root() = %q, want %q", got, work)
-	}
-}
-
-func TestMarkerReadsTheNamedDirectory(t *testing.T) {
-	root := t.TempDir()
-	write(t, filepath.Join(root, ".ust-dir"), "docs/sty/\n")
-	p := New(root, kinds)
-
-	dir, ok, err := p.Marker(context.Background(), ust.Kind.Marker())
-	if err != nil || !ok || dir != "docs/sty" {
-		t.Errorf("Marker(.ust-dir) = %q, %v, %v, want docs/sty, true, nil", dir, ok, err)
-	}
-	if _, ok, err := p.Marker(context.Background(), adr.Kind.Marker()); err != nil || ok {
-		t.Errorf("Marker(.adr-dir) = %v, %v, want no marker", ok, err)
 	}
 }
 
@@ -101,7 +78,7 @@ func TestFilesListsTheFilesInADirectory(t *testing.T) {
 	write(t, filepath.Join(root, "docs/adr/.DS_Store"), "")
 	write(t, filepath.Join(root, "docs/adr/templates/template.md"), "")
 	write(t, filepath.Join(root, "docs/rfc"), "")
-	p := New(root, kinds)
+	p := New(root)
 
 	files, ok, err := p.Files(context.Background(), "docs/adr")
 	if err != nil || !ok || !reflect.DeepEqual(files, []string{"ADR-0001-first.md"}) {
@@ -126,7 +103,7 @@ func TestMoveMovesADirectory(t *testing.T) {
 	write(t, filepath.Join(root, "doc/adr/0001-first.md"), "first")
 	write(t, filepath.Join(root, "doc/rfc/0001-first.md"), "")
 	write(t, filepath.Join(root, "docs/rfc/README.md"), "")
-	p := New(root, kinds)
+	p := New(root)
 
 	if err := p.Move(context.Background(), "doc/adr", "docs/adr"); err != nil {
 		t.Fatal(err)
@@ -146,7 +123,7 @@ func TestRenameRenamesAFile(t *testing.T) {
 	write(t, filepath.Join(root, "docs/userstory/story-0001-first.md"), "")
 	write(t, filepath.Join(root, "docs/userstory/0002-second.md"), "")
 	write(t, filepath.Join(root, "docs/userstory/STORY-0003-third.md"), "")
-	p := New(root, kinds)
+	p := New(root)
 
 	if err := p.Rename(context.Background(), "docs/userstory", "story-0001-first.md", "STORY-0001-first.md"); err != nil {
 		t.Fatal(err)
@@ -166,7 +143,7 @@ func TestRemoveIfEmptyRemovesOnlyAnEmptyDirectory(t *testing.T) {
 	if err := os.Mkdir(filepath.Join(root, "doc"), 0o755); err != nil {
 		t.Fatal(err)
 	}
-	p := New(root, kinds)
+	p := New(root)
 
 	for _, test := range []struct {
 		dir     string
@@ -193,7 +170,7 @@ func TestMarkdownFindsTheDocuments(t *testing.T) {
 	} {
 		write(t, filepath.Join(root, name), "")
 	}
-	p := New(root, kinds)
+	p := New(root)
 
 	got, err := p.Markdown(context.Background(), []string{"docs", "docs/adr", "doc"})
 	if err != nil {
@@ -208,7 +185,7 @@ func TestMarkdownFindsTheDocuments(t *testing.T) {
 func TestWriteReplacesAFile(t *testing.T) {
 	root := t.TempDir()
 	write(t, filepath.Join(root, "README.md"), "before")
-	p := New(root, kinds)
+	p := New(root)
 	if err := p.Write(context.Background(), "README.md", "after"); err != nil {
 		t.Fatal(err)
 	}

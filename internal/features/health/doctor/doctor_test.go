@@ -10,21 +10,14 @@ import (
 	"github.com/mustardcustard/detoo/internal/ust"
 )
 
-// fakeProject is a project held in memory: the files in each directory, the
-// directory each marker file names, by the marker's name, and the content of
-// the files that have any, by path.
+// fakeProject is a project held in memory: the files in each directory, and
+// the content of the files that have any, by path.
 type fakeProject struct {
 	dirs     map[string][]string
-	markers  map[string]string
 	contents map[string]string
 }
 
 func (p fakeProject) Root(context.Context) (string, error) { return "/home/ann/handbook", nil }
-
-func (p fakeProject) Marker(_ context.Context, name string) (string, bool, error) {
-	dir, ok := p.markers[name]
-	return dir, ok, nil
-}
 
 func (p fakeProject) Files(_ context.Context, dir string) ([]string, bool, error) {
 	files, ok := p.dirs[dir]
@@ -161,69 +154,6 @@ func TestAMoveOntoAnExistingDirectoryClashes(t *testing.T) {
 	}
 }
 
-// A marker file that names a former directory keeps the tool looking there,
-// so it is for the user to change.
-func TestAMarkerNamingAFormerDirectoryClashes(t *testing.T) {
-	log := check(t, ust.Kind, fakeProject{
-		dirs:    map[string][]string{"docs/sty": {"STORY-0001-first.md"}},
-		markers: map[string]string{".ust-dir": "docs/sty/"},
-	})
-	if log.Dir != "docs/sty" || log.Marker != ".ust-dir" {
-		t.Errorf("Dir = %q, Marker = %q, want docs/sty, .ust-dir", log.Dir, log.Marker)
-	}
-	want := []Move{{From: "docs/sty", To: "docs/userstory", Reason: Former, Documents: 1, Clash: MarkerNamesIt}}
-	if !reflect.DeepEqual(log.Misplaced, want) {
-		t.Errorf("Misplaced = %v, want %v", log.Misplaced, want)
-	}
-}
-
-// A marker file that names a directory of the project's choosing is where
-// the log belongs.
-func TestAMarkerNamesWhereTheLogBelongs(t *testing.T) {
-	log := check(t, adr.Kind, fakeProject{
-		dirs:    map[string][]string{"architecture/decisions": {"ADR-0001-first.md"}, "doc/adr": {"ADR-0002-second.md"}},
-		markers: map[string]string{".adr-dir": "architecture/decisions"},
-	})
-	want := []Move{{From: "doc/adr", To: "architecture/decisions", Reason: UnderDoc, Documents: 1, Clash: TargetExists}}
-	if !reflect.DeepEqual(log.Misplaced, want) {
-		t.Errorf("Misplaced = %v, want %v", log.Misplaced, want)
-	}
-}
-
-// A marker file named after the tool's former name, which it no longer
-// reads, is to be renamed, and names where the log is kept until it is.
-func TestAFormerMarkerIsRenamed(t *testing.T) {
-	log := check(t, ust.Kind, fakeProject{
-		dirs:    map[string][]string{"stories": {"STORY-0001-first.md"}},
-		markers: map[string]string{".sty-dir": "stories/"},
-	})
-	if log.Dir != "stories" || log.Marker != ".sty-dir" || !log.Found() {
-		t.Errorf("Dir = %q, Marker = %q, Found() = %v, want stories, .sty-dir, true", log.Dir, log.Marker, log.Found())
-	}
-	want := []MarkerRename{{From: ".sty-dir", To: ".ust-dir", Dir: "stories"}}
-	if !reflect.DeepEqual(log.FormerMarkers, want) || log.Problems() != 1 || log.ByHand() != 0 {
-		t.Errorf("FormerMarkers = %v, Problems() = %d, ByHand() = %d, want %v, 1, 0",
-			log.FormerMarkers, log.Problems(), log.ByHand(), want)
-	}
-}
-
-// When the tool's own marker file is there too, renaming the former one
-// would clash, and the tool's own names where the log is kept.
-func TestAFormerMarkerBesideTheCurrentOneClashes(t *testing.T) {
-	log := check(t, ust.Kind, fakeProject{
-		dirs:    map[string][]string{"stories": {"STORY-0001-first.md"}},
-		markers: map[string]string{".sty-dir": "old-stories", ".ust-dir": "stories"},
-	})
-	if log.Dir != "stories" || log.Marker != ".ust-dir" {
-		t.Errorf("Dir = %q, Marker = %q, want stories, .ust-dir", log.Dir, log.Marker)
-	}
-	want := []MarkerRename{{From: ".sty-dir", To: ".ust-dir", Dir: "old-stories", Clash: true}}
-	if !reflect.DeepEqual(log.FormerMarkers, want) || log.ByHand() != 1 {
-		t.Errorf("FormerMarkers = %v, ByHand() = %d, want %v, 1", log.FormerMarkers, log.ByHand(), want)
-	}
-}
-
-// Two misplaced directories that would both move to the same place clash.
 func TestTwoMovesToOnePlaceClash(t *testing.T) {
 	log := check(t, ust.Kind, fakeProject{dirs: map[string][]string{
 		"doc/userstory": {"STORY-0001-first.md"},

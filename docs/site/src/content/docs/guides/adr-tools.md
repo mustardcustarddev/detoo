@@ -22,9 +22,9 @@ files, and so do links to them from other Markdown documents in the
 project's root, or under `docs/` or `doc/`, such as a `README.md`. Links from
 anywhere else are not changed.
 
-If you started adr-tools with a directory of your own, `.adr-dir` names it.
-If that is `doc/adr`, delete `.adr-dir` before fixing, or `doctor` will ask
-you to fix it by hand.
+If you started adr-tools with a directory of your own, `.adr-dir` names it,
+but `adr` does not read that file: move the directory to `docs/adr` before
+fixing, and delete `.adr-dir`.
 
 Commit before fixing, so you can review the changes with `git status` and
 `git diff`. In a git repository, `--fix` offers to use `git mv`, so that git

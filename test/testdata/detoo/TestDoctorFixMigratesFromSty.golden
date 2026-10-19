@@ -1,7 +1,4 @@
-cat > .sty-dir <<EOF
-stories
-EOF
-cat > stories/STORY-0001-describe-work-in-user-stories.md <<EOF
+cat > docs/sty/STORY-0001-describe-work-in-user-stories.md <<EOF
 # 1. Describe work in user stories
 
 Date: 2026-10-18
@@ -22,10 +19,10 @@ detoo doctor
   ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   1 document in 1 directory
 
-╭─ ✗ ust  stories ────────────────────────────────── 1 user story · 1 problem ─╮
-│ ✗ Marker file has a former name: ust reads .ust-dir                          │
-│   ust no longer reads .sty-dir, which names stories.                         │
-│   .sty-dir  →  .ust-dir                                                      │
+╭─ ✗ ust  docs/sty ───────────────────────────────── 1 user story · 1 problem ─╮
+│ ✗ Kept in a former directory: user stories now live in docs/userstory        │
+│   ust no longer finds the user story in docs/sty.                            │
+│   docs/sty  →  docs/userstory                                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 – No adr, rfc, plm or sop log found.
@@ -44,9 +41,9 @@ detoo doctor --fix
   ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
  ▄███▀█████▀███▄     checked   1 document in 1 directory
 
-╭─ ✓ ust  stories ──────────────────────────────────── 1 user story · 1 fixed ─╮
-│ ✓ Renamed from a former name to .ust-dir                                     │
-│   .sty-dir  →  .ust-dir                                                      │
+╭─ ✓ ust  docs/userstory ───────────────────────────── 1 user story · 1 fixed ─╮
+│ ✓ Moved from a former directory to docs/userstory                            │
+│   docs/sty  →  docs/userstory                                                │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 – No adr, rfc, plm or sop log found.
@@ -54,10 +51,8 @@ detoo doctor --fix
  DOCTOR  ✓ Fixed 1 problem. All is well.  Made 1 change.                 EXIT 0 
 echo $?
 0
-cat .ust-dir
-stories
 ust config
-ust_dir="stories"
+ust_dir="docs/userstory"
 ust_template=""
 ust list
-stories/STORY-0001-describe-work-in-user-stories.md
+docs/userstory/STORY-0001-describe-work-in-user-stories.md

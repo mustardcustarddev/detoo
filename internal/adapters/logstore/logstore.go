@@ -22,9 +22,8 @@ import (
 )
 
 // Store is a log of records under a working directory.  Every path it accepts
-// and reports is relative to that directory, unless the project keeps its log
-// at an absolute path, and is slash separated, whatever the host filesystem
-// uses.
+// and reports is relative to that directory, and is slash separated, whatever
+// the host filesystem uses.
 type Store struct {
 	workdir string
 	kind    record.Kind
@@ -35,15 +34,7 @@ func New(workdir string, kind record.Kind) *Store {
 	return &Store{workdir: workdir, kind: kind}
 }
 
-// markerFile names the file that records where a project keeps its log:
-// .adr-dir for adr's.  Each tool has its own, so that one project can keep the
-// logs of several.
-func (s *Store) markerFile() string {
-	return s.kind.Marker()
-}
-
-// defaultDir is the directory a project without a marker file keeps its log in:
-// docs/adr for adr's.
+// defaultDir is the directory a project keeps its log in: docs/adr for adr's.
 func (s *Store) defaultDir() string {
 	return path.Join("docs", s.kind.Dir)
 }
@@ -58,29 +49,16 @@ func (s *Store) path(name string) string {
 	return filepath.Join(s.workdir, name)
 }
 
-// Dir returns the directory holding the records.  The working
-// directory and each of its ancestors is searched, in turn, for a marker file
-// naming the directory, and then for a directory at the default location.
-// Neither needs to exist: projects that have no records yet get the default.
+// Dir returns the directory holding the records.  The working directory and
+// each of its ancestors is searched, in turn, for a directory at the default
+// location.  It need not exist: projects that have no records yet get the
+// default.
 func (s *Store) Dir(context.Context) (string, error) {
 	dir, err := filepath.Abs(s.workdir)
 	if err != nil {
 		return "", err
 	}
 	for up := ""; ; dir, up = filepath.Dir(dir), path.Join(up, "..") {
-		marker, err := os.ReadFile(filepath.Join(dir, s.markerFile()))
-		switch {
-		case err == nil:
-			// A relative directory is relative to the marker file, and an
-			// absolute one is the same from anywhere.
-			named := strings.TrimSpace(string(marker))
-			if filepath.IsAbs(named) {
-				return filepath.ToSlash(named), nil
-			}
-			return path.Join(up, filepath.ToSlash(named)), nil
-		case !errors.Is(err, fs.ErrNotExist):
-			return "", err
-		}
 		if info, err := os.Stat(filepath.Join(dir, filepath.FromSlash(s.defaultDir()))); err == nil && info.IsDir() {
 			return path.Join(up, s.defaultDir()), nil
 		}
@@ -88,15 +66,6 @@ func (s *Store) Dir(context.Context) (string, error) {
 			return s.defaultDir(), nil
 		}
 	}
-}
-
-// SetDir records dir as where this project keeps its log, and
-// creates it.  Dir then finds it from anywhere in the project.
-func (s *Store) SetDir(_ context.Context, dir string) error {
-	if err := os.MkdirAll(s.path(dir), 0o755); err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(s.workdir, s.markerFile()), []byte(dir+"\n"), 0o644)
 }
 
 // Records returns the records, in order.

@@ -2,7 +2,6 @@ package logstore
 
 import (
 	"context"
-	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -10,18 +9,15 @@ import (
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
-// kind is the kind of log the other tests store: adr's, whose marker file and
-// default directory are these.
+// kind is the kind of log the other tests store: adr's, whose directory is
+// adrDir.
 var kind = record.Kind{Name: "adr", Dir: "adr", Noun: "decision record"}
 
-const (
-	adrMarker = ".adr-dir"
-	adrDir    = "docs/adr"
-)
+const adrDir = "docs/adr"
 
-// The kind of log names its marker file and its default directory, so that one
-// project can keep the logs of several tools without either finding the other.
-// The directory need not be named after the tool.
+// The kind of log names its directory, so that one project can keep the logs
+// of several tools without either finding the other.  The directory need not
+// be named after the tool.
 func TestTheKindNamesTheLogsFiles(t *testing.T) {
 	root := t.TempDir()
 	mkdirAll(t, filepath.Join(root, "docs", "adr"))
@@ -33,13 +29,6 @@ func TestTheKindNamesTheLogsFiles(t *testing.T) {
 	}
 	if want := "docs/requests"; dir != want {
 		t.Errorf("Dir() = %q, want %q", dir, want)
-	}
-
-	if err := s.SetDir(context.Background(), "proposals"); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := os.Stat(filepath.Join(root, ".rfc-dir")); err != nil {
-		t.Errorf("SetDir did not write .rfc-dir: %v", err)
 	}
 }
 

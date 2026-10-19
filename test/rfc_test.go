@@ -77,18 +77,18 @@ func TestRfcReports(t *testing.T) {
 	w.check()
 }
 
-// rfc is configured by its own marker file and variables, and ignores adr's.
+// rfc is configured by its own directory and variables, and ignores adr's.
 func TestRfcConfiguration(t *testing.T) {
 	w := newWorkspace(t, "rfc")
 	w.rfc("config")
-	w.rfc("init", "proposals")
+	w.rfc("init")
 	w.rfc("config")
 	w.mkdir("subdir")
 	w.cd("subdir")
 	w.rfc("config")
 	w.cd("..")
-	w.mkdir("proposals/templates")
-	w.write("proposals/templates/template.md", "# NUMBER. TITLE\n\nDate: DATE\n\n## Status\n\nSTATUS\n\n## Proposal\n")
+	w.mkdir("docs/rfc/templates")
+	w.write("docs/rfc/templates/template.md", "# NUMBER. TITLE\n\nDate: DATE\n\n## Status\n\nSTATUS\n\n## Proposal\n")
 	w.rfc("config")
 	w.write("custom.md", "# NUMBER. TITLE, from custom.md\n\nDate: DATE\n\n## Status\n\nSTATUS\n\n## Proposal\n")
 	w.setenv("ADR_TEMPLATE", "custom.md")
@@ -97,8 +97,8 @@ func TestRfcConfiguration(t *testing.T) {
 	w.setenv("RFC_TEMPLATE", "custom.md")
 	w.setenv("RFC_DATE", "2026-09-10")
 	w.rfc("new", "Uses the RFC settings")
-	w.cat("proposals/RFC-0002-ignores-the-adr-settings.md")
-	w.cat("proposals/RFC-0003-uses-the-rfc-settings.md")
+	w.cat("docs/rfc/RFC-0002-ignores-the-adr-settings.md")
+	w.cat("docs/rfc/RFC-0003-uses-the-rfc-settings.md")
 	w.check()
 }
 

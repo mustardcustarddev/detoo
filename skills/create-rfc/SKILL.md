@@ -52,9 +52,8 @@ rfc list          # existing RFCs
 ```
 
 If there is no log yet (`rfc list` fails with `the docs/rfc directory does not
-exist`, or names another missing directory), ask the user whether to start
-one, and where. `rfc init [DIR]` creates the directory and writes RFC 1, the
-decision to propose significant changes in RFCs.
+exist`), ask the user whether to start one. `rfc init` creates `docs/rfc` and
+writes RFC 1, the decision to propose significant changes in RFCs.
 
 Read RFC 1, or whichever RFC sets out the project's process: it may say what
 needs an RFC, who comments, and where. Follow it. Read the titles of the

@@ -36,7 +36,7 @@ func RunDetoo(kinds []record.Kind, files fs.FS) int {
 
 	// The composition root, as in Run: the disk, the network and the
 	// terminal are chosen here, once.
-	p := project.New(workdir, kinds)
+	p := project.New(workdir)
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return failDetoo(err)

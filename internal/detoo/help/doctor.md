@@ -2,9 +2,6 @@ Checks the project's adr, rfc, ust, plm and sop logs together, and reports
 any log the tools would not find, or whose file names or titles are out of
 date:
 
-* a marker file named after a tool's former name, which the tool no longer
-  reads: `.sty-dir`, from before `sty` was renamed `ust`, or `.pse-dir`, from
-  before `plm` replaced `pse`;
 * a log kept under `doc/` instead of `docs/`;
 * a log kept in a directory its tool no longer looks in, such as user stories
   in `docs/sty` instead of `docs/userstory`, or playbooks in `docs/piosee`
@@ -21,8 +18,7 @@ date:
   title is not checked.
 
 When moving or renaming would clash, such as when both `docs/sty` and
-`docs/userstory` exist, both `.sty-dir` and `.ust-dir` exist, or `.ust-dir`
-names the old directory, the problem is reported as needing fixing by hand.
+`docs/userstory` exist, the problem is reported as needing fixing by hand.
 So is a title that does not match its file name, since doctor cannot tell
 which of the two is wrong.
 
@@ -35,12 +31,10 @@ which came first is not known, so doctor suggests new numbers, and leaves the
 renumbering to be done by hand.
 
 The project is the nearest of the current directory and its parents that
-holds a `docs` or `doc` directory, or a tool's marker file such as `.adr-dir`,
-under its name or a former one.
+holds a `docs` or `doc` directory.
 
 Without `--fix`, nothing is changed, and doctor says how many of the problems
-`--fix` would fix.  With it, doctor renames each marker file named after a
-tool's former name to the tool's name, moves each log to where its tool looks,
+`--fix` would fix.  With it, doctor moves each log to where its tool looks,
 renames its documents to begin with the prefix, and changes the links to them
 in the project's Markdown documents (those in the project's directory, and
 under `docs`, `doc` and each log's directory), so that none break.  A

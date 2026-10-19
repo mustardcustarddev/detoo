@@ -7,11 +7,10 @@ Options, how to make the Selection, the steps of Execution, and the
 Evaluation of the result.  A playbook refers to standard operating procedures,
 kept with the sop tool, for the routine steps.
 
-Problem playbooks are stored as Markdown files in a subdirectory of the
-project, by default `docs/problem`.  Each playbook's file name begins with
-`PROBLEM-` and its number, such as
-`PROBLEM-0001-plan-for-incidents-with-piosee.md`.  Run "plm init" to start a
-log, and "plm new" to add to it.
+Problem playbooks are stored as Markdown files in the project's
+`docs/problem` directory.  Each playbook's file name begins with `PROBLEM-`
+and its number, such as `PROBLEM-0001-plan-for-incidents-with-piosee.md`.  Run
+"plm init" to start a log, and "plm new" to add to it.
 
 Usage:
   plm [flags]

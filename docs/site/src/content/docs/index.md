@@ -9,7 +9,7 @@ detoo is a set of command-line tools and agent skills for working with
 decision records. Each tool keeps one kind of document as a numbered log of
 Markdown files in your repository, next to the code it is about.
 
-| Tool | Keeps | Where, by default |
+| Tool | Keeps | Where |
 | --- | --- | --- |
 | [`adr`](adr/) | Architecture decision records: decisions, and why they were made. | `docs/adr` |
 | [`rfc`](rfc/) | Requests for comments: proposed changes, written down for comment before they are made. | `docs/rfc` |

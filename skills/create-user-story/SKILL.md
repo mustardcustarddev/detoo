@@ -56,9 +56,9 @@ ust list          # existing stories
 ```
 
 If there is no log yet (`ust list` fails with `the docs/userstory directory
-does not exist`, or names another missing directory), ask the user whether to
-start one, and where. `ust init [DIR]` creates the directory and writes story
-1, which describes the practice of keeping stories.
+does not exist`), ask the user whether to start one. `ust init` creates
+`docs/userstory` and writes story 1, which describes the practice of keeping
+stories.
 
 Read story 1, and any story or document that sets out the project's
 conventions. Read the titles of the existing stories, and in full any whose

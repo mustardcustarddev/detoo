@@ -28,9 +28,8 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `plm list`: prints the path of every playbook, one a line, in order.
   Prints nothing if there are none. Fails with
   `plm: the docs/problem directory does not exist` if there is no log.
-* `plm init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/problem`,
-  and writes playbook 1, "Plan for incidents with PIOSEE". Does nothing if the
-  log already has playbooks.
+* `plm init`: starts a log in `docs/problem`, and writes playbook 1, "Plan
+  for incidents with PIOSEE". Does nothing if the log already has playbooks.
 * `plm new [-r REF]... [-u REF]... TITLE`: creates the next numbered playbook
   from the template, in draft, and prints its path.
 * `plm link (-r | -u) SOURCE TARGET`: records, in both playbooks, that
@@ -178,10 +177,9 @@ number.
 | `PLM_DATE`           | Date written into a new playbook, as given.  |
 | `PLM_PAGER`          | Pager for help, if set. Clear it.            |
 
-The log directory is `docs/problem`, unless a `.plm-dir` file in the project
-root names another. The working directory and each of its ancestors are
-searched in turn for a `.plm-dir` file, then for a `docs/problem` directory,
-so the tool works from anywhere in the project. Run `plm config` rather than
+The log directory is `docs/problem`. The working directory and each of its
+ancestors are searched in turn for a `docs/problem` directory, so the tool
+works from anywhere in the project. Run `plm config` rather than
 assuming.
 
 ## Errors

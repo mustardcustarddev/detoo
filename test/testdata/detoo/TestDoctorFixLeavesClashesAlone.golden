@@ -1,6 +1,3 @@
-cat > .ust-dir <<EOF
-docs/sty
-EOF
 touch docs/sty/STORY-0001-first.md doc/userstory/STORY-0002-second.md doc/sty/story-0003-third.md doc/adr/0001-first.md doc/adr/adr-0001-first.md
 detoo doctor --fix
   ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
@@ -27,7 +24,10 @@ detoo doctor --fix
 │ ✓ Renamed to begin with STORY-                                               │
 │   story-0003-third.md  →  STORY-0003-third.md                                │
 │ ✗ Kept in a former directory: user stories now live in docs/userstory        │
-│ ! Needs fixing by hand: .ust-dir names docs/sty, so ust still looks there.   │
+│   ust no longer finds the user story in docs/sty.                            │
+│ ! Needs fixing by hand: both directories exist, so moving one would clash.   │
+│   docs/sty        1 user story  · former directory                           │
+│   docs/userstory  1 user story  · current directory, where ust looks         │
 │ ✗ Kept in a former directory: user stories now live in docs/userstory        │
 │   ust no longer finds the user story in doc/sty.                             │
 │ ! Needs fixing by hand: both directories exist, so moving one would clash.   │

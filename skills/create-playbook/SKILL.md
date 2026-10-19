@@ -117,11 +117,10 @@ plm list          # existing playbooks
 sop list          # the SOPs a playbook can refer to
 ```
 
-If there is no problem log yet, ask the user whether to start one, and
-where. There is none when `plm list` fails with `the docs/problem directory
-does not exist`, or names another missing directory. `plm init [DIR]` creates
-the directory and writes playbook 1, which plans for deciding when to write a
-playbook.
+If there is no problem log yet, ask the user whether to start one. There is
+none when `plm list` fails with `the docs/problem directory does not exist`.
+`plm init` creates `docs/problem` and writes playbook 1, which plans for
+deciding when to write a playbook.
 
 If `plm list` finds nothing but a `docs/piosee` directory exists, or
 playbooks are named `PIOSEE-`, the log was kept by `pse`, the tool `plm`

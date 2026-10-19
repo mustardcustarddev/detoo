@@ -76,12 +76,14 @@ func TestHandleSupersedeRetiresTheTarget(t *testing.T) {
 // The words a link is written in, and the status a replaced record loses,
 // belong to the kind of log: an RFC obsoletes a draft.
 func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
-	log := memlog.WithRecords(map[string]string{
+	log := memlog.Of(rfc.Kind)
+	for file, content := range map[string]string{
 		"docs/rfc/0001-first.md":  "# 1. First\n\n## Status\n\nDraft\n\n## Summary\n\nSummary.\n",
 		"docs/rfc/0002-second.md": "# 2. Second\n\n## Status\n\nDraft\n\n## Summary\n\nSummary.\n",
-	})
-	if err := log.SetDir(context.Background(), "docs/rfc"); err != nil {
-		t.Fatal(err)
+	} {
+		if err := log.Write(context.Background(), file, content); err != nil {
+			t.Fatal(err)
+		}
 	}
 
 	if _, err := (Handler{Kind: rfc.Kind, Log: log}).Handle(context.Background(), Command{

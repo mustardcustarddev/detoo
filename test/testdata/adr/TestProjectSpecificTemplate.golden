@@ -1,7 +1,7 @@
-adr init adrs
-adrs/ADR-0001-record-architecture-decisions.md
-mkdir -p adrs/templates
-cat > adrs/templates/template.md <<EOF
+adr init
+docs/adr/ADR-0001-record-architecture-decisions.md
+mkdir -p docs/adr/templates
+cat > docs/adr/templates/template.md <<EOF
 # TITLE
 
 Project specific template!
@@ -17,10 +17,10 @@ ADR Number: NUMBER
 Date: DATE
 EOF
 adr new "Aaa Bbb"
-adrs/ADR-0002-aaa-bbb.md
+docs/adr/ADR-0002-aaa-bbb.md
 adr new "Ccc Ddd"
-adrs/ADR-0003-ccc-ddd.md
-cat adrs/ADR-0002-aaa-bbb.md
+docs/adr/ADR-0003-ccc-ddd.md
+cat docs/adr/ADR-0002-aaa-bbb.md
 # Aaa Bbb
 
 Project specific template!
@@ -34,7 +34,7 @@ Draft
 ADR Number: 2
 
 Date: 1992-01-12
-cat adrs/ADR-0003-ccc-ddd.md
+cat docs/adr/ADR-0003-ccc-ddd.md
 # Ccc Ddd
 
 Project specific template!

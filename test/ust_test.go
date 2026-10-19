@@ -7,10 +7,10 @@ import (
 
 // The ust tool shares its engine with adr and rfc.  The adr tests cover the
 // behaviour every tool shares, and the rfc tests cover how a tool's definition
-// names its directory, its marker file and its variables.  These tests cover
-// what the ust tool's definition changes: its first record, the status and
-// sections of a new story, the words and options for its links, the heading of
-// its reports, and its help.
+// names its directory and its variables.  These tests cover what the ust
+// tool's definition changes: its first record, the status and sections of a
+// new story, the words and options for its links, the heading of its reports,
+// and its help.
 
 func TestInitUstRepository(t *testing.T) {
 	w := newWorkspace(t, "ust")

@@ -5,35 +5,12 @@ package initialise
 import (
 	"context"
 	"errors"
-	"fmt"
-	"path"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
-// ErrLogExists reports that init was asked to start a log in one directory
-// while the project's log, which already has records, is in another.
-var ErrLogExists = errors.New("a log already exists")
-
-// logExistsError is ErrLogExists, told in the words of the kind of log and
-// naming the directory the log is in.
-type logExistsError struct {
-	plural, dir string
-}
-
-func (e *logExistsError) Error() string {
-	return fmt.Sprintf("a log of %s already exists in %s", e.plural, e.dir)
-}
-
-func (e *logExistsError) Is(target error) bool { return target == ErrLogExists }
-
 // Command asks for a log.
-type Command struct {
-	// Dir is where the log should live, relative to the working directory.
-	// Empty leaves the location as it is, so that a project which already
-	// chose one keeps it.
-	Dir string
-}
+type Command struct{}
 
 // Result names the record that was created.  File is empty when the log
 // already had records, and nothing was written.
@@ -43,7 +20,6 @@ type Result struct {
 
 // Store is the port this slice needs.
 type Store interface {
-	SetDir(ctx context.Context, dir string) error
 	Dir(ctx context.Context) (string, error)
 	Records(ctx context.Context) ([]record.Record, error)
 	NextNumber(ctx context.Context, dir string) (int, error)
@@ -74,14 +50,9 @@ type Handler struct {
 	Clock     Clock
 }
 
-func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
+func (h Handler) Handle(ctx context.Context, _ Command) (Result, error) {
 	// A log that already has records is left as it is, so that init can be run
-	// again safely.  Starting one somewhere else would strand those records in
-	// a directory the project no longer uses, so that is refused.
-	current, err := h.Log.Dir(ctx)
-	if err != nil {
-		return Result{}, err
-	}
+	// again safely.
 	records, err := h.Log.Records(ctx)
 	var missing *record.MissingDirError
 	switch {
@@ -90,16 +61,7 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 	case err != nil:
 		return Result{}, err
 	case len(records) > 0:
-		if cmd.Dir != "" && path.Clean(cmd.Dir) != path.Clean(current) {
-			return Result{}, &logExistsError{plural: h.Kind.Plural, dir: current}
-		}
 		return Result{}, nil
-	}
-
-	if cmd.Dir != "" {
-		if err := h.Log.SetDir(ctx, cmd.Dir); err != nil {
-			return Result{}, err
-		}
 	}
 
 	dir, err := h.Log.Dir(ctx)

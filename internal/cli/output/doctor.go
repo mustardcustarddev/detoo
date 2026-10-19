@@ -431,9 +431,6 @@ func (r *report) logBody(l doctor.Log) string {
 	}
 
 	var lines []string
-	for _, m := range l.FormerMarkers {
-		lines = append(lines, r.formerMarker(l, m)...)
-	}
 	for _, m := range l.Misplaced {
 		lines = append(lines, r.misplaced(l, m)...)
 	}
@@ -449,23 +446,6 @@ func (r *report) logBody(l doctor.Log) string {
 	return strings.Join(lines, "\n")
 }
 
-// formerMarker describes a marker file named after a former name of the tool,
-// which it no longer reads, and how to fix it.
-func (r *report) formerMarker(l doctor.Log, m doctor.MarkerRename) []string {
-	subtext := r.fg(r.th.subtext)
-	name := l.Kind.Name
-	lines := []string{r.cross() + " Marker file has a former name: " + name + " reads " + bold(m.To)}
-	if !m.Clash {
-		lines = append(lines, "  "+subtext.Render(fmt.Sprintf("%s no longer reads %s, which names %s.", name, m.From, m.Dir)))
-		return append(lines, r.mapping([][]string{{m.From, r.arrow(), r.fg(r.th.green).Bold(true).Render(m.To)}})...)
-	}
-	lines = append(lines, r.bang()+" Needs fixing by hand: both marker files exist, so renaming would clash.")
-	return append(lines, grid([][]string{
-		{m.From, subtext.Render("names " + m.Dir), subtext.Render("· former name")},
-		{m.To, subtext.Render("names " + l.Dir), subtext.Render("· current name, which " + name + " reads")},
-	})...)
-}
-
 // misplaced describes a log kept in the wrong directory, and how to fix it.
 func (r *report) misplaced(l doctor.Log, m doctor.Move) []string {
 	subtext := r.fg(r.th.subtext)
@@ -476,7 +456,7 @@ func (r *report) misplaced(l doctor.Log, m doctor.Move) []string {
 		lines = append(lines, r.cross()+" Kept under "+bold("doc/")+" instead of "+bold("docs/"))
 	case doctor.Former:
 		lines = append(lines, r.cross()+" Kept in a former directory: "+l.Kind.Plural+" now live in "+bold(m.To))
-		if m.Clash != doctor.MarkerNamesIt && m.Documents > 0 {
+		if m.Documents > 0 {
 			lines = append(lines, "  "+subtext.Render(fmt.Sprintf("%s no longer finds %s in %s.",
 				name, the(m.Documents, l.Kind.Noun, l.Kind.Plural), m.From)))
 		}
@@ -495,8 +475,6 @@ func (r *report) misplaced(l doctor.Log, m doctor.Move) []string {
 			{m.From, subtext.Render(count(m.Documents, l.Kind.Noun, l.Kind.Plural)), subtext.Render("· " + role)},
 			{m.To, subtext.Render(count(l.DocumentsIn(m.To), l.Kind.Noun, l.Kind.Plural)), subtext.Render("· current directory, where " + name + " looks")},
 		})...)
-	case doctor.MarkerNamesIt:
-		lines = append(lines, r.bang()+" Needs fixing by hand: "+bold(l.Marker)+" names "+m.From+", so "+name+" still looks there.")
 	case doctor.SharedTarget:
 		lines = append(lines, r.bang()+" Needs fixing by hand: "+m.ClashWith+" moves to "+m.To+" too, so moving both would clash.")
 	}
@@ -721,18 +699,11 @@ func (r *report) mapping(rows [][]string) []string {
 }
 
 // fixBox draws what a fix changed in one log, and what is left wrong with it:
-// the marker files renamed, the moves, the directories they left empty and
+// the moves, the directories they left empty and
 // that were removed, the renames, and the problems that need fixing by hand.
 func (r *report) fixBox(l doctor.Log, f doctor.Fixes, removed []string) string {
 	subtext := r.fg(r.th.subtext)
 	var lines []string
-	for _, m := range f.Markers {
-		lines = append(lines, r.tick()+" Renamed from a former name to "+bold(m.To))
-		lines = append(lines, r.mapping([][]string{{m.From, r.arrow(), r.fg(r.th.green).Bold(true).Render(m.To)}})...)
-	}
-	for _, m := range l.FormerMarkers {
-		lines = append(lines, r.formerMarker(l, m)...)
-	}
 	for _, m := range f.Moved {
 		switch m.Reason {
 		case doctor.UnderDoc:

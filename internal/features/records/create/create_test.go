@@ -149,10 +149,8 @@ func TestHandleUpdatesAnExistingRecord(t *testing.T) {
 // The status a record starts with, the words its links are written in, and the
 // status a replaced record loses all belong to the kind of log.
 func TestHandleWritesInTheWordsOfTheKind(t *testing.T) {
-	log := memlog.WithRecords(map[string]string{
-		"docs/rfc/0001-first.md": "# 1. First\n\n## Status\n\nDraft\n\n## Context\n\nContext.\n",
-	})
-	if err := log.SetDir(context.Background(), "docs/rfc"); err != nil {
+	log := memlog.Of(rfc.Kind)
+	if err := log.Write(context.Background(), "docs/rfc/0001-first.md", "# 1. First\n\n## Status\n\nDraft\n\n## Context\n\nContext.\n"); err != nil {
 		t.Fatal(err)
 	}
 	handler := newHandler(log, &spyEditor{})

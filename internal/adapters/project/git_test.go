@@ -25,7 +25,7 @@ func newRepository(t *testing.T, tracked, untracked []string) (*Git, string) {
 	if len(tracked) > 0 {
 		gitIn(t, root, append([]string{"add", "--"}, tracked...)...)
 	}
-	return NewGit(New(root, kinds)), root
+	return NewGit(New(root)), root
 }
 
 func gitIn(t *testing.T, dir string, args ...string) string {
@@ -53,7 +53,7 @@ func TestRepositoryIsAGitWorkingTree(t *testing.T) {
 	dir := resolved(t, t.TempDir())
 	// Whatever repository the temporary directory is in, this one is not.
 	t.Setenv("GIT_CEILING_DIRECTORIES", filepath.Dir(dir))
-	outside := NewGit(New(dir, kinds))
+	outside := NewGit(New(dir))
 	if in, err := outside.Repository(context.Background()); err != nil || in {
 		t.Errorf("Repository() outside a repository = %v, %v, want false", in, err)
 	}

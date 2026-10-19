@@ -66,11 +66,6 @@ func (l *Log) Files() []string {
 
 func (l *Log) Dir(context.Context) (string, error) { return l.dir, nil }
 
-func (l *Log) SetDir(_ context.Context, dir string) error {
-	l.dir, l.created = dir, true
-	return nil
-}
-
 func (l *Log) Records(context.Context) ([]record.Record, error) {
 	if !l.created {
 		return nil, &record.MissingDirError{Dir: l.dir}

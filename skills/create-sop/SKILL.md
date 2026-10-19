@@ -72,10 +72,9 @@ sop list          # existing SOPs
 ```
 
 If there is no log yet, there is none when `sop list` fails with
-`the docs/sop directory does not exist`, or names another missing directory.
-Ask the user whether to start one with `sop init [DIR]`, which creates the
-directory and writes SOP 1, which sets out how to write an SOP. Default to
-`docs/sop`.
+`the docs/sop directory does not exist`. Ask the user whether to start one
+with `sop init`, which creates `docs/sop` and writes SOP 1, which sets out how
+to write an SOP.
 
 Read the titles of the existing SOPs. Read in full any whose task is close to
 this one: the new SOP may duplicate it, supersede it or update it. Read one or

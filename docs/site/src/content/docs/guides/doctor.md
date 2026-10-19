@@ -24,8 +24,6 @@ in CI.
 
 It finds, for example:
 
-* a marker file named after a tool's former name, such as `.sty-dir`, which
-  `ust` no longer reads now that `sty` is called `ust`;
 * a log kept under `doc/` instead of `docs/`;
 * a log in a directory its tool no longer looks in, such as user stories in
   `docs/sty` instead of `docs/userstory`, or playbooks kept by `pse` in
@@ -56,15 +54,12 @@ and `git diff`.
 `plm` replaced `pse`, so `detoo doctor --fix` is how to move a log of PIOSEE
 playbooks to where `plm` keeps them: it moves `docs/piosee` to
 `docs/problem`, renames each `PIOSEE-` playbook to begin `PROBLEM-`, and
-updates the links to them, including those from SOPs. It renames a
-`.pse-dir` file, if there is one, to `.plm-dir`.
+updates the links to them, including those from SOPs.
 
-`sty` is now called `ust`, so `detoo doctor --fix` renames a `.sty-dir` file,
-if there is one, to `.ust-dir`, so that `ust` finds the stories it names.
-Stories kept in `docs/userstory` need nothing doing.
+`sty` is now called `ust`, so `detoo doctor --fix` moves stories kept in
+`docs/sty` to `docs/userstory`, where `ust` looks for them.
 
 When a move would clash, such as when both `docs/sty` and `docs/userstory`
-exist, or both `.sty-dir` and `.ust-dir`, `doctor` reports the problem as
-needing fixing by hand.
+exist, `doctor` reports the problem as needing fixing by hand.
 
 See [`detoo doctor`](../../detoo/doctor/) for every option.

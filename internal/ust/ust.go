@@ -17,7 +17,6 @@ import (
 // replaced by each of the smaller stories it is split into.
 var Kind = record.Kind{
 	Name:        "ust",
-	FormerNames: []string{"sty"},
 	Dir:         "userstory",
 	Prefix:      "STORY",
 	Former:      []string{"sty"},

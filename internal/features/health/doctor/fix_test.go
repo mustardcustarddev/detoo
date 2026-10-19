@@ -15,18 +15,12 @@ import (
 	"github.com/mustardcustard/detoo/internal/ust"
 )
 
-// memWorkspace is a project held in memory as its files, by path, marker
-// files among them.
+// memWorkspace is a project held in memory as its files, by path.
 type memWorkspace struct {
 	files map[string]string
 }
 
 func (w *memWorkspace) Root(context.Context) (string, error) { return "/home/ann/handbook", nil }
-
-func (w *memWorkspace) Marker(_ context.Context, name string) (string, bool, error) {
-	dir, ok := w.files[name]
-	return strings.TrimSpace(dir), ok, nil
-}
 
 func (w *memWorkspace) Files(_ context.Context, dir string) ([]string, bool, error) {
 	var names []string
@@ -166,28 +160,6 @@ func TestFixLeavesClashesAlone(t *testing.T) {
 	}
 	if fixed.After.Healthy() || fixed.After.Problems() != fixed.After.ByHand() || fixed.After.ByHand() != 2 {
 		t.Errorf("After has %d problems, %d by hand, want 2 by hand", fixed.After.Problems(), fixed.After.ByHand())
-	}
-}
-
-// A marker file named after the tool's former name is renamed, so that the
-// tool reads it again, and the log it names is left where it is.
-func TestFixRenamesAFormerMarker(t *testing.T) {
-	w := &memWorkspace{files: map[string]string{
-		".sty-dir":                    "stories\n",
-		"stories/STORY-0001-first.md": "# 1. First\n",
-	}}
-	fixed := fix(t, w, ust.Kind)
-
-	want := []string{".ust-dir", "stories/STORY-0001-first.md"}
-	if got := slices.Sorted(maps.Keys(w.files)); !reflect.DeepEqual(got, want) {
-		t.Errorf("files are %v, want %v", got, want)
-	}
-	if fixed.Count() != 1 || fixed.Changes() != 1 || !fixed.After.Healthy() {
-		t.Errorf("Count() = %d, Changes() = %d, After.Healthy() = %v, want 1, 1, true",
-			fixed.Count(), fixed.Changes(), fixed.After.Healthy())
-	}
-	if l := fixed.After.Logs[0]; l.Dir != "stories" || l.Marker != ".ust-dir" {
-		t.Errorf("after the fix, Dir = %q, Marker = %q, want stories, .ust-dir", l.Dir, l.Marker)
 	}
 }
 

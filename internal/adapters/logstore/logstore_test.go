@@ -41,19 +41,6 @@ func TestDirDefaultsWhenNothingIsFound(t *testing.T) {
 	}
 }
 
-func TestDirFindsAMarkerFile(t *testing.T) {
-	s := newStore(t)
-	write(t, filepath.Join(s.workdir, adrMarker), "architecture-log\n")
-
-	dir, err := s.Dir(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := "architecture-log"; dir != want {
-		t.Errorf("Dir() = %q, want %q", dir, want)
-	}
-}
-
 func TestDirSearchesAncestors(t *testing.T) {
 	for _, test := range []struct {
 		name  string
@@ -64,11 +51,6 @@ func TestDirSearchesAncestors(t *testing.T) {
 			name:  "default directory in an ancestor",
 			setup: func(root string) { mkdirAll(t, filepath.Join(root, "docs", "adr")) },
 			want:  "../../docs/adr",
-		},
-		{
-			name:  "marker file in an ancestor",
-			setup: func(root string) { write(t, filepath.Join(root, adrMarker), "architecture-log\n") },
-			want:  "../../architecture-log",
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -85,41 +67,6 @@ func TestDirSearchesAncestors(t *testing.T) {
 				t.Errorf("Dir() = %q, want %q", dir, test.want)
 			}
 		})
-	}
-}
-
-// TestDirPrefersTheNearestMarker checks that a marker file closer to the working
-// directory wins over one further up.
-func TestDirPrefersTheNearestMarker(t *testing.T) {
-	root := t.TempDir()
-	write(t, filepath.Join(root, adrMarker), "outer\n")
-	inner := filepath.Join(root, "component")
-	mkdirAll(t, inner)
-	write(t, filepath.Join(inner, adrMarker), "inner\n")
-
-	dir, err := New(inner, kind).Dir(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := "inner"; dir != want {
-		t.Errorf("Dir() = %q, want %q", dir, want)
-	}
-}
-
-func TestSetDirCreatesTheDirectoryAndTheMarker(t *testing.T) {
-	s := newStore(t)
-	if err := s.SetDir(context.Background(), "architecture-log"); err != nil {
-		t.Fatal(err)
-	}
-	if info, err := os.Stat(s.path("architecture-log")); err != nil || !info.IsDir() {
-		t.Errorf("the log directory was not created: %v", err)
-	}
-	dir, err := s.Dir(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := "architecture-log"; dir != want {
-		t.Errorf("Dir() = %q, want %q", dir, want)
 	}
 }
 
@@ -229,64 +176,5 @@ func mkdirAll(t *testing.T, dir string) {
 	t.Helper()
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatal(err)
-	}
-}
-
-func write(t *testing.T, file, content string) {
-	t.Helper()
-	if err := os.WriteFile(file, []byte(content), 0o644); err != nil {
-		t.Fatal(err)
-	}
-}
-
-// TestAbsoluteDirectory covers a log kept at an absolute path, given to SetDir
-// or found in a marker file: it is used where it is, and not under the working
-// directory, wherever in the project the store is opened.
-func TestAbsoluteDirectory(t *testing.T) {
-	root := t.TempDir()
-	project := filepath.Join(root, "project")
-	deep := filepath.Join(project, "src", "main")
-	mkdirAll(t, deep)
-	log := filepath.ToSlash(filepath.Join(root, "decisions"))
-
-	if err := New(project, kind).SetDir(context.Background(), log); err != nil {
-		t.Fatal(err)
-	}
-	for _, workdir := range []string{project, deep} {
-		s := New(workdir, kind)
-		dir, err := s.Dir(context.Background())
-		if err != nil {
-			t.Fatal(err)
-		}
-		if dir != log {
-			t.Errorf("from %s, Dir() = %q, want %q", workdir, dir, log)
-		}
-	}
-
-	s := New(project, kind)
-	file := log + "/0001-first.md"
-	if err := s.Write(context.Background(), file, "# 1. First\n"); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := os.Stat(filepath.FromSlash(file)); err != nil {
-		t.Errorf("the record was not written at %s: %v", file, err)
-	}
-	records, err := s.Records(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := []record.Record{{Number: 1, File: file}}; !reflect.DeepEqual(records, want) {
-		t.Errorf("Records() = %v, want %v", records, want)
-	}
-
-	// Nothing is created under the project but its marker file.
-	entries, err := os.ReadDir(project)
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, entry := range entries {
-		if name := entry.Name(); name != adrMarker && name != "src" {
-			t.Errorf("found %s in the project", name)
-		}
 	}
 }

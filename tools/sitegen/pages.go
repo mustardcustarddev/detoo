@@ -74,7 +74,7 @@ func tools() []tool {
 		}}
 	}
 	doctor := tool{"detoo", func(stdout io.Writer) *cobra.Command {
-		p := project.New(os.TempDir(), detoo.Kinds)
+		p := project.New(os.TempDir())
 		application := app.NewDetoo(detoo.Kinds, p, project.NewGit(p), nil, skills.Installations{})
 		terminal := func() output.Terminal { return output.Terminal{} }
 		return cli.NewDetooCommand(detoo.Files, application, terminal, nil, stdout, io.Discard, none)

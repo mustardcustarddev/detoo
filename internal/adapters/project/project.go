@@ -1,7 +1,6 @@
-// Package project looks at a project's directory as a whole: where it is, the
-// marker files that say where its logs are kept, and the files in a directory,
-// and changes it: it moves directories, renames files, and rewrites
-// documents.
+// Package project looks at a project's directory as a whole: where it is and
+// the files in a directory, and changes it: it moves directories, renames
+// files, and rewrites documents.
 //
 // This is a driven adapter.  Where logstore serves the one log a record tool
 // keeps, this serves a command that looks after every log in a project.
@@ -17,8 +16,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"github.com/mustardcustard/detoo/internal/domain/record"
 )
 
 // Project is the project reachable from a working directory.  Every path it
@@ -26,18 +23,17 @@ import (
 // absolute, and is slash separated, whatever the host filesystem uses.
 type Project struct {
 	workdir string
-	kinds   []record.Kind
 	root    string // found by Root, once
 }
 
-// New returns the project holding workdir, whose logs are of the given kinds.
-func New(workdir string, kinds []record.Kind) *Project {
-	return &Project{workdir: workdir, kinds: kinds}
+// New returns the project holding workdir.
+func New(workdir string) *Project {
+	return &Project{workdir: workdir}
 }
 
 // Root returns the project's directory, by its real path: the nearest of the
-// working directory and its ancestors that holds a marker file of one of the
-// kinds, under its name or a former one, a docs directory or a doc directory.
+// working directory and its ancestors that holds a docs directory or a doc
+// directory.
 // A working directory with none of them above it is the project's directory
 // itself.
 func (p *Project) Root(context.Context) (string, error) {
@@ -67,13 +63,6 @@ func (p *Project) Root(context.Context) (string, error) {
 }
 
 func (p *Project) isRoot(dir string) bool {
-	for _, kind := range p.kinds {
-		for _, marker := range append([]string{kind.Marker()}, kind.FormerMarkers()...) {
-			if _, err := os.Stat(filepath.Join(dir, marker)); err == nil {
-				return true
-			}
-		}
-	}
 	for _, name := range []string{"docs", "doc"} {
 		if info, err := os.Stat(filepath.Join(dir, name)); err == nil && info.IsDir() {
 			return true
@@ -94,22 +83,6 @@ func (p *Project) path(ctx context.Context, name string) (string, error) {
 		return "", err
 	}
 	return filepath.Join(root, name), nil
-}
-
-// Marker returns the directory the marker file of that name, in the project's
-// root, names.
-func (p *Project) Marker(ctx context.Context, name string) (string, bool, error) {
-	file, err := p.path(ctx, name)
-	if err != nil {
-		return "", false, err
-	}
-	data, err := os.ReadFile(file)
-	if errors.Is(err, fs.ErrNotExist) {
-		return "", false, nil
-	} else if err != nil {
-		return "", false, err
-	}
-	return path.Clean(filepath.ToSlash(strings.TrimSpace(string(data)))), true, nil
 }
 
 // Files returns the names of the files in dir, leaving out directories and

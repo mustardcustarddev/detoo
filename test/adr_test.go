@@ -19,8 +19,6 @@ func TestInitIsIdempotent(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("init")
 	w.adr("init")
-	w.adr("init", "docs/adr/")
-	w.adr("init", "other")
 	w.ls(".")
 	w.adr("list")
 	w.check()
@@ -108,16 +106,6 @@ func TestEditAdrOnCreation(t *testing.T) {
 	w.check()
 }
 
-func TestAlternativeAdrDirectory(t *testing.T) {
-	w := newWorkspace(t, "adr")
-	w.adr("init", "alternative-dir")
-	w.adr("new", "Example ADR")
-	w.ls(".")
-	w.ls("alternative-dir")
-	w.adr("list")
-	w.check()
-}
-
 func TestSearchForAdrDir(t *testing.T) {
 	w := newWorkspace(t, "adr")
 	w.adr("new", "First Record")
@@ -130,24 +118,11 @@ func TestSearchForAdrDir(t *testing.T) {
 	w.check()
 }
 
-func TestSearchForCustomAdrDir(t *testing.T) {
-	w := newWorkspace(t, "adr")
-	w.adr("init", "architecture-log")
-	w.adr("new", "First Record")
-	w.mkdir("subdir")
-	w.cd("subdir")
-	w.adr("new", "Second Record")
-	w.adr("list")
-	w.cd("..")
-	w.adr("list")
-	w.check()
-}
-
 func TestProjectSpecificTemplate(t *testing.T) {
 	w := newWorkspace(t, "adr")
-	w.adr("init", "adrs")
-	w.mkdir("adrs/templates")
-	w.write("adrs/templates/template.md", `# TITLE
+	w.adr("init")
+	w.mkdir("docs/adr/templates")
+	w.write("docs/adr/templates/template.md", `# TITLE
 
 Project specific template!
 
@@ -163,8 +138,8 @@ Date: DATE
 `)
 	w.adr("new", "Aaa Bbb")
 	w.adr("new", "Ccc Ddd")
-	w.cat("adrs/ADR-0002-aaa-bbb.md")
-	w.cat("adrs/ADR-0003-ccc-ddd.md")
+	w.cat("docs/adr/ADR-0002-aaa-bbb.md")
+	w.cat("docs/adr/ADR-0003-ccc-ddd.md")
 	w.check()
 }
 
@@ -311,18 +286,6 @@ func TestCompletionScript(t *testing.T) {
 	if script := w.output("adr", "completion", "bash"); !strings.Contains(script, "__start_adr") {
 		t.Errorf("completion script does not define __start_adr:\n%s", script)
 	}
-}
-
-// TestOperandsMayBeginWithAHyphen covers the POSIX rule that options come only
-// before the operands, so that a directory that begins with "-" may be given
-// after "--".
-func TestOperandsMayBeginWithAHyphen(t *testing.T) {
-	w := newWorkspace(t, "adr")
-	w.adr("init", "--", "-docs")
-	w.adr("new", "First Record")
-	w.ls(".")
-	w.head(10, "-docs/ADR-0002-first-record.md")
-	w.check()
 }
 
 func TestHelp(t *testing.T) {

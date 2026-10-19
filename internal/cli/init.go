@@ -10,18 +10,12 @@ import (
 
 func newInitCommand(t tool, application *app.Application) *cobra.Command {
 	return &cobra.Command{
-		Use:   "init [DIRECTORY]",
+		Use:   "init",
 		Short: "Start a log of " + t.Plural,
 		Long:  t.help("init.md"),
-		Args:  cobra.MaximumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			// No directory means the project keeps whichever it already uses,
-			// which the slice reads as an empty Dir.
-			var dir string
-			if len(args) > 0 {
-				dir = args[0]
-			}
-			result, err := application.Records.Initialise.Handle(cmd.Context(), initialise.Command{Dir: dir})
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			result, err := application.Records.Initialise.Handle(cmd.Context(), initialise.Command{})
 			if err != nil {
 				return err
 			}

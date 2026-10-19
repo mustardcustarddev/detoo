@@ -102,9 +102,6 @@ type Fixed struct {
 // Fixes are the problems fixed in one log.  Renames name the directory the
 // document was in before the fix, and the name it had there.
 type Fixes struct {
-	// Markers are the marker files renamed from a former name of the tool.
-	Markers []MarkerRename
-
 	Moved   []Move
 	Renamed []Rename
 
@@ -124,11 +121,10 @@ type Relinked struct {
 }
 
 // Count counts the problems fixed in the log.
-func (f Fixes) Count() int { return len(f.Markers) + len(f.Moved) + len(f.Renamed) + len(f.Duplicates) }
+func (f Fixes) Count() int { return len(f.Moved) + len(f.Renamed) + len(f.Duplicates) }
 
-// Files counts the marker files, directories and documents moved or renamed
-// in the log.
-func (f Fixes) Files() int { return len(f.Markers) + len(f.Moved) + len(f.Renamed) + len(f.Renumbered) }
+// Files counts the directories and documents moved or renamed in the log.
+func (f Fixes) Files() int { return len(f.Moved) + len(f.Renamed) + len(f.Renumbered) }
 
 // Count counts the problems fixed in every log.
 func (f Fixed) Count() int {
@@ -148,9 +144,9 @@ func (f Fixed) Renumbered() int {
 	return n
 }
 
-// Changes counts what the fix changed: each marker file renamed, each
-// directory moved or removed, each document renamed or renumbered, and each document whose links or title
-// were changed.
+// Changes counts what the fix changed: each directory moved or removed, each
+// document renamed or renumbered, and each document whose links or title were
+// changed.
 func (f Fixed) Changes() int {
 	n := len(f.Removed) + len(f.Relinked)
 	for _, l := range f.Logs {
@@ -159,9 +155,8 @@ func (f Fixed) Changes() int {
 	return n
 }
 
-// Handle checks the logs, renames each marker file named after a former name
-// of its tool, moves each misplaced directory and renames each misnamed
-// document that would not clash, renumbers the documents that share
+// Handle checks the logs, moves each misplaced directory and renames each
+// misnamed document that would not clash, renumbers the documents that share
 // a number if asked to, updates the links to what moved, and checks the logs
 // again.  A clash is left as it is, to be fixed by hand.
 func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
@@ -187,15 +182,6 @@ func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 	moves := relocation{dirs: map[string]string{}, files: map[string]string{}, numbers: map[string][2]int{}}
 
 	for i, l := range before.Logs {
-		for _, m := range l.FormerMarkers {
-			if m.Clash {
-				continue
-			}
-			if err := f.Project.Rename(ctx, ".", m.From, m.To); err != nil {
-				return Fixed{}, err
-			}
-			fixed.Logs[i].Markers = append(fixed.Logs[i].Markers, m)
-		}
 		for _, m := range l.Misplaced {
 			if m.Clash != NoClash {
 				continue

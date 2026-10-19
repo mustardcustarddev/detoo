@@ -1,13 +1,8 @@
-Initialises the directory of requests for comments:
+Initialises the directory of requests for comments, `docs/rfc`:
 
- * creates a subdirectory of the current working directory
- * creates the first RFC in that subdirectory, recording the decision to
-   propose significant changes in RFCs.
+ * creates `docs/rfc` under the current working directory, unless the
+   current working directory or one of its parents already has one
+ * creates the first RFC in it, recording the decision to propose
+   significant changes in RFCs.
 
-If the DIRECTORY is not given, the RFCs are stored in the directory `docs/rfc`.
-
-If the log already has RFCs, init does nothing, and giving it a different
-DIRECTORY is an error.
-
-A DIRECTORY whose name begins with a hyphen must be preceded by `--`, so that
-it is not read as an option.
+If the log already has RFCs, init does nothing.

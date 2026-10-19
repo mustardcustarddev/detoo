@@ -2,7 +2,6 @@ package initialise
 
 import (
 	"context"
-	"errors"
 	"reflect"
 	"testing"
 
@@ -28,10 +27,10 @@ func newHandler(log *memlog.Log) Handler {
 
 // The first record is filed under the title the kind of log gives it.
 func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
-	handler := newHandler(memlog.New())
+	handler := newHandler(memlog.Of(rfc.Kind))
 	handler.Kind = rfc.Kind
 
-	result, err := handler.Handle(context.Background(), Command{Dir: "docs/rfc"})
+	result, err := handler.Handle(context.Background(), Command{})
 	if err != nil {
 		t.Fatalf("Handle: %v", err)
 	}
@@ -40,8 +39,8 @@ func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
 	}
 }
 
-// The kind of log names the default directory of the first record, and the
-// prefix of its file name.
+// The kind of log names the directory of the first record, and the prefix of
+// its file name.
 func TestHandleFilesTheFirstRecordInTheKindsDirectory(t *testing.T) {
 	handler := newHandler(memlog.Of(ust.Kind))
 	handler.Kind = ust.Kind
@@ -72,43 +71,6 @@ func TestHandleWritesTheFirstRecordInTheDefaultDirectory(t *testing.T) {
 	}
 }
 
-func TestHandleMovesTheLogWhenGivenADirectory(t *testing.T) {
-	log := memlog.New()
-
-	result, err := newHandler(log).Handle(context.Background(), Command{Dir: "architecture-log"})
-	if err != nil {
-		t.Fatalf("Handle: %v", err)
-	}
-
-	if want := "architecture-log/ADR-0001-record-architecture-decisions.md"; result.File != want {
-		t.Errorf("File = %q, want %q", result.File, want)
-	}
-	dir, err := log.Dir(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if want := "architecture-log"; dir != want {
-		t.Errorf("the log directory is %q, want %q", dir, want)
-	}
-}
-
-// An empty directory means "wherever this project already keeps its records",
-// so the log is not moved back to the default.
-func TestHandleLeavesTheDirectoryAloneWhenNoneIsGiven(t *testing.T) {
-	log := memlog.New()
-	if err := log.SetDir(context.Background(), "architecture-log"); err != nil {
-		t.Fatal(err)
-	}
-
-	result, err := newHandler(log).Handle(context.Background(), Command{})
-	if err != nil {
-		t.Fatalf("Handle: %v", err)
-	}
-	if want := "architecture-log/ADR-0001-record-architecture-decisions.md"; result.File != want {
-		t.Errorf("File = %q, want %q", result.File, want)
-	}
-}
-
 // existingLog returns a log that has already been started.
 func existingLog() *memlog.Log {
 	return memlog.WithRecords(map[string]string{
@@ -116,50 +78,16 @@ func existingLog() *memlog.Log {
 	})
 }
 
-// Running init again leaves a log that already has records as it is, whether
-// or not it is told the log's own directory.
+// Running init again leaves a log that already has records as it is.
 func TestHandleDoesNothingWhenTheLogHasRecords(t *testing.T) {
-	for _, test := range []struct {
-		name string
-		dir  string
-	}{
-		{"no directory", ""},
-		{"the log's directory", "docs/adr"},
-		{"the log's directory, untidily", "docs/adr/"},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			log := existingLog()
-
-			result, err := newHandler(log).Handle(context.Background(), Command{Dir: test.dir})
-			if err != nil {
-				t.Fatalf("Handle: %v", err)
-			}
-			if result.File != "" {
-				t.Errorf("File = %q, want nothing written", result.File)
-			}
-			want := []string{"docs/adr/0001-record-architecture-decisions.md"}
-			if got := log.Files(); !reflect.DeepEqual(got, want) {
-				t.Errorf("the log holds %q, want %q", got, want)
-			}
-		})
-	}
-}
-
-// Pointing init at another directory would start a second log and leave the
-// first on disk, no longer used, so it is refused and nothing changes.
-func TestHandleRefusesToStartASecondLog(t *testing.T) {
 	log := existingLog()
 
-	_, err := newHandler(log).Handle(context.Background(), Command{Dir: "other"})
-	if !errors.Is(err, ErrLogExists) {
-		t.Errorf("err = %v, want %v", err, ErrLogExists)
-	}
-	dir, err := log.Dir(context.Background())
+	result, err := newHandler(log).Handle(context.Background(), Command{})
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Handle: %v", err)
 	}
-	if want := "docs/adr"; dir != want {
-		t.Errorf("the log directory is %q, want %q", dir, want)
+	if result.File != "" {
+		t.Errorf("File = %q, want nothing written", result.File)
 	}
 	want := []string{"docs/adr/0001-record-architecture-decisions.md"}
 	if got := log.Files(); !reflect.DeepEqual(got, want) {

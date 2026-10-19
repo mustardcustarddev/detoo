@@ -10,7 +10,7 @@ coding agents such as Claude Code and Codex. They drive the detoo tools to
 write ADRs, RFCs, user stories, problem playbooks and SOPs with you, asking
 you for the reasons behind each one, or, for an SOP, researching the steps
 for you. Others review an ADR log, and check the code
-against it.
+against it. Another writes a fire drill, to practise a playbook.
 
 Let your agent write the first draft. The skills read the code, the existing
 records and the documentation of the systems involved, ask you about what
@@ -28,6 +28,7 @@ they cannot find, and fill in your project's template.
 | [create-user-story](create-user-story/) | Writes a user story from a one-line subject, asking who it is for, what they need, why, and how you will know it is done. | `ust` |
 | [create-playbook](create-playbook/) | Writes a problem playbook, by the PIOSEE method: a plan, made in advance, for responding to a problem such as an incident, with the immediate action to take, and referring to SOPs for the routine steps. | `plm`, `sop` |
 | [create-sop](create-sop/) | Writes a standard operating procedure, the steps of a routine task, from the scripts, the configuration and the tools' documentation, with few questions. | `sop` |
+| [create-firedrill](create-firedrill/) | Writes a fire drill from a playbook: the setup on a local copy of the system, the symptoms, the expected response and a debrief, with an incident description and logs based on the real system. It never causes a real problem. | `plm`, `sop` |
 
 ## Ask in your own words
 
@@ -41,6 +42,7 @@ skill:
 | "Write a user story for exporting invoices." | `create-user-story` |
 | "Write a playbook for when a customer says they've been charged twice." | `create-playbook` |
 | "Write an SOP for rolling back a release." | `create-sop` |
+| "Write a fire drill for the double-charge playbook." | `create-firedrill` |
 | "Review our ADRs, and tell me which aren't really architectural." | `review-adrs` |
 | "Find the architecture decisions in this codebase that have no ADR." | `find-missing-adrs` |
 | "Check that the code follows ADR 7." | `check-adrs` |
@@ -53,9 +55,10 @@ keeps its log to what belongs there. Only architectural decisions go in the
 ADR log, and only changes that others would want a say in need an RFC. A user
 story describes an outcome someone wants. A problem playbook plans the
 response to a problem before it arises, by rules the team sets. An SOP holds
-the steps of a routine task, with no decision in it.
+the steps of a routine task, with no decision in it. A fire drill practises
+a playbook, and causes no real problem.
 
-Every ADR, RFC, user story, playbook and SOP an agent creates has the status
-Draft. Accepting one is for people to do.
+Every ADR, RFC, user story, playbook, SOP and fire drill an agent creates has
+the status Draft. Accepting one is for people to do.
 
 Next, [install the skills](install/).

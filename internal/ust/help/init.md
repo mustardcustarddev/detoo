@@ -1,14 +1,8 @@
-Initialises the directory of user stories:
+Initialises the directory of user stories, `docs/userstory`:
 
- * creates a subdirectory of the current working directory
- * creates the first story in that subdirectory, describing the practice of
-   keeping the work in user stories.
+ * creates `docs/userstory` under the current working directory, unless the
+   current working directory or one of its parents already has one
+ * creates the first story in it, describing the practice of keeping the
+   work in user stories.
 
-If the DIRECTORY is not given, the stories are stored in the directory
-`docs/userstory`.
-
-If the log already has stories, init does nothing, and giving it a different
-DIRECTORY is an error.
-
-A DIRECTORY whose name begins with a hyphen must be preceded by `--`, so that
-it is not read as an option.
+If the log already has stories, init does nothing.

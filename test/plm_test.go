@@ -85,14 +85,12 @@ func TestPlmReports(t *testing.T) {
 	w.check()
 }
 
-// plm is configured by its own variables and marker file, and not by those of
-// another tool.
+// plm is configured by its own variables, and not by those of another tool.
 func TestPlmConfiguration(t *testing.T) {
 	w := newWorkspace(t, "plm")
 	w.plm("config")
-	w.plm("init", "decisions")
+	w.plm("init")
 	w.plm("config")
-	w.cat(".plm-dir")
 	w.write("custom.md", "# NUMBER. TITLE, from custom.md\n\nDate: DATE\n\n## Status\n\nSTATUS\n\n## Problem\n")
 	w.setenv("UST_TEMPLATE", "custom.md")
 	w.setenv("UST_DATE", "2000-01-01")
@@ -100,23 +98,8 @@ func TestPlmConfiguration(t *testing.T) {
 	w.setenv("PLM_TEMPLATE", "custom.md")
 	w.setenv("PLM_DATE", "2026-10-16")
 	w.plm("new", "Uses the plm settings")
-	w.cat("decisions/PROBLEM-0002-ignores-the-ust-settings.md")
-	w.cat("decisions/PROBLEM-0003-uses-the-plm-settings.md")
-	w.check()
-}
-
-// Two tools whose records are prefixed can share a directory, and neither
-// sees the other's records.
-func TestPrefixedLogsCanShareADirectory(t *testing.T) {
-	w := newWorkspace(t, "plm")
-	w.plm("init", "docs/work")
-	w.ust("init", "docs/work")
-	w.plm("new", "A Playbook")
-	w.ust("new", "A Story")
-	w.ls("docs/work")
-	w.plm("list")
-	w.ust("list")
-	w.plm("link", "-u", "2", "a-story")
+	w.cat("docs/problem/PROBLEM-0002-ignores-the-ust-settings.md")
+	w.cat("docs/problem/PROBLEM-0003-uses-the-plm-settings.md")
 	w.check()
 }
 

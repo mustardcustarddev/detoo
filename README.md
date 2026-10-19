@@ -38,7 +38,7 @@ as [For developers](#for-developers) describes.
 
 ## Usage
 
-Each tool works the same way. Start a log, which by default lives in
+Each tool works the same way. Start a log, which lives in
 `docs/adr`, `docs/rfc`, `docs/userstory`, `docs/problem` or `docs/sop`, then
 add to it:
 
@@ -90,7 +90,8 @@ detoo skills install
 The skills use the tools to write ADRs, RFCs, user stories, problem
 playbooks and SOPs, asking you for the reasons behind each one, or, for an
 SOP, researching the steps for you. Others review an ADR
-log, and check the code against it. The [catalogue](skills/README.md)
+log, and check the code against it. Another writes a fire drill, to practise
+a playbook. The [catalogue](skills/README.md)
 describes each skill, and other ways to install them.
 
 > [!TIP]
@@ -109,6 +110,7 @@ Ask your agent in your own words, for example:
 | "Write a user story for exporting invoices."                              | `create-user-story` |
 | "Write a playbook for when a customer says they've been charged twice."   | `create-playbook`   |
 | "Write an SOP for rolling back a release."                                | `create-sop`        |
+| "Write a fire drill for the double-charge playbook."                      | `create-firedrill`  |
 | "Review our ADRs, and tell me which aren't really architectural."         | `review-adrs`       |
 | "Find the architecture decisions in this codebase that have no ADR."      | `find-missing-adrs` |
 | "Check that the code follows ADR 7."                                      | `check-adrs`        |
@@ -149,9 +151,9 @@ adr list                    # adr finds the decisions again
 
 The links between decisions, such as `Superseded by`, follow the renamed
 files, and so do links to them from a `README.md` or other documents. If you
-started adr-tools with a directory of your own, `.adr-dir` names it: if that
-is `doc/adr`, delete `.adr-dir` before fixing, or `doctor` will ask you to fix
-it by hand. Commit before fixing, so you can review the changes with
+started adr-tools with a directory of your own, `.adr-dir` names it, but adr
+does not read that file: move the directory to `docs/adr` before fixing, and
+delete `.adr-dir`. Commit before fixing, so you can review the changes with
 `git status` and `git diff`. In a git repository, `--fix` offers to use
 `git mv`, so that git shows each file as renamed.
 

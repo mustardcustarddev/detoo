@@ -1,13 +1,8 @@
-Initialises the directory of architecture decision records:
+Initialises the directory of architecture decision records, `docs/adr`:
 
- * creates a subdirectory of the current working directory
- * creates the first ADR in that subdirectory, recording the decision to
-   record architectural decisions with ADRs.
+ * creates `docs/adr` under the current working directory, unless the
+   current working directory or one of its parents already has one
+ * creates the first ADR in it, recording the decision to record
+   architectural decisions with ADRs.
 
-If the DIRECTORY is not given, the ADRs are stored in the directory `docs/adr`.
-
-If the log already has records, init does nothing, and giving it a different
-DIRECTORY is an error.
-
-A DIRECTORY whose name begins with a hyphen must be preceded by `--`, so that
-it is not read as an option.
+If the log already has records, init does nothing.

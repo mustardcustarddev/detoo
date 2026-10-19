@@ -27,9 +27,8 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `rfc list`: prints the path of every RFC, one a line, in order. Prints
   nothing if there are none. Fails with
   `rfc: the docs/rfc directory does not exist` if there is no log.
-* `rfc init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/rfc`, and
-  writes RFC 1, "Use requests for comments". Does nothing if the log already
-  has RFCs.
+* `rfc init`: starts a log in `docs/rfc`, and writes RFC 1, "Use requests
+  for comments". Does nothing if the log already has RFCs.
 * `rfc new [-o REF]... [-u REF]... TITLE`: creates the next numbered RFC from
   the template, in draft, and prints its path.
 * `rfc link (-o | -u) SOURCE TARGET`: records, in both RFCs, that `SOURCE`
@@ -148,9 +147,8 @@ highest-numbered RFC means the next `rfc new` reuses its number.
 | `RFC_DATE`           | Date written into a new RFC, as given.  |
 | `RFC_PAGER`          | Pager for help, if set. Clear it.       |
 
-The log directory is `docs/rfc`, unless a `.rfc-dir` file in the project root
-names another. The working directory and each of its ancestors are searched in
-turn for a `.rfc-dir` file, then for a `docs/rfc` directory, so the tool works
+The log directory is `docs/rfc`. The working directory and each of its
+ancestors are searched in turn for a `docs/rfc` directory, so the tool works
 from anywhere in the project. Run `rfc config` rather than assuming.
 
 ## Errors

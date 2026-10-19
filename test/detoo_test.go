@@ -40,13 +40,10 @@ func TestDoctorReportsLogsInTheWrongPlace(t *testing.T) {
 	w.check()
 }
 
-// A marker file naming a former directory, a marker file under a former name
-// beside the current one, and two directories that would move to the same
-// place, need fixing by hand.  A log moved alone does not.
+// Directories that would move to the same place need fixing by hand.  A log
+// moved alone does not.
 func TestDoctorReportsClashesAsNeedingFixingByHand(t *testing.T) {
 	w := newWorkspace(t, "detoo")
-	w.write(".ust-dir", "docs/sty\n")
-	w.write(".sty-dir", "docs/stories\n")
 	w.touch(
 		"docs/sty/STORY-0001-first.md",
 		"doc/userstory/STORY-0002-second.md",
@@ -131,18 +128,16 @@ func TestDoctorFixMigratesFromPse(t *testing.T) {
 	w.check()
 }
 
-// A project that kept its stories elsewhere named the directory in .sty-dir,
-// which sty read and ust, the tool that replaces it, does not.  A fix renames
-// the marker file to .ust-dir, so that ust finds the stories again.
+// A project that kept its stories in docs/sty, where sty kept them, has a log
+// that ust, the tool that replaces it, does not find.  A fix moves it to
+// docs/userstory, so that ust finds the stories again.
 func TestDoctorFixMigratesFromSty(t *testing.T) {
 	w := newWorkspace(t, "detoo")
-	w.write(".sty-dir", "stories\n")
-	w.write("stories/STORY-0001-describe-work-in-user-stories.md",
+	w.write("docs/sty/STORY-0001-describe-work-in-user-stories.md",
 		"# 1. Describe work in user stories\n\nDate: 2026-10-18\n\n## Status\n\nDraft\n")
 	w.ust("config")
 	w.detoo("doctor")
 	w.detoo("doctor", "--fix")
-	w.cat(".ust-dir")
 	w.ust("config")
 	w.ust("list")
 	w.check()
@@ -152,7 +147,6 @@ func TestDoctorFixMigratesFromSty(t *testing.T) {
 // exits 1, since problems remain.
 func TestDoctorFixLeavesClashesAlone(t *testing.T) {
 	w := newWorkspace(t, "detoo")
-	w.write(".ust-dir", "docs/sty\n")
 	w.touch(
 		"docs/sty/STORY-0001-first.md",
 		"doc/userstory/STORY-0002-second.md",

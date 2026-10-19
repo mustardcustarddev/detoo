@@ -3,8 +3,9 @@
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
 comments with `rfc`, user stories with `ust`, problem playbooks with `plm`,
-and standard operating procedures with `sop`. Each directory is one skill,
-and is self-contained, so it can be installed on its own.
+and standard operating procedures with `sop`, and for practising a playbook
+in a fire drill. Each directory is one skill, and is self-contained, so it
+can be installed on its own.
 
 ## Catalogue
 
@@ -62,6 +63,14 @@ These need the `plm` and `sop` tools.
   than interview: it reads the scripts, the CI and deployment configuration
   and the documentation of the tools involved, drafts the steps with their
   sources, and asks the user only what research cannot settle.
+* [**create-firedrill**](create-firedrill/SKILL.md): write a fire drill from
+  a problem playbook: an exercise in which the team practises the playbook's
+  response on a local copy of the system. It researches how the system runs
+  locally, what it logs and what the other systems involved report, and
+  writes the setup, the symptoms, the expected response and a debrief, with
+  an incident description and logs based on the real system. It never causes
+  a real problem: the document describes the symptoms, and the assets stand
+  in for the evidence.
 
 ### What they have in common
 
@@ -71,10 +80,11 @@ Each also keeps its log to what belongs there. Only architectural decisions go i
 others would want a say in need an RFC. A user story describes an outcome
 someone wants. A problem playbook plans the response to a problem before it
 arises, by rules the team sets. An SOP holds the steps of a routine task,
-with no decision in it.
+with no decision in it. A fire drill practises a playbook, and causes no real
+problem.
 
-Every ADR, RFC, user story, playbook and SOP an agent creates has the status
-`Draft`. Accepting one is for people to do.
+Every ADR, RFC, user story, playbook, SOP and fire drill an agent creates has
+the status `Draft`. Accepting one is for people to do.
 
 ## Installing
 
