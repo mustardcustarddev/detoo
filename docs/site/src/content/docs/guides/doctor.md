@@ -9,7 +9,7 @@ If a tool cannot find its records, or `list` leaves some out, the log is
 probably not where the tool looks, or its documents are not named as the
 tool expects. `detoo doctor` checks every log in the project at once.
 
-![detoo doctor in a terminal, reporting that the adr, rfc, sty and pse logs are all in place and named with their prefix](../../../assets/detoo-doctor.png)
+![detoo doctor in a terminal, reporting that all five logs are in place and named with their prefix](../../../assets/detoo-doctor.png)
 
 ## Check
 
@@ -25,9 +25,8 @@ in CI.
 It finds, for example:
 
 * a log kept under `doc/` instead of `docs/`;
-* a log in a directory its tool no longer looks in, such as user stories in
-  `docs/sty` instead of `docs/userstory`, or playbooks kept by `pse` in
-  `docs/piosee` instead of `docs/problem`;
+* a log in a directory its tool no longer looks in, such as playbooks kept by
+  `pse` in `docs/piosee` instead of `docs/problem`;
 * documents whose names do not begin with their log's prefix in upper case,
   such as `STOY-0003-title.md` among the user stories, or `PIOSEE-` among the
   playbooks;
@@ -56,10 +55,7 @@ playbooks to where `plm` keeps them: it moves `docs/piosee` to
 `docs/problem`, renames each `PIOSEE-` playbook to begin `PROBLEM-`, and
 updates the links to them, including those from SOPs.
 
-`sty` is now called `ust`, so `detoo doctor --fix` moves stories kept in
-`docs/sty` to `docs/userstory`, where `ust` looks for them.
-
-When a move would clash, such as when both `docs/sty` and `docs/userstory`
-exist, `doctor` reports the problem as needing fixing by hand.
+When a move would clash, such as when both `doc/adr` and `docs/adr` exist,
+`doctor` reports the problem as needing fixing by hand.
 
 See [`detoo doctor`](../../detoo/doctor/) for every option.

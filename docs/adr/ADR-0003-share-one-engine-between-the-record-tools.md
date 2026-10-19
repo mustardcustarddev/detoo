@@ -43,8 +43,8 @@ and take a Kind. Each tool has its own `cmd` package, which puts its definition
 and the engine together.
 
 The tool's name names everything else that belongs to it, by one convention:
-the `NAME_DATE`, `NAME_TEMPLATE` and `NAME_PAGER` variables, the `.NAME-dir`
-marker file, and the `docs/NAME` directory.
+the `NAME_DATE`, `NAME_TEMPLATE` and `NAME_PAGER` variables, and the
+`docs/NAME` directory.
 
 ## Consequences
 
