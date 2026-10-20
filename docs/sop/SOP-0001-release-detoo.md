@@ -21,10 +21,10 @@ Accepted
 4. Preview the version that will be released:
 
    ```bash
-   go run github.com/caarlos0/svu/v3@v3.4.1 next
+   make next-version
    ```
 
-   svu works it out from the conventional commits since the last release: a
+  next-version is worked out from the conventional commits since the last release: a
    `fix:` makes a patch release, a `feat:` a minor one, and a breaking change,
    such as `feat!:`, a major one.
 5. Release with `make release`, or with `make release VERSION=<version>`, such

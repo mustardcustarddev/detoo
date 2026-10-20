@@ -106,6 +106,10 @@ site: ## build the documentation site into docs/site/dist, and check its links
 # Housekeeping
 #############################################################################
 
+.PHONY: next-version
+next-version:
+	go run github.com/caarlos0/svu/v3@v3.4.1 next
+
 .PHONY: clean
 clean: ## remove the build output
 	rm -rf $(BUILD_DIR)
