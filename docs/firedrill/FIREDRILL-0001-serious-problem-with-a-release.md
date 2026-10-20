@@ -40,37 +40,27 @@ release and try it - most of the time is for familiarisation and decision-making
 
 ## Setup
 
-1. **The local system.** You need `git`, `make`, the GitHub CLI `gh`, and the
-   Go version that `go.mod` names. From the detoo working copy, find the
-   current release's tag:
+1. **The local system.** You need the GitHub CLI, `gh`, and what
+   [SOP 3. Run a detoo release without installing it](../sop/SOP-0003-run-a-detoo-release-without-installing-it.md)
+   needs. From the detoo working copy, find the current release's tag:
 
    ```bash
    gh release view --repo mustardcustarddev/detoo --json tagName --jq .tagName
    ```
 
-   Build that release, from its tag, in a scratch folder outside the working
-   copy, so that nothing in the working copy changes. In place of `<tag>`,
-   use the tag the command printed:
-
-   ```bash
-   git fetch --tags
-   git worktree add ~/firedrill-scratch/detoo-release <tag>
-   make -C ~/firedrill-scratch/detoo-release build
-   ```
-
-   `make build` vets, tests and compiles every command into `build/`
-   ([README](../../README.md#for-developers)). Built from a tag with nothing
-   changed, each command reports the tag's version. Do not install it, with
-   `make deploy` or Homebrew: run it by its path,
+   Build that release by steps 1 to 5 of SOP 3, with the working copy as its
+   clone, the tag the command printed as `<version>`, and
+   `~/firedrill-scratch/detoo-release` as `<dir>`. Nothing in the working
+   copy changes. Run the release by its path,
    `~/firedrill-scratch/detoo-release/build/detoo`.
 
    No fault is added. The release behaves as it always does.
 2. **What to have to hand**: the playbook,
+   [SOP 3](../sop/SOP-0003-run-a-detoo-release-without-installing-it.md),
    [SOP 2](../sop/SOP-0002-revoke-a-detoo-release.md) and
    [SOP 1](../sop/SOP-0001-release-detoo.md), and somewhere to write down
    each choice, and each comment you would post.
-3. **Afterwards**, remove the worktree with
-   `git worktree remove ~/firedrill-scratch/detoo-release`, and then remove
+3. **Afterwards**, remove the worktree by step 9 of SOP 3, and then remove
    `~/firedrill-scratch`.
 
 ## The drill
@@ -103,7 +93,7 @@ release and try it - most of the time is for familiarisation and decision-making
      [close-from-the-output.md](FIREDRILL-0001-serious-problem-with-a-release/problem/close-from-the-output.md).
 4. **The reproduction.** Make a folder like the reporter's, with records like
    theirs, as adr-tools writes them, and run what they ran, with the release
-   you built. From the detoo working copy:
+   you built, as steps 6 to 8 of SOP 3 do. From the detoo working copy:
 
    ```bash
    mkdir -p ~/firedrill-scratch
@@ -127,5 +117,5 @@ release and try it - most of the time is for familiarisation and decision-making
      [fix-forward.md](FIREDRILL-0001-serious-problem-with-a-release/problem/fix-forward.md).
    * Option 1, **Revoke, then fix**. Read
      [revoke-the-release.md](FIREDRILL-0001-serious-problem-with-a-release/problem/revoke-the-release.md).
-   * Option 3, **Not detoo: close**. Read
+   * Option 3, **No fault in detoo: reply and close**. Read
      [reply-and-close.md](FIREDRILL-0001-serious-problem-with-a-release/problem/reply-and-close.md).

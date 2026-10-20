@@ -27,18 +27,31 @@ Primary risks:
 
 No immediate action is indicated.
 
+## Counter-indicated actions
+
+* Revoking the release on the report alone, before Information 2 confirms
+  it. Revoking cannot be undone: SOP 2 keeps the tag, and the release is not
+  published again.
+* Closing the issue before the information is collected. If detoo did cause
+  the problem, the release stays published, and more people install it.
+
 ## Information
 
 1. **From the reporter**, asked for on the issue:
    * the version, from `brew list --versions detoo`, or from the version
      beside the detoo badge in the header of `detoo doctor`;
    * the exact commands they ran, in order, and in which project;
+   * everything detoo printed for each command, in full, such as what
+     `detoo doctor --fix` reports moving, renaming and removing;
    * what was lost or damaged: which files, and what they held before;
    * whether the project is a git repository, and whether what was lost had
      been committed.
 2. **Confirmation that detoo caused it**, from what the reporter sent: run
-   the same commands, with the same version, in a scratch project. Start with
-   the commands that change existing files:
+   the same commands, with the same version, in a scratch project, by
+   [SOP 3. Run a detoo release without installing it](../sop/SOP-0003-run-a-detoo-release-without-installing-it.md).
+   Compare what each prints with what the reporter sent, and what is in the
+   scratch project afterwards, each file's name and what it holds, with what
+   was there before. Start with the commands that change existing files:
    * `new` with `--supersede` or `--update`, which changes the records it
      names as well as writing the new one;
    * `detoo doctor --fix`, which moves and renames logs and documents.
@@ -51,7 +64,8 @@ No immediate action is indicated.
 1. **Revoke, then fix.** Revoke the release, and release the fix.
 2. **Keep, and fix forward.** Leave the release published, and release the
    fix.
-3. **Not detoo: close.** Reply on the issue with what was found, and close it.
+3. **No fault in detoo: reply and close.** Reply on the issue with what was
+   found, and close it.
 4. **Ask, and wait.** The conservative fallback. Ask the reporter for what is
    missing, label the issue `question`, and decide again when more comes in.
 
@@ -64,8 +78,10 @@ Evaluate every case. There is no default.
   serious, such as data loss.
 * Select **Option 2** when detoo is confirmed to cause the problem, but it is
   not serious.
-* Select **Option 3** when the information shows that detoo did not cause
-  it.
+* Select **Option 3** when the information shows that detoo is not at
+  fault: something else caused the problem, or nothing was lost or damaged
+  and detoo did what its documentation says, such as moving files the
+  reporter took to be deleted.
 * Select **Option 4** when it can be confirmed neither way.
 
 Serious is a question of judgment, besides data loss.
@@ -87,7 +103,9 @@ The detoo maintainer takes each step.
      [SOP 1. Release detoo](../sop/SOP-0001-release-detoo.md).
   2. Reply on the issue with the version that fixes it.
 * **Option 3**
-  1. Reply on the issue with what was found.
+  1. Reply on the issue with what was found. If the reporter believes
+     something was lost, say first whether it was. If detoo moved or renamed
+     it, say where it is now, and what detoo changed in it.
   2. Close the issue.
 * **Option 4**
   1. Ask on the issue for what is missing from the information in

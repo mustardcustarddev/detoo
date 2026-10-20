@@ -41,10 +41,13 @@ func TestHandleFilesTheFirstRecordForTheKind(t *testing.T) {
 }
 
 // The kind of log names the directory of the first record, and the prefix of
-// its file name.
+// its file name.  No built-in kind with a first record keeps it in a directory
+// named other than the tool, so this one is made up.
 func TestHandleFilesTheFirstRecordInTheKindsDirectory(t *testing.T) {
-	handler := newHandler(memlog.Of(ust.Kind))
-	handler.Kind = ust.Kind
+	kind := ust.Kind
+	kind.FirstRecord = "describe-work-in-user-stories"
+	handler := newHandler(memlog.Of(kind))
+	handler.Kind = kind
 
 	result, err := handler.Handle(context.Background(), Command{})
 	if err != nil {

@@ -16,7 +16,9 @@ import (
 // each playbook's file name beginning "PROBLEM-".  Logs were kept in
 // docs/piosee before, by the pse tool, with each file name beginning
 // "PIOSEE-".  A playbook rewritten for the same problem, such as after it was
-// used and found wanting, replaces the one it rewrites.
+// used and found wanting, replaces the one it rewrites.  The log opens with a
+// README rather than a first playbook, since a playbook for writing playbooks
+// plans for no problem.
 var Kind = record.Kind{
 	Name:           "plm",
 	Dir:            "problem",
@@ -28,7 +30,6 @@ var Kind = record.Kind{
 	Heading:        "Problem Playbooks",
 	Status:         "Draft",
 	Retires:        []string{"Draft"},
-	FirstRecord:    "plan-for-incidents-with-piosee",
 	Replaces:       record.Words{Verb: "replace", Forward: "Replaces", Reverse: "Replaced by"},
 	Updates:        record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
 }

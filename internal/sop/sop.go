@@ -15,19 +15,20 @@ import (
 // Kind is the vocabulary of a log of standard operating procedures, which is
 // kept in docs/sop, with each procedure's file name beginning "SOP-".  A
 // procedure rewritten for the same task supersedes the one it rewrites, which
-// is then neither a draft nor approved.
+// is then neither a draft nor approved.  The log opens with a README rather
+// than a first procedure, which would be numbered as one of the team's
+// procedures without being one.
 var Kind = record.Kind{
-	Name:        "sop",
-	Dir:         "sop",
-	Prefix:      "SOP",
-	Noun:        "SOP",
-	Plural:      "SOPs",
-	Heading:     "Standard Operating Procedures",
-	Status:      "Draft",
-	Retires:     []string{"Draft", "Approved"},
-	FirstRecord: "write-a-standard-operating-procedure",
-	Replaces:    record.Words{Verb: "supersede", Forward: "Supersedes", Reverse: "Superseded by"},
-	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
+	Name:     "sop",
+	Dir:      "sop",
+	Prefix:   "SOP",
+	Noun:     "SOP",
+	Plural:   "SOPs",
+	Heading:  "Standard Operating Procedures",
+	Status:   "Draft",
+	Retires:  []string{"Draft", "Approved"},
+	Replaces: record.Words{Verb: "supersede", Forward: "Supersedes", Reverse: "Superseded by"},
+	Updates:  record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
 }
 
 // Files holds the tool's built-in templates, under templates/, and what its

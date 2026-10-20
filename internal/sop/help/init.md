@@ -3,6 +3,7 @@ Initialises the directory of standard operating procedures (SOPs),
 
  * creates `docs/sop` under the current working directory, unless the
    current working directory or one of its parents already has one
- * creates the first SOP in it, which sets out how to write an SOP.
+ * creates a `README.md` in it, which sets out what an SOP is, and how to
+   follow and write one. It is not an SOP: the first SOP is number 1.
 
-If the log already has SOPs, init does nothing.
+If the log already has SOPs, or a `README.md`, init does nothing.

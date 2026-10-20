@@ -2,7 +2,7 @@ sop config
 sop_dir="docs/sop"
 sop_template=""
 sop init
-docs/sop/SOP-0001-write-a-standard-operating-procedure.md
+docs/sop/README.md
 sop config
 sop_dir="docs/sop"
 sop_template=""
@@ -20,9 +20,9 @@ EOF
 SOP_TEMPLATE=custom.md
 SOP_DATE=2026-10-16
 sop new "Uses the sop settings"
-docs/sop/SOP-0002-uses-the-sop-settings.md
-cat docs/sop/SOP-0002-uses-the-sop-settings.md
-# 2. Uses the sop settings, from custom.md
+docs/sop/SOP-0001-uses-the-sop-settings.md
+cat docs/sop/SOP-0001-uses-the-sop-settings.md
+# 1. Uses the sop settings, from custom.md
 
 Date: 2026-10-16
 

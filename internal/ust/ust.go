@@ -14,20 +14,21 @@ import (
 // Kind is the vocabulary of a user story log, which is kept in docs/userstory,
 // with each story's file name beginning "STORY-".  Logs were kept in docs/sty
 // before, and the tool was called sty.  A story that is split is
-// replaced by each of the smaller stories it is split into.
+// replaced by each of the smaller stories it is split into.  The log opens with
+// a README rather than a first story, which would be numbered as one of the
+// team's stories without being one.
 var Kind = record.Kind{
-	Name:        "ust",
-	Dir:         "userstory",
-	Prefix:      "STORY",
-	Former:      []string{"sty"},
-	Noun:        "user story",
-	Plural:      "user stories",
-	Heading:     "User Stories",
-	Status:      "Draft",
-	Retires:     []string{"Draft"},
-	FirstRecord: "describe-work-in-user-stories",
-	Replaces:    record.Words{Verb: "replace", Forward: "Replaces", Reverse: "Replaced by"},
-	Updates:     record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
+	Name:     "ust",
+	Dir:      "userstory",
+	Prefix:   "STORY",
+	Former:   []string{"sty"},
+	Noun:     "user story",
+	Plural:   "user stories",
+	Heading:  "User Stories",
+	Status:   "Draft",
+	Retires:  []string{"Draft"},
+	Replaces: record.Words{Verb: "replace", Forward: "Replaces", Reverse: "Replaced by"},
+	Updates:  record.Words{Verb: "update", Forward: "Updates", Reverse: "Updated by"},
 }
 
 // Files holds the tool's built-in templates, under templates/, and what its

@@ -16,7 +16,9 @@ adr list --toc > docs/adr/README.md
 ```
 
 GitHub shows a directory's `README.md` beneath its files, so this puts an
-index of the decisions beside them.
+index of the decisions beside them. `ust init`, `plm init`, `sop init` and
+`fyr init` write a `README.md` of their own, so publish their table of
+contents beside it, such as in `CONTENTS.md`.
 
 To publish one elsewhere, prefix each link so that it still reaches the
 records, and add your own introduction and conclusion:

@@ -57,11 +57,12 @@ ust list          # existing stories
 
 If there is no log yet (`ust list` fails with `the docs/userstory directory
 does not exist`), ask the user whether to start one. `ust init` creates
-`docs/userstory` and writes story 1, which describes the practice of keeping
-stories.
+`docs/userstory` and writes its `README.md`, which sets out what a user story
+is, and how to write one. The README is not a story: the new story is
+number 1.
 
-Read story 1, and any story or document that sets out the project's
-conventions. Read the titles of the existing stories, and in full any whose
+Read the log's `README.md`, if it has one, and any story or document that
+sets out the project's conventions. Read the titles of the existing stories, and in full any whose
 subject is close to this one: the new story may replace or update one of
 them, or duplicate it.
 
@@ -207,8 +208,8 @@ every command and its effects.
   name, `STORY-000N-...`. If they differ, put the tool's title line back.
 * Run `ust list` to confirm the stories are in the log.
 * If the project keeps a generated table of contents (look for one made by
-  `ust list --toc`, such as a `README.md` in the log directory), offer to
-  regenerate it.
+  `ust list --toc`, such as a `CONTENTS.md` in the log directory), offer to
+  regenerate it. Never write one over the `README.md` that `ust init` wrote.
 * Tell the user the paths, that the stories are drafts, any stories the tool
   changed, and the open questions left for refinement. Leave committing to
   them.

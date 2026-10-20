@@ -1,4 +1,4 @@
-# 5. Release to Homebrew from CI
+# 4. Release to Homebrew from CI
 
 Date: 2026-10-18
 

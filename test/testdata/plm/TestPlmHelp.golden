@@ -9,7 +9,7 @@ kept with the sop tool, for the routine steps.
 
 Problem playbooks are stored as Markdown files in the project's
 `docs/problem` directory.  Each playbook's file name begins with `PROBLEM-`
-and its number, such as `PROBLEM-0001-plan-for-incidents-with-piosee.md`.  Run
+and its number, such as `PROBLEM-0004-customer-charged-twice.md`.  Run
 "plm init" to start a log, and "plm new" to add to it.
 
 Usage:

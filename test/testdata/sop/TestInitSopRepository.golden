@@ -1,33 +1,34 @@
 sop init
-docs/sop/SOP-0001-write-a-standard-operating-procedure.md
+docs/sop/README.md
 ls docs/sop
-SOP-0001-write-a-standard-operating-procedure.md
-cat docs/sop/SOP-0001-write-a-standard-operating-procedure.md
-# 1. Write a standard operating procedure
+README.md
+cat docs/sop/README.md
+# Standard operating procedures
 
-Date: 1992-01-12
+A standard operating procedure (SOP) is the steps of a routine task, such as
+rolling back a release, as an ordered list, so that it is done the same way
+each time. It has no decision in it: a task that needs one belongs in a
+problem playbook, which refers to SOPs for its routine steps.
 
-## Status
+## Following an SOP
 
-Draft
+Do the steps in order, as written. Each names the command, page or setting to
+use, and how to check that it worked. Where a step is wrong or out of date,
+say so, so that the SOP is corrected.
 
-## Steps
+## Writing an SOP
 
-1. Check that the task is routine: done the same way each time, with no
-   decision to make. A task that needs a decision belongs in a playbook,
-   which refers to the procedure for its routine steps.
-2. Check that no procedure in this directory covers the task already, with
-   `sop list`.
-3. Create the procedure in this directory with `sop new`, titled with the
-   task, as an instruction, such as "Roll back a release". Each procedure is
-   a Markdown file, numbered in sequence. Numbers are not reused.
-4. Write the steps as an ordered list of instructions, from the code, the
-   configuration and the documentation of the systems involved. Name the
-   exact command, page or setting in each step, and how to check that it
-   worked.
-5. Have someone who does the task follow the procedure, and correct it
-   where it differs from what they do.
-6. Have the people who own the task review it. A new procedure is a draft
-   until they approve it, when its status becomes Approved.
-7. Keep it current. A procedure rewritten for the same task supersedes the
-   one it rewrites, with `sop new --supersede`, and both say so.
+Ask your agent, with the `create-sop` skill, which `detoo skills install`
+installs: "Write an SOP for rolling back a release." It researches the code
+and the documentation of the tools involved, and asks you only what research
+cannot settle.
+
+To write one yourself, run `sop new` with the task, as an instruction, such
+as `sop new "Roll back a release"`. Have someone who does the task follow it,
+and correct it where it differs from what they do. An SOP is a draft until
+the people who own the task approve it, when its status becomes Approved.
+sop init
+sop new "Roll back a release"
+docs/sop/SOP-0001-roll-back-a-release.md
+sop list
+docs/sop/SOP-0001-roll-back-a-release.md

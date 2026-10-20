@@ -6,5 +6,5 @@ steps.
 
 SOPs are stored as Markdown files in the project's `docs/sop` directory.
 Each SOP's file name begins with `SOP-` and its number, such as
-`SOP-0001-write-a-standard-operating-procedure.md`.  Run "sop init" to start a
-log, and "sop new" to add to it.
+`SOP-0003-roll-back-a-release.md`.  Run "sop init" to start a log, and
+"sop new" to add to it.

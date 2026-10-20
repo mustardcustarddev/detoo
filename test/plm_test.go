@@ -8,16 +8,21 @@ import (
 // The plm tool shares its engine with the other record tools, and their tests
 // cover the behaviour every tool shares.  These tests cover what the plm
 // tool's definition changes: a directory named for problems rather than the
-// tool, the prefix of its file names, its first playbook, the sections of a
-// new playbook, the words and options for its links, the heading of its
+// tool, the prefix of its file names, the README its log opens with, the
+// sections of a new playbook, the words and options for its links, the heading of its
 // reports, its configuration, its help, and the playbooks named before it
 // replaced pse.
 
+// A log of playbooks opens with a README, not a playbook, so the first
+// playbook is number 1.  Running init again leaves the README alone.
 func TestInitPlmRepository(t *testing.T) {
 	w := newWorkspace(t, "plm")
 	w.plm("init")
 	w.ls("docs/problem")
-	w.cat("docs/problem/PROBLEM-0001-plan-for-incidents-with-piosee.md")
+	w.cat("docs/problem/README.md")
+	w.plm("init")
+	w.plm("new", "Customer charged twice")
+	w.plm("list")
 	w.check()
 }
 
@@ -98,8 +103,8 @@ func TestPlmConfiguration(t *testing.T) {
 	w.setenv("PLM_TEMPLATE", "custom.md")
 	w.setenv("PLM_DATE", "2026-10-16")
 	w.plm("new", "Uses the plm settings")
-	w.cat("docs/problem/PROBLEM-0002-ignores-the-ust-settings.md")
-	w.cat("docs/problem/PROBLEM-0003-uses-the-plm-settings.md")
+	w.cat("docs/problem/PROBLEM-0001-ignores-the-ust-settings.md")
+	w.cat("docs/problem/PROBLEM-0002-uses-the-plm-settings.md")
 	w.check()
 }
 

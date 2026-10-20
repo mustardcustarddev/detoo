@@ -1,0 +1,28 @@
+# User stories
+
+A user story describes something a person wants to do with the software, from
+their point of view, and why: "As a [type of user], I [need/want/am required]
+to [do something], so that [reason or benefit]." Its acceptance criteria say
+what must be true for it to be done. It is a reminder to have a conversation,
+not a complete specification.
+
+## Reading a story
+
+Each story is a numbered Markdown file in this directory. A new story is a
+draft, and its status records what becomes of it, such as ready, done or
+dropped. A story that replaces or updates another says so, and so does the
+other.
+
+## Writing a story
+
+Ask your agent, with the `create-user-story` skill, which `detoo skills
+install` installs: "Write a user story for exporting invoices." It reads the
+code, and asks you who the story is for, what they need and why.
+
+To write one yourself, run `ust new` with what the person wants to do, such
+as `ust new "Export invoices for a month"`. Keep a story small enough to
+finish in a sprint. Split a larger one into smaller stories, each of which
+still delivers something someone can use, with `ust new --replace`.
+
+See Mike Cohn's guide to user stories:
+https://www.mountaingoatsoftware.com/agile/user-stories

@@ -1,5 +1,5 @@
-  # Publish a table of contents beside the playbooks:
-  plm list --toc > docs/problem/README.md
+  # Publish a table of contents beside the playbooks and their README:
+  plm list --toc > docs/problem/CONTENTS.md
 
   # Publish one elsewhere, with an introduction, linking back to the playbooks:
   plm list --toc -i intro.md -p ../docs/problem/ > site/playbooks.md

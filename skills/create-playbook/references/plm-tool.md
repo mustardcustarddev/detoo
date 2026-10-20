@@ -28,8 +28,10 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `plm list`: prints the path of every playbook, one a line, in order.
   Prints nothing if there are none. Fails with
   `plm: the docs/problem directory does not exist` if there is no log.
-* `plm init`: starts a log in `docs/problem`, and writes playbook 1, "Plan
-  for incidents with PIOSEE". Does nothing if the log already has playbooks.
+* `plm init`: starts a log in `docs/problem`, and writes its `README.md`,
+  which sets out what a problem playbook is, and how to use and write one. It
+  writes no playbook, so the first playbook `plm new` creates is number 1.
+  Does nothing if the log already has playbooks, or a `README.md`.
 * `plm new [-r REF]... [-u REF]... TITLE`: creates the next numbered playbook
   from the template, in draft, and prints its path.
 * `plm link (-r | -u) SOURCE TARGET`: records, in both playbooks, that

@@ -64,6 +64,11 @@ sop init && sop new "Roll back a release"
 fyr init && fyr new "Customer charged twice"
 ```
 
+`rfc init`, like `adr init`, writes a first document that explains the
+practice. `ust init`, `plm init`, `sop init` and `fyr init` write a
+`README.md` instead, which says what the log is for and how to add to it, so
+the first document you write is number 1.
+
 `rfc new --obsolete`, `ust new --replace`, `plm new --replace`,
 `sop new --supersede` and `fyr new --replace` replace an earlier document, as
 `adr new --supersede` does.

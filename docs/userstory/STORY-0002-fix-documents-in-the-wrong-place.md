@@ -1,4 +1,4 @@
-# 3. Fix documents in the wrong place
+# 2. Fix documents in the wrong place
 
 Date: 2026-10-16
 

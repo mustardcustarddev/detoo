@@ -73,8 +73,9 @@ sop list          # existing SOPs
 
 If there is no log yet, there is none when `sop list` fails with
 `the docs/sop directory does not exist`. Ask the user whether to start one
-with `sop init`, which creates `docs/sop` and writes SOP 1, which sets out how
-to write an SOP.
+with `sop init`, which creates `docs/sop` and writes its `README.md`, which
+sets out what an SOP is, and how to follow and write one. The README is not
+an SOP: the new SOP is number 1.
 
 Read the titles of the existing SOPs. Read in full any whose task is close to
 this one: the new SOP may duplicate it, supersede it or update it. Read one or
@@ -183,7 +184,8 @@ the file name. Never write link lines by hand. See
   name, `SOP-000N-...`. If they differ, put the tool's title line back.
 * Run `sop list` to confirm the SOP is in the log.
 * The project may keep a table of contents made by `sop list --toc`, such as
-  a `README.md` in the log directory. If so, offer to regenerate it.
+  a `CONTENTS.md` in the log directory. If so, offer to regenerate it. Never
+  write one over the `README.md` that `sop init` wrote.
 * Tell the user:
   * the path, and that the SOP is a draft;
   * any SOPs the tool changed;

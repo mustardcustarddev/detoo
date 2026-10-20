@@ -3,7 +3,9 @@ docs/adr/ADR-0001-record-architecture-decisions.md
 adr new "Use PostgreSQL for persistence"
 docs/adr/ADR-0002-use-postgresql-for-persistence.md
 ust init
-docs/userstory/STORY-0001-describe-work-in-user-stories.md
+docs/userstory/README.md
+ust new "Export invoices for a month"
+docs/userstory/STORY-0001-export-invoices-for-a-month.md
 detoo doctor
   ▄▄▄▄▄▄▄▄▄▄▄▄▄       detoo  dev
  █▀           ▀█

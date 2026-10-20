@@ -26,8 +26,10 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `ust list`: prints the path of every story, one a line, in order. Prints
   nothing if there are none. Fails with
   `ust: the docs/userstory directory does not exist` if there is no log.
-* `ust init`: starts a log in `docs/userstory`, and writes story 1, "Describe
-  work in user stories". Does nothing if the log already has stories.
+* `ust init`: starts a log in `docs/userstory`, and writes its `README.md`,
+  which sets out what a user story is, and how to write one. It writes no
+  story, so the first story `ust new` creates is number 1. Does nothing if the
+  log already has stories, or a `README.md`.
 * `ust new [-r REF]... [-u REF]... TITLE`: creates the next numbered story
   from the template, in draft, and prints its path.
 * `ust link (-r | -u) SOURCE TARGET`: records, in both stories, that `SOURCE`

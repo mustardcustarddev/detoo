@@ -14,6 +14,7 @@ func TestDoctorFindsNothingWrong(t *testing.T) {
 	w.adr("init")
 	w.adr("new", "Use PostgreSQL for persistence")
 	w.ust("init")
+	w.ust("new", "Export invoices for a month")
 	w.detoo("doctor")
 	w.check()
 }

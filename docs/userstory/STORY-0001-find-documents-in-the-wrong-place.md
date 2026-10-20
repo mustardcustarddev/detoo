@@ -1,4 +1,4 @@
-# 2. Find documents in the wrong place
+# 1. Find documents in the wrong place
 
 Date: 2026-10-16
 

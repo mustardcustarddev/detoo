@@ -1,4 +1,4 @@
-# 4. Find the documentation on a website
+# 3. Find the documentation on a website
 
 Date: 2026-10-17
 

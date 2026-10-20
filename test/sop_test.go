@@ -7,15 +7,20 @@ import (
 
 // The sop tool shares its engine with the other record tools, and their tests
 // cover the behaviour every tool shares.  These tests cover what the sop
-// tool's definition changes: its directory, the prefix of its file names, its
-// first procedure, the sections of a new one, the words and options for its
-// links, the heading of its reports, its configuration, and its help.
+// tool's definition changes: its directory, the prefix of its file names, the
+// README its log opens with, the sections of a new one, the words and options
+// for its links, the heading of its reports, its configuration, and its help.
 
+// A log of SOPs opens with a README, not an SOP, so the first SOP is
+// number 1.  Running init again leaves the README alone.
 func TestInitSopRepository(t *testing.T) {
 	w := newWorkspace(t, "sop")
 	w.sop("init")
 	w.ls("docs/sop")
-	w.cat("docs/sop/SOP-0001-write-a-standard-operating-procedure.md")
+	w.cat("docs/sop/README.md")
+	w.sop("init")
+	w.sop("new", "Roll back a release")
+	w.sop("list")
 	w.check()
 }
 
@@ -64,7 +69,7 @@ func TestSopConfiguration(t *testing.T) {
 	w.setenv("SOP_TEMPLATE", "custom.md")
 	w.setenv("SOP_DATE", "2026-10-16")
 	w.sop("new", "Uses the sop settings")
-	w.cat("docs/sop/SOP-0002-uses-the-sop-settings.md")
+	w.cat("docs/sop/SOP-0001-uses-the-sop-settings.md")
 	w.check()
 }
 

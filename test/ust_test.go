@@ -8,15 +8,20 @@ import (
 // The ust tool shares its engine with adr and rfc.  The adr tests cover the
 // behaviour every tool shares, and the rfc tests cover how a tool's definition
 // names its directory and its variables.  These tests cover what the ust
-// tool's definition changes: its first record, the status and sections of a
-// new story, the words and options for its links, the heading of its reports,
-// and its help.
+// tool's definition changes: the README its log opens with, the status and
+// sections of a new story, the words and options for its links, the heading of
+// its reports, and its help.
 
+// A log of user stories opens with a README, not a story, so the first story
+// is number 1.  Running init again leaves the README alone.
 func TestInitUstRepository(t *testing.T) {
 	w := newWorkspace(t, "ust")
 	w.ust("init")
 	w.ls("docs/userstory")
-	w.cat("docs/userstory/STORY-0001-describe-work-in-user-stories.md")
+	w.cat("docs/userstory/README.md")
+	w.ust("init")
+	w.ust("new", "Export invoices for a month")
+	w.ust("list")
 	w.check()
 }
 

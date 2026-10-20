@@ -28,6 +28,6 @@ class Detoo < Formula
 
   test do
     system bin/"ust", "init"
-    assert_path_exists testpath/"docs/userstory/STORY-0001-describe-work-in-user-stories.md"
+    assert_path_exists testpath/"docs/userstory/README.md"
   end
 end
