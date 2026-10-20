@@ -42,6 +42,15 @@ const installs = [
   },
 ];
 
+// The skills, in the order the sidebar lists them, without the section's own
+// pages: its introduction, whose description introduces them here, and how to
+// install them.
+const skillPages = (await getCollection('docs', (d) => d.data.section === 'skills')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const skillsIntro = skillPages.find((d) => d.id === 'skills');
+const skills = skillPages.filter((d) => d.id !== 'skills' && d.id !== 'skills/install');
+
 const posts = (await getCollection('blog', (post) => !post.data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
@@ -114,6 +123,30 @@ const posts = (await getCollection('blog', (post) => !post.data.draft))
           ))
         }
       </dl>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="font-display text-2xl font-bold tracking-tight">The skills</h2>
+      <p class="mt-2 text-[var(--text-secondary)]">
+        {skillsIntro?.data.description}{' '}
+        <a class="text-[var(--color-primary-500)] hover:underline" href={url('docs/skills/install/')}>Install them</a>{' '}
+        with <code class="font-mono">detoo skills install</code>.
+      </p>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          skills.map((s) => (
+            <li>
+              <a
+                href={url(`docs/${s.id}/`)}
+                class="block h-full rounded-2xl border border-[var(--border)] p-6 transition-colors hover:border-[var(--color-primary-500)] hover:bg-[var(--bg-secondary)]"
+              >
+                <h3 class="font-mono font-semibold text-[var(--color-primary-500)]">{s.data.title}</h3>
+                <p class="mt-2 text-sm text-[var(--text-secondary)]">{s.data.description}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     {
