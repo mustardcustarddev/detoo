@@ -1,0 +1,17 @@
+fyr new "Customer charged twice"
+docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+fyr new -r 1 "Customer charged twice"
+docs/firedrill/FIREDRILL-0002-customer-charged-twice.md
+fyr list --toc
+# Fire Drills
+
+* [1. Customer charged twice](FIREDRILL-0001-customer-charged-twice.md)
+* [2. Customer charged twice](FIREDRILL-0002-customer-charged-twice.md)
+fyr graph
+flowchart TD
+  fyr1["1. Customer charged twice"]
+  fyr2["2. Customer charged twice"]
+  fyr1 -.-> fyr2
+  fyr2 -->|"Replaces"| fyr1
+  click fyr1 "FIREDRILL-0001-customer-charged-twice.html"
+  click fyr2 "FIREDRILL-0002-customer-charged-twice.html"

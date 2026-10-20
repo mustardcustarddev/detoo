@@ -51,7 +51,10 @@ type Kind struct {
 	// is the author's to change.
 	Retires []string
 
-	// FirstRecord is the title the record that opens a log is filed under.
+	// FirstRecord is the title the record that opens a log is filed under.  A
+	// kind with none, such as fyr's, opens its log with a README instead,
+	// which says what the log is for: a first record would be numbered as one
+	// of the log's records without being one.
 	FirstRecord string
 
 	// Replaces and Updates are the words for each Relation.

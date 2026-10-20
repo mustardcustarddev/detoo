@@ -7,6 +7,7 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adapters/memlog"
 	"github.com/mustardcustard/detoo/internal/adr"
+	"github.com/mustardcustard/detoo/internal/fyr"
 	"github.com/mustardcustard/detoo/internal/rfc"
 	"github.com/mustardcustard/detoo/internal/ust"
 )
@@ -104,5 +105,44 @@ func TestHandleStartsALogInAnEmptyDirectory(t *testing.T) {
 	}
 	if want := "docs/adr/ADR-0001-record-architecture-decisions.md"; result.File != want {
 		t.Errorf("File = %q, want %q", result.File, want)
+	}
+}
+
+// A kind with no first record opens its log with a README, written as the
+// template is, so that the first record the user writes is number 1.
+func TestHandleOpensALogWithAReadmeForAKindWithNoFirstRecord(t *testing.T) {
+	log := memlog.Of(fyr.Kind)
+	handler := newHandler(log)
+	handler.Kind = fyr.Kind
+
+	result, err := handler.Handle(context.Background(), Command{})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	if want := "docs/firedrill/README.md"; result.File != want {
+		t.Errorf("File = %q, want %q", result.File, want)
+	}
+	if got := log.Content(result.File); got != firstTemplate {
+		t.Errorf("README is\n%s\nwant\n%s", got, firstTemplate)
+	}
+}
+
+// Running init again leaves a README as it is, whether init wrote it or the
+// project did, such as a table of contents.
+func TestHandleLeavesAReadmeAsItIs(t *testing.T) {
+	log := memlog.Of(fyr.Kind)
+	log.Write(context.Background(), "docs/firedrill/README.md", "# Our drills\n")
+	handler := newHandler(log)
+	handler.Kind = fyr.Kind
+
+	result, err := handler.Handle(context.Background(), Command{})
+	if err != nil {
+		t.Fatalf("Handle: %v", err)
+	}
+	if result.File != "" {
+		t.Errorf("File = %q, want nothing written", result.File)
+	}
+	if got, want := log.Content("docs/firedrill/README.md"), "# Our drills\n"; got != want {
+		t.Errorf("README is %q, want %q", got, want)
 	}
 }

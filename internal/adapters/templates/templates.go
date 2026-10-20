@@ -13,6 +13,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
@@ -24,8 +25,14 @@ const (
 	builtinRecord = "templates/template.md"
 
 	// builtinFirst is the template for the record that opens a log, which
-	// records the decision to keep one.
+	// records the decision to keep one, or for the README that opens a log
+	// whose kind has no first record.
 	builtinFirst = "templates/init.md"
+
+	// builtinDirectory holds the files a new record is created with in the
+	// directory beside it, by their paths within it.  A tool whose records
+	// have no such directory ships none.
+	builtinDirectory = "templates/directory"
 )
 
 // Templates resolves the templates of one kind of log under a working
@@ -68,13 +75,39 @@ func (t *Templates) Record(_ context.Context, dir string) (string, error) {
 	return project, err
 }
 
-// First returns the template for the record that opens a log.
+// First returns the template for the record, or the README, that opens a log.
 //
 // It is deliberately not affected by the TEMPLATE variable: that overrides the
 // template for the records a user writes, whereas this one states what the log
 // is for, and is the same in every project.
 func (t *Templates) First(context.Context) (string, error) {
 	return t.builtin(builtinFirst)
+}
+
+// Directory returns the files a new record is created with in the directory
+// beside it, by their paths within that directory, or none if the tool's
+// records have no such directory.
+//
+// Like First, it is the tool's own, and the same in every project: a
+// project's template changes what a record says, not what is created beside
+// it.
+func (t *Templates) Directory(context.Context) (map[string]string, error) {
+	files := map[string]string{}
+	err := fs.WalkDir(t.files, builtinDirectory, func(name string, entry fs.DirEntry, err error) error {
+		if name == builtinDirectory && errors.Is(err, fs.ErrNotExist) {
+			return fs.SkipAll
+		}
+		if err != nil || entry.IsDir() {
+			return err
+		}
+		data, err := fs.ReadFile(t.files, name)
+		if err != nil {
+			return err
+		}
+		files[strings.TrimPrefix(name, builtinDirectory+"/")] = string(data)
+		return nil
+	})
+	return files, err
 }
 
 // ProjectFile returns the path of the project's own template for records in

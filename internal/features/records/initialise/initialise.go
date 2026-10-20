@@ -1,10 +1,12 @@
 // Package initialise starts a log of records, whose first record is the
-// decision to keep one.
+// decision to keep one, or, for a kind with no first record, whose README says
+// what the log is for.
 package initialise
 
 import (
 	"context"
 	"errors"
+	"path"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
@@ -12,8 +14,8 @@ import (
 // Command asks for a log.
 type Command struct{}
 
-// Result names the record that was created.  File is empty when the log
-// already had records, and nothing was written.
+// Result names the record, or the README, that was created.  File is empty
+// when the log already had records, or its README, and nothing was written.
 type Result struct {
 	File string
 }
@@ -24,9 +26,11 @@ type Store interface {
 	Records(ctx context.Context) ([]record.Record, error)
 	NextNumber(ctx context.Context, dir string) (int, error)
 	Write(ctx context.Context, file, content string) error
+	Exists(ctx context.Context, file string) (bool, error)
 }
 
-// Templates is the port that supplies the first record's Markdown.
+// Templates is the port that supplies the first record's Markdown, or the
+// README's.
 type Templates interface {
 	First(ctx context.Context) (string, error)
 }
@@ -72,6 +76,9 @@ func (h Handler) Handle(ctx context.Context, _ Command) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	if h.Kind.FirstRecord == "" {
+		return h.readme(ctx, dir, template)
+	}
 	number, err := h.Log.NextNumber(ctx, dir)
 	if err != nil {
 		return Result{}, err
@@ -80,6 +87,21 @@ func (h Handler) Handle(ctx context.Context, _ Command) (Result, error) {
 	// The title only names the file: the record's heading is in the template.
 	file := h.Kind.FileName(dir, number, h.Kind.FirstRecord)
 	content := record.Render(template, number, h.Kind.FirstRecord, h.Clock.Today(ctx), h.Kind.Status)
+	if err := h.Log.Write(ctx, file, content); err != nil {
+		return Result{}, err
+	}
+	return Result{File: file}, nil
+}
+
+// readme opens a log with a README, unless it has one, which may be the
+// project's own, such as a table of contents.  The README is not a record, so
+// it has no number, and its date would say only when init ran.
+func (h Handler) readme(ctx context.Context, dir, content string) (Result, error) {
+	file := path.Join(dir, record.Readme)
+	exists, err := h.Log.Exists(ctx, file)
+	if err != nil || exists {
+		return Result{}, err
+	}
 	if err := h.Log.Write(ctx, file, content); err != nil {
 		return Result{}, err
 	}

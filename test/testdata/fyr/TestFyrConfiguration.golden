@@ -1,0 +1,36 @@
+fyr config
+fyr_dir="docs/firedrill"
+fyr_template=""
+fyr init
+docs/firedrill/README.md
+fyr config
+fyr_dir="docs/firedrill"
+fyr_template=""
+cat > custom.md <<EOF
+# NUMBER. TITLE, from custom.md
+
+Date: DATE
+
+## Status
+
+STATUS
+
+## Playbook
+EOF
+FYR_TEMPLATE=custom.md
+FYR_DATE=2026-10-19
+fyr new "Uses the fyr settings"
+docs/firedrill/FIREDRILL-0001-uses-the-fyr-settings.md
+cat docs/firedrill/FIREDRILL-0001-uses-the-fyr-settings.md
+# 1. Uses the fyr settings, from custom.md
+
+Date: 2026-10-19
+
+## Status
+
+Draft
+
+## Playbook
+ls docs/firedrill/FIREDRILL-0001-uses-the-fyr-settings
+problem
+solution

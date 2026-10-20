@@ -1,0 +1,8 @@
+  # Create a new fire drill with the title "Customer charged twice":
+  fyr new "Customer charged twice"
+
+  # Create a new fire drill that replaces fire drill 4, after the playbook changed:
+  fyr new -r 4 "Customer charged twice"
+
+  # Create a new fire drill that updates fire drill 7, with a symptom it left out:
+  fyr new -u 7 "Customer charged twice"

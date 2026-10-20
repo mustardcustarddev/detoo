@@ -136,6 +136,11 @@ func (l *Log) Write(_ context.Context, file, content string) error {
 	return nil
 }
 
+func (l *Log) Exists(_ context.Context, file string) (bool, error) {
+	_, ok := l.files[file]
+	return ok, nil
+}
+
 func (l *Log) ReadFile(_ context.Context, file string) (string, error) {
 	content, ok := l.files[file]
 	if !ok {

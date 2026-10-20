@@ -18,9 +18,9 @@ EOF
 mkdir -p app
 cd app
 detoo skills
-Installs the agent skills that drive adr, rfc, ust, plm and sop, keeps them up
-to date, and removes them.  The skills come from detoo's repository on
-GitHub, mustardcustarddev/detoo, unless you name another source.
+Installs the agent skills that drive adr, rfc, ust, plm, sop and fyr, keeps
+them up to date, and removes them.  The skills come from detoo's repository
+on GitHub, mustardcustarddev/detoo, unless you name another source.
 
 detoo installs skills where the skills CLI (`npx skills`) does, and records
 them in the same lock files, so either tool can update or remove what the

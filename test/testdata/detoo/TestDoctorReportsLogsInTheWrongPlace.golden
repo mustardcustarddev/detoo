@@ -5,7 +5,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop  fyr
  ▄███▀█████▀███▄     checked   7 documents in 6 directories
 
 ╭─ ✗ adr  docs/adr ────────────────────────── 2 decision records · 2 problems ─╮
@@ -49,6 +49,8 @@ detoo doctor
 ╭─ ✓ sop  docs/sop ──────────────────────────────────────────────────── 1 SOP ─╮
 │ ✓ In place. File names begin with SOP-.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
+
+– No fyr log found.
 
 → Run detoo doctor --fix to fix 8 of the 9 problems; 1 needs fixing by hand.
 

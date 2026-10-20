@@ -1,0 +1,100 @@
+fyr help
+Command-line tools for working with a log of fire drills.  Each fire drill is
+an exercise in which one person practises a problem playbook, kept with the
+plm tool, on a local copy of the system.  It is read like a book in which the
+reader chooses what happens: the drill sets out the setup and what happens, a
+step at a time, and each choice leads to a page of what happens next.
+Nothing is broken to make the incident.
+
+Fire drills are stored as Markdown files in the project's `docs/firedrill`
+directory.  Each drill's file name begins with `FIREDRILL-` and its number,
+such as `FIREDRILL-0002-customer-charged-twice.md`, and beside it is a
+directory named as it is, which holds its `problem` and `solution` pages.
+Run "fyr init" to start a log, and "fyr new" to add to it.
+
+Usage:
+  fyr [flags]
+  fyr [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  config      Print the configuration in use
+  graph       Draw the links between records in Mermaid or Graphviz format
+  help        Help about any command
+  init        Start a log of fire drills
+  link        Record that one fire drill replaces or updates another
+  list        List the fire drills, or write a table of contents
+  new         Create the next numbered fire drill
+
+Flags:
+  -h, --help   help for fyr
+
+Use "fyr [command] --help" for more information about a command.
+fyr help new
+Creates a new, numbered fire drill, in draft.  The title is a single argument,
+so it must be quoted if it contains spaces.  The fire drill is opened for
+editing in the editor specified by the VISUAL or EDITOR environment variable
+(VISUAL is preferred; EDITOR is used if VISUAL is not set).  After editing,
+the file name of the fire drill is output to stdout, so the command can be
+used in scripts.
+
+If the fire drill directory contains a file `templates/template.md`, this is
+used as the template for the new fire drill.  Otherwise a built-in template is
+used: a title, a date, a status, and a section for the playbook it practises,
+how to play, the ground rules, the setup, and the drill itself.
+
+Beside the fire drill, new creates a directory named as it is without `.md`,
+which holds two directories, each with a README that says what goes in it:
+
+ * `problem`, for the pages the drill sends the reader to: the incident, the
+   evidence, and what happens after each choice;
+ * `solution`, for the expected response and the debrief, read when the
+   drill is over.
+
+Multiple --replace and --update options can be given, so that the new fire
+drill can replace or update multiple existing fire drills.  A replaced fire
+drill loses its Draft status; an updated one keeps its status.
+
+Usage:
+  fyr new TITLE [flags]
+
+Examples:
+  # Create a new fire drill with the title "Customer charged twice":
+  fyr new "Customer charged twice"
+
+  # Create a new fire drill that replaces fire drill 4, after the playbook changed:
+  fyr new -r 4 "Customer charged twice"
+
+  # Create a new fire drill that updates fire drill 7, with a symptom it left out:
+  fyr new -u 7 "Customer charged twice"
+
+Flags:
+  -h, --help                help for new
+  -r, --replace REFERENCE   a REFERENCE (number or partial filename) to a record this one replaces
+  -u, --update REFERENCE    a REFERENCE (number or partial filename) to a record this one updates
+fyr help link
+Records, in both fire drills, that SOURCE replaces or updates TARGET.
+
+SOURCE and TARGET are both a reference (number or partial filename) to a fire
+drill.  Exactly one of --replace and --update must be given.
+
+With --replace, SOURCE is a new drill for the case TARGET practised, and
+TARGET is marked "Replaced by" SOURCE and loses its Draft status.
+
+With --update, SOURCE changes part of TARGET, such as a symptom it left out,
+and TARGET is marked "Updated by" SOURCE and keeps its status.
+
+Usage:
+  fyr link (--replace | --update) SOURCE TARGET [flags]
+
+Examples:
+  # Record that fire drill 3 updates fire drill 2:
+  fyr link --update 3 2
+
+  # Record that fire drill 5 replaces fire drill 4:
+  fyr link -r 5 4
+
+Flags:
+  -h, --help      help for link
+  -r, --replace   SOURCE replaces TARGET, which loses its Draft status
+  -u, --update    SOURCE makes substantive changes to TARGET

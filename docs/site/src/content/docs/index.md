@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: detoo is a set of command-line tools and agent skills for keeping decision records, RFCs, user stories, problem playbooks and SOPs.
+description: detoo is a set of command-line tools and agent skills for keeping decision records, RFCs, user stories, problem playbooks, SOPs and fire drills.
 section: getting-started
 order: 1
 ---
@@ -16,13 +16,14 @@ Markdown files in your repository, next to the code it is about.
 | [`ust`](ust/) | User stories: who wants something of the software, what, and why, with the acceptance criteria that say when it is done. | `docs/userstory` |
 | [`plm`](plm/) | Problem playbooks, each a plan, by the PIOSEE method, for responding to a problem such as an incident, before it arises. | `docs/problem` |
 | [`sop`](sop/) | Standard operating procedures: the steps of a routine task, such as rolling back a release, which playbooks refer to. | `docs/sop` |
+| [`fyr`](fyr/) | Fire drills: exercises in which one person practises a playbook on a local copy of the system, choosing what to do at each step, without causing a real problem. | `docs/firedrill` |
 
-A sixth tool, [`detoo`](detoo/), looks after the logs as a whole. `detoo
+A seventh tool, [`detoo`](detoo/), looks after the logs as a whole. `detoo
 doctor` checks that each log is where its tool looks for it, and that its
 documents are named and numbered as the tool expects. `detoo skills`
 [installs the agent skills](skills/install/) that drive the tools.
 
-The five record tools work the same way. `init` starts a log, `new` adds the
+The six record tools work the same way. `init` starts a log, `new` adds the
 next numbered document from a template, `link` records that one document
 replaces or updates another, `list` lists them or writes a table of contents,
 `graph` draws the links between them, and `config` prints where the tool is

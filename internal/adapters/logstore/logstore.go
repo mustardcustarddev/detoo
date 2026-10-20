@@ -162,12 +162,22 @@ func (s *Store) WriteLines(_ context.Context, file string, lines []string) error
 	return os.WriteFile(s.path(file), []byte(text.String()), 0o644)
 }
 
-// Write creates a record, and the log directory if it is not there yet.
+// Write creates a record, or another file in the log such as its README, and
+// the log directory if it is not there yet.
 func (s *Store) Write(_ context.Context, file, content string) error {
 	if err := os.MkdirAll(filepath.Dir(s.path(file)), 0o755); err != nil {
 		return err
 	}
 	return os.WriteFile(s.path(file), []byte(content), 0o644)
+}
+
+// Exists reports whether a file is there.
+func (s *Store) Exists(_ context.Context, file string) (bool, error) {
+	_, err := os.Stat(s.path(file))
+	if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	}
+	return err == nil, err
 }
 
 // ReadFile reads a file in the project that is not a record, such as the

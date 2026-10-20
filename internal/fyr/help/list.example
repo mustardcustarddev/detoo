@@ -1,0 +1,5 @@
+  # Publish a table of contents beside the fire drills and their README:
+  fyr list --toc > docs/firedrill/CONTENTS.md
+
+  # Publish one elsewhere, with an introduction, linking back to the fire drills:
+  fyr list --toc -i intro.md -p ../docs/firedrill/ > site/fire-drills.md

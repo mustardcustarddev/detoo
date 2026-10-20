@@ -1,0 +1,46 @@
+fyr new "Customer charged twice"
+docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+fyr new "Release breaks checkout"
+docs/firedrill/FIREDRILL-0002-release-breaks-checkout.md
+fyr new -r 1 "Customer charged twice"
+docs/firedrill/FIREDRILL-0003-customer-charged-twice.md
+fyr link -u 3 2
+head -10 docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+# 1. Customer charged twice
+
+Date: 1992-01-12
+
+## Status
+
+Replaced by [3. Customer charged twice](FIREDRILL-0003-customer-charged-twice.md)
+
+## Playbook
+
+head -10 docs/firedrill/FIREDRILL-0002-release-breaks-checkout.md
+# 2. Release breaks checkout
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Updated by [3. Customer charged twice](FIREDRILL-0003-customer-charged-twice.md)
+
+head -12 docs/firedrill/FIREDRILL-0003-customer-charged-twice.md
+# 3. Customer charged twice
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+Replaces [1. Customer charged twice](FIREDRILL-0001-customer-charged-twice.md)
+
+Updates [2. Release breaks checkout](FIREDRILL-0002-release-breaks-checkout.md)
+
+fyr list
+docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+docs/firedrill/FIREDRILL-0002-release-breaks-checkout.md
+docs/firedrill/FIREDRILL-0003-customer-charged-twice.md

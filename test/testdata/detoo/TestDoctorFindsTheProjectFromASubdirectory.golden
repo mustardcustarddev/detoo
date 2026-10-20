@@ -7,7 +7,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop  fyr
  ▄███▀█████▀███▄     checked   1 document in 1 directory
 
 ╭─ ✗ rfc  docs/rfc ──────────────────────────────────────── 1 RFC · 1 problem ─╮
@@ -16,7 +16,7 @@ detoo doctor
 │     → RFC-0001-use-requests-for-comments.md                                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-– No adr, ust, plm or sop log found.
+– No adr, ust, plm, sop or fyr log found.
 
 → Run detoo doctor --fix to fix it.
 

@@ -2,6 +2,7 @@ package templates
 
 import (
 	"context"
+	"maps"
 	"os"
 	"path/filepath"
 	"testing"
@@ -56,5 +57,31 @@ func TestRecordTemplateVariable(t *testing.T) {
 				t.Errorf("Record() = %q, want %q", got, test.want)
 			}
 		})
+	}
+}
+
+// TestDirectory covers the files a tool's new records are created with in the
+// directory beside them, which a tool need not have.
+func TestDirectory(t *testing.T) {
+	files := fstest.MapFS{
+		builtinRecord:                            {Data: []byte("built-in\n")},
+		builtinDirectory + "/problem/README.md":  {Data: []byte("problem\n")},
+		builtinDirectory + "/solution/README.md": {Data: []byte("solution\n")},
+	}
+	got, err := New(t.TempDir(), func(string) string { return "" }, kind, files).Directory(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{"problem/README.md": "problem\n", "solution/README.md": "solution\n"}
+	if !maps.Equal(got, want) {
+		t.Errorf("Directory() = %v, want %v", got, want)
+	}
+
+	got, err = New(t.TempDir(), func(string) string { return "" }, kind, builtin).Directory(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 0 {
+		t.Errorf("Directory() of a tool with none = %v, want nothing", got)
 	}
 }

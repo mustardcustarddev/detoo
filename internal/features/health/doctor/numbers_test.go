@@ -10,6 +10,7 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/fyr"
 	"github.com/mustardcustard/detoo/internal/plm"
 	"github.com/mustardcustard/detoo/internal/rfc"
 	"github.com/mustardcustard/detoo/internal/sop"
@@ -30,7 +31,7 @@ func (h fakeHistory) Added(_ context.Context, name string) (time.Time, bool, err
 	return time.Date(1992, 1, day, 0, 0, 0, 0, time.UTC), true, nil
 }
 
-var allKinds = []record.Kind{adr.Kind, rfc.Kind, ust.Kind, plm.Kind, sop.Kind}
+var allKinds = []record.Kind{adr.Kind, rfc.Kind, ust.Kind, plm.Kind, sop.Kind, fyr.Kind}
 
 func checkAll(t *testing.T, kind record.Kind, project fakeProject, history History) Log {
 	t.Helper()

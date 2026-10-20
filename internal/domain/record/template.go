@@ -9,6 +9,10 @@ import (
 // record directory, to override the built-in one.
 const ProjectTemplate = "templates/template.md"
 
+// Readme is the file, relative to its record directory, that opens a log
+// whose kind has no first record.
+const Readme = "README.md"
+
 // Render fills in a template, replacing the first occurrence of each
 // placeholder on each line.
 //

@@ -203,6 +203,9 @@ func (f Fixer) Handle(ctx context.Context, cmd Command) (Fixed, error) {
 				return Fixed{}, err
 			}
 			moves.files[path.Join(rn.Dir, rn.From)] = path.Join(dir, rn.To)
+			if err := f.renameBeside(ctx, path.Join(rn.Dir, rn.From), dir, rn.From, rn.To, moves); err != nil {
+				return Fixed{}, err
+			}
 			fixed.Logs[i].Renamed = append(fixed.Logs[i].Renamed, rn)
 		}
 		if cmd.Renumber {
@@ -247,11 +250,31 @@ func (f Fixer) renumber(ctx context.Context, l Log, fixes *Fixes, moves relocati
 			return err
 		}
 		moves.files[path.Join(r.Dir, r.File)] = path.Join(dir, r.To)
+		if err := f.renameBeside(ctx, path.Join(r.Dir, r.File), dir, r.From, r.To, moves); err != nil {
+			return err
+		}
 		moves.numbers[path.Join(dir, r.To)] = [2]int{l.Kind.Number(r.From), l.Kind.Number(r.To)}
 		fixes.Renumbered = append(fixes.Renumbered, r)
 	}
 	// Reported in the order of the log.
 	slices.Reverse(fixes.Renumbered)
+	return nil
+}
+
+// renameBeside renames the directory beside a document the fix renamed, such
+// as a fire drill's pages, if it has one, so that it is still named as the
+// document is, and records it as moved, so that the links into it follow it.
+// was is the document's path before the fix, and from and to its names, in
+// dir, before and after the rename.
+func (f Fixer) renameBeside(ctx context.Context, was, dir, from, to string, moves relocation) error {
+	from, to = record.Beside(from), record.Beside(to)
+	if _, exists, err := f.Project.Files(ctx, path.Join(dir, from)); err != nil || !exists {
+		return err
+	}
+	if err := f.Project.Rename(ctx, dir, from, to); err != nil {
+		return err
+	}
+	moves.dirs[record.Beside(was)] = path.Join(dir, to)
 	return nil
 }
 
@@ -385,15 +408,20 @@ func (r relocation) origin(name string) string {
 }
 
 // swapPrefix replaces the directory name is in, or is, by the one dirs maps
-// it to.
+// it to.  Of the directories it is in, the deepest is replaced, so that a
+// directory renamed within one that moved, such as a fire drill's pages within
+// its log, goes where it was renamed to.
 func swapPrefix(name string, dirs map[string]string) string {
+	found, swapped := "", name
 	for from, to := range dirs {
-		if name == from {
-			return to
+		if len(from) <= len(found) {
+			continue
 		}
-		if len(name) > len(from) && name[:len(from)+1] == from+"/" {
-			return to + name[len(from):]
+		if name == from {
+			found, swapped = from, to
+		} else if len(name) > len(from) && name[:len(from)+1] == from+"/" {
+			found, swapped = from, to+name[len(from):]
 		}
 	}
-	return name
+	return swapped
 }

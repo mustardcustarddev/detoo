@@ -1,6 +1,6 @@
 ---
 title: Agent skills
-description: Agent skills that use the detoo tools to write ADRs, RFCs, user stories, problem playbooks and SOPs with you, and to review and check an ADR log.
+description: Agent skills that use the detoo tools to write ADRs, RFCs, user stories, problem playbooks, SOPs and fire drills with you, and to review and check an ADR log.
 section: skills
 order: 1
 ---
@@ -28,7 +28,7 @@ they cannot find, and fill in your project's template.
 | [create-user-story](create-user-story/) | Writes a user story from a one-line subject, asking who it is for, what they need, why, and how you will know it is done. | `ust` |
 | [create-playbook](create-playbook/) | Writes a problem playbook, by the PIOSEE method: a plan, made in advance, for responding to a problem such as an incident, with the immediate action to take, and referring to SOPs for the routine steps. | `plm`, `sop` |
 | [create-sop](create-sop/) | Writes a standard operating procedure, the steps of a routine task, from the scripts, the configuration and the tools' documentation, with few questions. | `sop` |
-| [create-firedrill](create-firedrill/) | Writes a fire drill from a playbook: the setup on a local copy of the system, the symptoms, the expected response and a debrief, with an incident description and logs based on the real system. It never causes a real problem. | `plm`, `sop` |
+| [create-firedrill](create-firedrill/) | Writes a self-led fire drill from a playbook, read like a Choose Your Own Adventure book: the setup on a local copy of the system, what happens step by step, a page for each choice, and the expected response and a debrief, with an incident and logs based on the real system. It never causes a real problem. | `fyr`, `plm`, `sop` |
 
 ## Ask in your own words
 

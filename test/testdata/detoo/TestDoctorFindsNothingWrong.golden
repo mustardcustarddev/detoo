@@ -10,7 +10,7 @@ detoo doctor
  █             █     doctor helps maintain and troubleshoot decision record logs
  █             █
  █▄           ▄█     project   ~
-  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop
+  ▀▀▀▀█████▀▀▀▀      logs      adr  rfc  ust  plm  sop  fyr
  ▄███▀█████▀███▄     checked   3 documents in 2 directories
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
@@ -19,6 +19,7 @@ detoo doctor
 │ ✓  ust  docs/userstory  1 user story        STORY-0001                       │
 │ –  plm  docs/problem    no log                                               │
 │ –  sop  docs/sop        no log                                               │
+│ –  fyr  docs/firedrill  no log                                               │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
  DOCTOR  ✓ The 2 logs found are in place and named with their prefix.    EXIT 0 

@@ -72,6 +72,14 @@ func (k Kind) FileName(dir string, number int, title string) string {
 	return path.Join(dir, name)
 }
 
+// Beside returns the path of the directory beside a record, named as the
+// record is without its extension, which holds files that belong to it alone,
+// such as a fire drill's pages: docs/firedrill/FIREDRILL-0001-outage for
+// docs/firedrill/FIREDRILL-0001-outage.md.
+func Beside(file string) string {
+	return strings.TrimSuffix(file, path.Ext(file))
+}
+
 // Number returns the number a record's file name starts with, after its
 // kind's prefix, or 0 if the file is not named as a record of this kind.
 func (k Kind) Number(file string) int {

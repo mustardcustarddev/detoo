@@ -1,0 +1,28 @@
+# Fire drills
+
+A fire drill is an exercise: one person meets a simulated incident, and
+responds to it as a playbook from the problem log says. It prepares them for
+a real one, and tests the playbook.
+
+## Playing a drill
+
+Start at the drill's document, and follow its steps. Where a step asks for a
+choice, write down your choice and why, then read the page it names. When the
+drill is over, read its `solution`.
+
+* Act only on the local system. Write down any step that would act on
+  anything else, rather than taking it.
+* Send nothing. Write down any message the drill has you send.
+* Stop at any time.
+
+## Writing a drill
+
+Ask your agent, with the `create-firedrill` skill, which `detoo skills
+install` installs: "Write a fire drill for the double-charge playbook." It
+researches the system and writes the drill, its evidence and its solution.
+
+To write one yourself, run `fyr new` with the playbook's title, exactly, such
+as `fyr new "Customer charged twice"`. Beside the drill, it creates a
+`problem` directory, for the incident, the evidence and the page each choice
+leads to, and a `solution` directory, for the expected response and the
+debrief. A drill is a draft until the people who own the playbook accept it.

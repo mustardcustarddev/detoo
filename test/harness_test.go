@@ -118,6 +118,12 @@ func (w *workspace) sop(args ...string) {
 	w.run("sop", args...)
 }
 
+// fyr runs the fyr command.
+func (w *workspace) fyr(args ...string) {
+	w.t.Helper()
+	w.run("fyr", args...)
+}
+
 // detoo runs the detoo command, and records its exit status, as echo $? would
 // show it.  The user's home directory is the project's, so that the project
 // is shown as ~ whichever temporary directory it is in.

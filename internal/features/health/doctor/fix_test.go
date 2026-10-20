@@ -12,6 +12,7 @@ import (
 
 	"github.com/mustardcustard/detoo/internal/adr"
 	"github.com/mustardcustard/detoo/internal/domain/record"
+	"github.com/mustardcustard/detoo/internal/fyr"
 	"github.com/mustardcustard/detoo/internal/ust"
 )
 
@@ -49,9 +50,13 @@ func (w *memWorkspace) Move(_ context.Context, from, to string) error {
 	return nil
 }
 
-func (w *memWorkspace) Rename(_ context.Context, dir, from, to string) error {
+// Rename renames a file, or, as a filesystem does, a directory.
+func (w *memWorkspace) Rename(ctx context.Context, dir, from, to string) error {
 	if _, ok := w.files[path.Join(dir, to)]; ok {
 		return fmt.Errorf("%s exists", to)
+	}
+	if _, ok := w.files[path.Join(dir, from)]; !ok {
+		return w.Move(ctx, path.Join(dir, from), path.Join(dir, to))
 	}
 	w.files[path.Join(dir, to)] = w.files[path.Join(dir, from)]
 	delete(w.files, path.Join(dir, from))
@@ -138,6 +143,30 @@ func TestFixMovesAndRenamesALogAndItsLinks(t *testing.T) {
 	}
 	if fixed.Changes() != 3+1+4 {
 		t.Errorf("Changes() = %d, want 8", fixed.Changes())
+	}
+}
+
+// A document with a directory beside it, named as it is, such as a fire
+// drill with its pages, keeps it when the fix moves and renames it, and the
+// links into the directory, and out of it, follow.
+func TestFixRenamesTheDirectoryBesideADocument(t *testing.T) {
+	w := &memWorkspace{files: map[string]string{
+		"doc/firedrill/firedrill-0001-outage.md":                 "# 1. Outage\n\nRead [the alert](firedrill-0001-outage/problem/alert.md).\n",
+		"doc/firedrill/firedrill-0001-outage/problem/alert.md":   "Back to [the drill](../../firedrill-0001-outage.md).\n",
+		"doc/firedrill/firedrill-0001-outage/solution/README.md": "# Solution\n",
+	}}
+	fixed := fix(t, w, fyr.Kind)
+
+	want := map[string]string{
+		"docs/firedrill/FIREDRILL-0001-outage.md":                 "# 1. Outage\n\nRead [the alert](FIREDRILL-0001-outage/problem/alert.md).\n",
+		"docs/firedrill/FIREDRILL-0001-outage/problem/alert.md":   "Back to [the drill](../../FIREDRILL-0001-outage.md).\n",
+		"docs/firedrill/FIREDRILL-0001-outage/solution/README.md": "# Solution\n",
+	}
+	if !reflect.DeepEqual(w.files, want) {
+		t.Errorf("files are\n%v\nwant\n%v", w.files, want)
+	}
+	if !fixed.After.Healthy() {
+		t.Errorf("After.Healthy() = false, want true")
 	}
 }
 

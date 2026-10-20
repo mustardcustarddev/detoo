@@ -7,8 +7,9 @@ order: 2
 
 ## 1. Install the tools
 
-Each skill drives `adr`, `rfc`, `ust`, `plm` or `sop`, which must be on the
-`PATH` of the machine the agent runs on. [Install](../../install/) them first.
+Each skill drives `adr`, `rfc`, `ust`, `plm`, `sop` or `fyr`, which must be
+on the `PATH` of the machine the agent runs on. [Install](../../install/) them
+first.
 
 ## 2. Install the skills
 

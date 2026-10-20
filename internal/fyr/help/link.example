@@ -1,0 +1,5 @@
+  # Record that fire drill 3 updates fire drill 2:
+  fyr link --update 3 2
+
+  # Record that fire drill 5 replaces fire drill 4:
+  fyr link -r 5 4

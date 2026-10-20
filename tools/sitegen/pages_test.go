@@ -34,7 +34,7 @@ func TestEveryCommandHasAPage(t *testing.T) {
 	// The walk above proves nothing if there are no tools to walk.  Adding a
 	// tool means editing tools(), so naming them here costs nothing extra;
 	// adding a command needs no edit at all.
-	for _, name := range []string{"adr", "rfc", "ust", "plm", "sop", "detoo"} {
+	for _, name := range []string{"adr", "rfc", "ust", "plm", "sop", "fyr", "detoo"} {
 		if !have[name+" "] {
 			t.Errorf("no overview page for %s", name)
 		}

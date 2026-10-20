@@ -1,0 +1,60 @@
+fyr new "Customer charged twice"
+docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+ls docs/firedrill
+FIREDRILL-0001-customer-charged-twice
+FIREDRILL-0001-customer-charged-twice.md
+cat docs/firedrill/FIREDRILL-0001-customer-charged-twice.md
+# 1. Customer charged twice
+
+Date: 1992-01-12
+
+## Status
+
+Draft
+
+## Playbook
+
+The playbook this drill practises, linked.
+
+## How to play
+
+This drill is for one person. Set it up, then read the drill a step at a time, and do what each step says. Where a step asks you to choose, write down your choice and why, then read the page it names, in the `problem` directory beside this document. When a page says the drill is over, read the `solution` directory.
+
+## Ground rules
+
+* Act only on the local system. A step that would act on anything else is written down, not taken.
+* Send nothing. Write any message the drill has you send, and keep it for the debrief.
+* Stop at any time, for a real incident or any other reason.
+
+## Setup
+
+What to have to hand, and how to run the system locally, before the drill starts.
+
+## The drill
+
+1. What happens first, and what to read.
+2. What happens next, and the choice it asks for: each option, and the page in `problem` it leads to.
+ls docs/firedrill/FIREDRILL-0001-customer-charged-twice
+problem
+solution
+cat docs/firedrill/FIREDRILL-0001-customer-charged-twice/problem/README.md
+# Problem
+
+The pages of the fire drill: what you find, and what happens after each
+choice you make.
+
+Read a page only when the fire drill sends you to it, since a page read early
+gives away what happens next. Each page ends with what to do next: make
+another choice, go back to a step of the drill, or end the drill.
+cat docs/firedrill/FIREDRILL-0001-customer-charged-twice/solution/README.md
+# Solution
+
+What the fire drill expects of you. Read nothing here until the drill is
+over.
+
+* `expected-response.md`: the response the playbook leads to in the drill's
+  case, step by step.
+* `debrief.md`: questions to look back on the drill with, and what the drill
+  found wrong or missing in the playbook.
+fyr list
+docs/firedrill/FIREDRILL-0001-customer-charged-twice.md

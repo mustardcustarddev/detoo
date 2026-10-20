@@ -1,15 +1,16 @@
-Checks the project's adr, rfc, ust, plm and sop logs together, and reports
-any log the tools would not find, or whose file names or titles are out of
-date:
+Checks the project's adr, rfc, ust, plm, sop and fyr logs together, and
+reports any log the tools would not find, or whose file names or titles are
+out of date:
 
 * a log kept under `doc/` instead of `docs/`;
 * a log kept in a directory its tool no longer looks in, such as user stories
   in `docs/sty` instead of `docs/userstory`, or playbooks in `docs/piosee`
   instead of `docs/problem`;
 * documents whose file names do not begin with their log's prefix in upper
-  case: `ADR-`, `RFC-`, `STORY-`, `PROBLEM-` or `SOP-`, including a slip of
-  the prefix, such as `STOY-0003-title.md` among the user stories, and a
-  prefix the log had before, such as `PIOSEE-` among the playbooks;
+  case: `ADR-`, `RFC-`, `STORY-`, `PROBLEM-`, `SOP-` or `FIREDRILL-`,
+  including a slip of the prefix, such as `STOY-0003-title.md` among the user
+  stories, and a prefix the log had before, such as `PIOSEE-` among the
+  playbooks;
 * documents that share a number, such as `STORY-0003-first.md` and
   `STORY-0003-second.md`;
 * documents whose title does not match the file name: `ADR-0001-do-stuff.md`
@@ -38,13 +39,15 @@ Without `--fix`, nothing is changed, and doctor says how many of the problems
 renames its documents to begin with the prefix, and changes the links to them
 in the project's Markdown documents (those in the project's directory, and
 under `docs`, `doc` and each log's directory), so that none break.  A
-directory that moving a log out of leaves empty, such as `doc`, is removed.
+directory beside a document, named as the document is without `.md`, such as
+a fire drill's pages, is renamed with it.  A directory that moving a log out
+of leaves empty, such as `doc`, is removed.
 Clashes are left as they are.  doctor then checks the logs again.
 
 `--fix` renumbers documents that share a number only when asked to.  It
-renames each document it renumbers, changes the number in its title, and
-changes the links to it, and their text when it begins with the number, such
-as "3. Use PostgreSQL".  Anything else that refers to a renumbered document
+renames each document it renumbers, and the directory beside it, changes the
+number in its title, and changes the links to it, and their text when it
+begins with the number, such as "3. Use PostgreSQL".  Anything else that refers to a renumbered document
 could be affected: links from outside the project's Markdown, other branches,
 and mentions of its number in text, tickets and commit messages.  So at a
 terminal, doctor warns of this, and asks first, renumbering only if the answer

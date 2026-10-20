@@ -3,9 +3,9 @@
 [Agent Skills](https://agentskills.io/specification) for keeping logs with
 the detoo tools: architecture decision records with `adr`, requests for
 comments with `rfc`, user stories with `ust`, problem playbooks with `plm`,
-and standard operating procedures with `sop`, and for practising a playbook
-in a fire drill. Each directory is one skill, and is self-contained, so it
-can be installed on its own.
+standard operating procedures with `sop`, and fire drills, which practise a
+playbook, with `fyr`. Each directory is one skill, and is self-contained, so
+it can be installed on its own.
 
 ## Catalogue
 
@@ -43,7 +43,7 @@ This needs the `ust` tool.
 
 ### Problem response
 
-These need the `plm` and `sop` tools.
+These need the `plm` and `sop` tools, and `create-firedrill` needs `fyr`.
 
 * [**create-playbook**](create-playbook/SKILL.md): write a problem playbook
   with `plm`, by the PIOSEE method: a plan, made in advance, for responding
@@ -63,14 +63,18 @@ These need the `plm` and `sop` tools.
   than interview: it reads the scripts, the CI and deployment configuration
   and the documentation of the tools involved, drafts the steps with their
   sources, and asks the user only what research cannot settle.
-* [**create-firedrill**](create-firedrill/SKILL.md): write a fire drill from
-  a problem playbook: an exercise in which the team practises the playbook's
-  response on a local copy of the system. It researches how the system runs
-  locally, what it logs and what the other systems involved report, and
-  writes the setup, the symptoms, the expected response and a debrief, with
-  an incident description and logs based on the real system. It never causes
-  a real problem: the document describes the symptoms, and the assets stand
-  in for the evidence.
+* [**create-firedrill**](create-firedrill/SKILL.md): write a fire drill with
+  `fyr`, from a problem playbook: an exercise in which one person practises
+  the playbook's response on a local copy of the system. The drill reads like
+  a Choose Your Own Adventure book: it sets out the setup and what happens,
+  step by step, and each choice leads to a page of what happens next, until
+  the solution gives the expected response and a debrief. It researches how
+  the system runs locally, what it logs and what the other systems involved
+  report, and writes the incident and the logs from the real system. A
+  drill can have the reader reproduce the problem locally, search logs the
+  drill holds, or follow an alert and its metrics as time passes. It never
+  causes a real problem: the pages describe the symptoms, and stand in for
+  the evidence.
 
 ### What they have in common
 
@@ -90,9 +94,9 @@ the status `Draft`. Accepting one is for people to do.
 
 ### 1. Install the tools
 
-Each skill drives `adr`, `rfc`, `ust`, `plm` or `sop`, which must be on the
-`PATH` of the machine the agent runs on. Build and install them as described in the
-[README](../README.md#install).
+Each skill drives `adr`, `rfc`, `ust`, `plm`, `sop` or `fyr`, which must be
+on the `PATH` of the machine the agent runs on. Build and install them as
+described in the [README](../README.md#install).
 
 ### 2. Install the skills
 

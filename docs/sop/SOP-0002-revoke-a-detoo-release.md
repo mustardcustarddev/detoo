@@ -11,7 +11,7 @@ Accepted
 1. Make sure you are the detoo maintainer, who releases detoo, and that you
    have `git`, push access to `main` on `mustardcustarddev/detoo` and to
    `mustardcustarddev/homebrew-tap`, and the GitHub CLI, `gh`, signed in. This procedure withdraws a release that has
-   been published, as [SOP 2](SOP-0001-release-detoo.md) publishes it. It
+   been published, as [SOP 1](SOP-0001-release-detoo.md) publishes it. It
    does not decide whether to: decide that first.
 2. Write down the version to revoke, `<version>`, such as `v0.2.0`, and the
    same version without its `v`, `<x.y.z>`.
@@ -101,5 +101,5 @@ Accepted
     * If you removed the formula, check that `brew info detoo` reports
       `No available formula`.
 13. Release the fix, when it is ready, with
-    [SOP 2](SOP-0001-release-detoo.md). Its version is later than
+    [SOP 1](SOP-0001-release-detoo.md). Its version is later than
     `<version>`, because the tag is kept.

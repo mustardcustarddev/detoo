@@ -61,11 +61,12 @@ rfc init && rfc new "Adopt Connect for internal services"
 ust init && ust new "Reorder a previous purchase"
 plm init && plm new "Customer charged twice"
 sop init && sop new "Roll back a release"
+fyr init && fyr new "Customer charged twice"
 ```
 
-`rfc new --obsolete`, `ust new --replace`, `plm new --replace` and
-`sop new --supersede` replace an earlier document, as `adr new --supersede`
-does.
+`rfc new --obsolete`, `ust new --replace`, `plm new --replace`,
+`sop new --supersede` and `fyr new --replace` replace an earlier document, as
+`adr new --supersede` does.
 
 ## Check the logs
 

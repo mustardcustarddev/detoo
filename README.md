@@ -21,6 +21,9 @@ Command-line tools and agentic skills for working with decision records:
   Selection, the steps of Execution, and how to Evaluate the result.
 * `sop` keeps standard operating procedures: the steps of a routine task,
   such as rolling back a release, which playbooks refer to.
+* `fyr` keeps fire drills: exercises in which one person practises a
+  playbook on a local copy of the system, choosing what to do at each step,
+  without causing a real problem.
 
 ## Install
 
@@ -32,15 +35,15 @@ brew tap mustardcustarddev/tap
 brew install detoo
 ```
 
-This installs `adr`, `rfc`, `ust`, `plm`, `sop` and `detoo`, with shell
-completion for bash, zsh and fish. On other machines, build them from source,
-as [For developers](#for-developers) describes.
+This installs `adr`, `rfc`, `ust`, `plm`, `sop`, `fyr` and `detoo`, with
+shell completion for bash, zsh and fish. On other machines, build them from
+source, as [For developers](#for-developers) describes.
 
 ## Usage
 
 Each tool works the same way. Start a log, which lives in
-`docs/adr`, `docs/rfc`, `docs/userstory`, `docs/problem` or `docs/sop`, then
-add to it:
+`docs/adr`, `docs/rfc`, `docs/userstory`, `docs/problem`, `docs/sop` or
+`docs/firedrill`, then add to it:
 
 ```bash
 adr init
@@ -53,9 +56,12 @@ the number and a slug of the title, such as
 `ADR-0002-use-postgresql-for-persistence.md`,
 `RFC-0004-adopt-connect-for-internal-services.md`,
 `STORY-0012-reorder-a-previous-purchase.md`,
-`PROBLEM-0004-unexpected-charge-after-deletion.md` or
-`SOP-0003-roll-back-a-release.md`. A project can provide its
-own template in `templates/template.md` inside the log directory.
+`PROBLEM-0004-unexpected-charge-after-deletion.md`,
+`SOP-0003-roll-back-a-release.md` or
+`FIREDRILL-0002-customer-charged-twice.md`. `fyr new` also creates a
+directory beside the drill, for its `problem` and `solution` pages. A project
+can provide its own template in `templates/template.md` inside the log
+directory.
 
 A new document can replace or update earlier ones, and the link is recorded
 in both:
@@ -66,6 +72,7 @@ rfc new --obsolete 4 "Adopt Connect for internal services"
 ust new --replace 12 "Reorder a previous purchase"
 plm new --replace 4 "Customer cannot cancel a subscription"
 sop new --supersede 3 "Roll back a release"
+fyr new --replace 2 "Customer charged twice"
 ```
 
 Publish a table of contents, or draw the links between documents with Mermaid

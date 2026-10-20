@@ -5,6 +5,9 @@ package create
 import (
 	"context"
 	"errors"
+	"maps"
+	"path"
+	"slices"
 
 	"github.com/mustardcustard/detoo/internal/domain/record"
 )
@@ -45,9 +48,11 @@ type Store interface {
 	WriteLines(ctx context.Context, file string, lines []string) error
 }
 
-// Templates is the port that supplies the Markdown a record starts from.
+// Templates is the port that supplies the Markdown a record starts from, and
+// the files created with it in the directory beside it.
 type Templates interface {
 	Record(ctx context.Context, dir string) (string, error)
+	Directory(ctx context.Context) (map[string]string, error)
 }
 
 // Clock is the port that supplies the record's date.
@@ -82,15 +87,30 @@ func (h Handler) Handle(ctx context.Context, cmd Command) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
+	beside, err := h.Templates.Directory(ctx)
+	if err != nil {
+		return Result{}, err
+	}
 	number, err := h.Log.NextNumber(ctx, dir)
 	if err != nil {
 		return Result{}, err
 	}
 
 	created := record.Record{Number: number, File: h.Kind.FileName(dir, number, cmd.Title)}
-	content := record.Render(template, number, cmd.Title, h.Clock.Today(ctx), h.Kind.Status)
+	today := h.Clock.Today(ctx)
+	content := record.Render(template, number, cmd.Title, today, h.Kind.Status)
 	if err := h.Log.Write(ctx, created.File, content); err != nil {
 		return Result{}, err
+	}
+
+	// The files that belong to the record alone, such as a fire drill's
+	// pages, go in the directory beside it, filled in as the record is.
+	for _, name := range slices.Sorted(maps.Keys(beside)) {
+		file := path.Join(record.Beside(created.File), name)
+		content := record.Render(beside[name], number, cmd.Title, today, h.Kind.Status)
+		if err := h.Log.Write(ctx, file, content); err != nil {
+			return Result{}, err
+		}
 	}
 
 	// The record is written before its links, so that a link to it resolves.

@@ -77,7 +77,7 @@ The detoo maintainer takes each step.
 * **Option 1**
   1. Revoke the release by
      [SOP 2. Revoke a detoo release](../sop/SOP-0002-revoke-a-detoo-release.md).
-  2. Reply on the issue, with a link to the notice SOP 3 posts on the
+  2. Reply on the issue, with a link to the notice SOP 2 posts on the
      documentation site.
   3. Fix the problem, and release the fix by
      [SOP 1. Release detoo](../sop/SOP-0001-release-detoo.md).
@@ -100,6 +100,6 @@ The detoo maintainer takes each step.
 
 * After the playbook is used, the maintainer reviews whether it led to a
   sound decision in time, and what it lacked.
-* After Option 1, the checks in SOP 3 show whether the release was revoked:
+* After Option 1, the checks in SOP 2 show whether the release was revoked:
   that the release is gone and its tag kept, that the notice and the README
   warning are published, and that Homebrew installs the earlier release.
