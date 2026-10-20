@@ -149,3 +149,9 @@ docs/site/node_modules/
 docs/site/dist/
 docs/site/.astro/
 docs/site/src/content/reference/
+/.agents/skills/ai-slop-detector/
+/.agents/skills/blog-post-writer/
+/.agents/skills/fact-checker/
+/.agents/skills/find-missing-adrs/
+/.agents/skills/hook-stack-evaluator/
+/skills-lock.json

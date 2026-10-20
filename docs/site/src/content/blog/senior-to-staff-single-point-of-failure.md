@@ -85,18 +85,6 @@ It's slower the first few times, and you'll often see the answer before anyone e
 faster than the team can work, keep it to yourself and note it down. Anything you wanted to say that wasn't in the
 playbook belongs in it.
 
-## Where the analogy bends
-
-A cockpit has two pilots trained in the same process. An engineer on call is often on their own at night, and the
-playbook is the only second opinion they've got.
-
-An aircraft type barely changes from one year to the next. A software system changes every week, and a playbook written
-before the last rebuild will send people to dashboards that no longer exist. Treat every playbook as a draft, and change
-it after each incident that uses it.
-
-And playbooks only cover the problems you foresaw. The incident nobody has seen before still needs your most
-experienced engineers. They'll have more attention for it if they aren't also being called for the familiar ones.
-
 ## How I'd start
 
 [detoo](../../) includes [`plm`](../../docs/plm/), a command-line tool that keeps PIOSEE playbooks as Markdown files in
