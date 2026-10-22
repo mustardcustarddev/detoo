@@ -1,6 +1,18 @@
 {
   "version": 1,
   "skills": {
+    "ai-slop-detector": {
+      "source": "nicepkg/ai-workflow",
+      "sourceType": "github",
+      "skillPath": "workflows/content-creator-workflow/skills/ai-slop-detector/SKILL.md",
+      "computedHash": "80a10772b535931ab37fe00df22be77b90675a2f5074f147ed53d73df192e30f"
+    },
+    "blog-post-writer": {
+      "source": "nicepkg/ai-workflow",
+      "sourceType": "github",
+      "skillPath": "workflows/content-creator-workflow/skills/blog-post-writer/SKILL.md",
+      "computedHash": "7a0da7f728f27e5056c56d052fd635cc4ca654ee77ac9a611e6a189bafef3321"
+    },
     "check-adrs": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
@@ -37,11 +49,23 @@
       "skillPath": "skills/create-user-story/SKILL.md",
       "computedHash": "380e86ee09ae993c5e86800b8dc4f4cb1e9acb3aadd0710236acb1cb824037b9"
     },
+    "fact-checker": {
+      "source": "nicepkg/ai-workflow",
+      "sourceType": "github",
+      "skillPath": "workflows/content-creator-workflow/skills/fact-checker/SKILL.md",
+      "computedHash": "04d5e5285f37364c25dd80de555429a0b007291f5b31e410e8ea1f84e2054e16"
+    },
     "find-missing-adrs": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/find-missing-adrs/SKILL.md",
       "computedHash": "a33af0f1699543ed922fca3b808d283252aafe12eb966766e02db92d831180f6"
+    },
+    "hook-stack-evaluator": {
+      "source": "nicepkg/ai-workflow",
+      "sourceType": "github",
+      "skillPath": "workflows/content-creator-workflow/skills/hook-stack-evaluator/SKILL.md",
+      "computedHash": "fd1387e5add7dce2a8cacf1713c7a25ebbbe64c8bd8f9d75cd881f69168c91a7"
     },
     "review-adrs": {
       "source": "mustardcustarddev/detoo",
