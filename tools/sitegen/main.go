@@ -1,6 +1,6 @@
 // Command sitegen writes the documentation site's command reference: a
-// Markdown page for each tool, and for each of its commands, holding exactly
-// what the tool prints as its help.
+// Markdown page for each tool, and for each of its commands, saying what the
+// tool's help says: its prose, usage, examples, commands and options.
 //
 // The pages are generated rather than written, so that the site cannot say
 // something different from the tools.  They are built in, not committed: the

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"io/fs"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/mustardcustard/detoo/internal/adapters/clock"
 	"github.com/mustardcustard/detoo/internal/adapters/editor"
@@ -32,14 +32,14 @@ import (
 )
 
 // Page is one page of the site's command reference: what a tool, or one of
-// its commands, prints as its help.
+// its commands, says of itself in its help, as Markdown.
 type Page struct {
 	Tool        string // the tool, such as "adr"
 	Command     string // the command, such as "new", or "" for the tool itself
 	Title       string // "adr new", or "adr"
 	Description string // one line, for the page's meta description
 	Order       int    // where the page goes among the tool's pages
-	Help        string // exactly what `<tool> help <command>` prints
+	Body        string // the help as Markdown: its prose, usage, examples, commands and options
 }
 
 // workflow is the order a reader meets the commands in, which is the order
@@ -103,31 +103,24 @@ func Pages() ([]Page, error) {
 	var pages []Page
 	for _, t := range tools() {
 		root := t.root(io.Discard)
-		help, err := t.help()
-		if err != nil {
-			return nil, err
-		}
+		description := firstSentence(root.Long)
 		pages = append(pages, Page{
 			Tool:        t.name,
 			Title:       t.name,
-			Description: firstSentence(root.Long),
-			Help:        help,
+			Description: description,
+			Body:        withoutLead(body(root), description),
 		})
 
 		for i, cmd := range commandsUnder(root) {
 			// The command's path below the tool, such as "skills install".
 			command := strings.TrimPrefix(cmd.CommandPath(), root.Name()+" ")
-			help, err := t.help(strings.Fields(command)...)
-			if err != nil {
-				return nil, err
-			}
 			pages = append(pages, Page{
 				Tool:        t.name,
 				Command:     command,
 				Title:       t.name + " " + command,
 				Description: cmd.Short,
 				Order:       i + 1,
-				Help:        help,
+				Body:        body(cmd),
 			})
 		}
 	}
@@ -154,18 +147,6 @@ func commandsUnder(cmd *cobra.Command) []*cobra.Command {
 	return all
 }
 
-// help runs `<tool> help <command>` on a fresh command tree, the same code a
-// user's terminal runs, and returns what it prints.
-func (t tool) help(command ...string) (string, error) {
-	var out bytes.Buffer
-	root := t.root(&out)
-	root.SetArgs(append([]string{"help"}, command...))
-	if err := root.Execute(); err != nil {
-		return "", fmt.Errorf("%s help %s: %w", t.name, strings.Join(command, " "), err)
-	}
-	return out.String(), nil
-}
-
 // rank places a command in the workflow; Cobra has already sorted the
 // commands alphabetically, so a stable sort keeps the others in that order.
 func rank(name string) int {
@@ -184,6 +165,17 @@ func firstSentence(text string) string {
 	return text
 }
 
+// withoutLead returns body without its first paragraph, if that paragraph is
+// lead: the page shows its description beneath its title, so it need not say
+// it twice.
+func withoutLead(body, lead string) string {
+	first, rest, ok := strings.Cut(body, "\n\n")
+	if ok && strings.Join(strings.Fields(first), " ") == lead {
+		return rest
+	}
+	return body
+}
+
 // Path returns where the page is written, relative to the reference
 // collection: the tool's overview is its index, and a command beneath
 // another is in a directory named after it, as detoo/skills/install.md.
@@ -194,14 +186,11 @@ func (p Page) Path() string {
 	return p.Tool + "/" + strings.ReplaceAll(p.Command, " ", "/") + ".md"
 }
 
-// Markdown returns the page as the site reads it: frontmatter, then the help
-// in a fenced block, so that it shows exactly as it does in a terminal.
+// Markdown returns the page as the site reads it: frontmatter, then the body.
 //
-// Help is prose with code in backticks, so the fence is made longer than any
-// run of backticks in it, and the frontmatter's values are quoted, since a
-// description may hold a colon.  Go's quoting is valid YAML.
+// The frontmatter's values are quoted, since a description may hold a colon.
+// Go's quoting is valid YAML.
 func (p Page) Markdown() string {
-	fence := strings.Repeat("`", max(3, longestRun(p.Help, '`')+1))
 	var b strings.Builder
 	fmt.Fprintf(&b, "---\n")
 	fmt.Fprintf(&b, "tool: %s\n", strconv.Quote(p.Tool))
@@ -210,8 +199,125 @@ func (p Page) Markdown() string {
 	fmt.Fprintf(&b, "description: %s\n", strconv.Quote(p.Description))
 	fmt.Fprintf(&b, "order: %d\n", p.Order)
 	fmt.Fprintf(&b, "---\n\n")
-	fmt.Fprintf(&b, "%stext\n%s\n%s\n", fence, strings.TrimRight(p.Help, "\n"), fence)
+	b.WriteString(p.Body)
 	return b.String()
+}
+
+// body returns what cmd's help says, as Markdown: the same parts, from the
+// same fields of the command, that Cobra prints in a terminal.  The prose in
+// the help's ".md" files is Markdown already, so it is used as it is; the
+// usage and examples are commands, so they are code; and the commands and
+// options are tables.  The --help option, and the line saying how to get help
+// on a command, are left out: a page is the help.
+func body(cmd *cobra.Command) string {
+	var b strings.Builder
+	if long := strings.TrimSpace(cmd.Long); long != "" {
+		fmt.Fprintf(&b, "%s\n\n", long)
+	}
+
+	var options []string
+	cmd.LocalFlags().VisitAll(func(f *pflag.Flag) {
+		if f.Hidden || f.Name == "help" {
+			return
+		}
+		options = append(options, fmt.Sprintf("| %s | %s |", cell(option(f)), cell(optionUsage(f))))
+	})
+
+	// A command with commands beneath it, and no options but --help, runs only
+	// to print its help, so it is used only with one of its commands.
+	var usage []string
+	if cmd.Runnable() && (!cmd.HasAvailableSubCommands() || len(options) > 0) {
+		usage = append(usage, cmd.UseLine())
+	}
+	if cmd.HasAvailableSubCommands() {
+		usage = append(usage, cmd.CommandPath()+" [command]")
+	}
+	fmt.Fprintf(&b, "## Usage\n\n%s\n\n", codeBlock(strings.Join(usage, "\n")))
+
+	if cmd.HasExample() {
+		fmt.Fprintf(&b, "## Examples\n\n%s\n\n", codeBlock(dedent(cmd.Example)))
+	}
+
+	var commands []string
+	for _, sub := range cmd.Commands() {
+		if documented(sub) {
+			// Each command's page is in a directory named after its parent's
+			// page, so the link is relative to this one.
+			commands = append(commands, fmt.Sprintf("| [`%s`](%s/) | %s |", sub.Name(), sub.Name(), cell(sub.Short)))
+		}
+	}
+	if len(commands) > 0 {
+		fmt.Fprintf(&b, "## Commands\n\n| Command | Description |\n| --- | --- |\n%s\n\n", strings.Join(commands, "\n"))
+	}
+
+	if len(options) > 0 {
+		fmt.Fprintf(&b, "## Options\n\n| Option | Description |\n| --- | --- |\n%s\n\n", strings.Join(options, "\n"))
+	}
+
+	return strings.TrimRight(b.String(), "\n") + "\n"
+}
+
+// option returns how an option is written, long form first, such as
+// "`--supersede REFERENCE`, `-s`".
+func option(f *pflag.Flag) string {
+	name, _ := pflag.UnquoteUsage(f)
+	long := "--" + f.Name
+	if name != "" {
+		long += " " + name
+	}
+	s := "`" + long + "`"
+	if f.Shorthand != "" {
+		s += ", `-" + f.Shorthand + "`"
+	}
+	return s
+}
+
+// optionUsage returns what an option does, as Cobra describes it, with its
+// default when it has one worth saying.
+func optionUsage(f *pflag.Flag) string {
+	_, usage := pflag.UnquoteUsage(f)
+	switch f.DefValue {
+	case "", "false", "[]", "0":
+	default:
+		usage += fmt.Sprintf(" (default `%s`)", f.DefValue)
+	}
+	return usage
+}
+
+// cell makes text safe to put in a cell of a Markdown table.
+func cell(text string) string {
+	return strings.ReplaceAll(strings.Join(strings.Fields(text), " "), "|", `\|`)
+}
+
+// codeBlock fences text as shell commands.  Help is prose with code in
+// backticks, so the fence is made longer than any run of backticks in it.
+func codeBlock(text string) string {
+	fence := strings.Repeat("`", max(3, longestRun(text, '`')+1))
+	return fence + "bash\n" + strings.TrimRight(text, "\n") + "\n" + fence
+}
+
+// dedent removes the indentation that every line of text shares, which the
+// ".example" files carry so that the examples are indented in a terminal.
+func dedent(text string) string {
+	lines := strings.Split(strings.Trim(text, "\n"), "\n")
+	indent := -1
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		n := len(line) - len(strings.TrimLeft(line, " \t"))
+		if indent < 0 || n < indent {
+			indent = n
+		}
+	}
+	for i, line := range lines {
+		if len(line) >= indent {
+			lines[i] = line[max(indent, 0):]
+		} else {
+			lines[i] = strings.TrimLeft(line, " \t")
+		}
+	}
+	return strings.Join(lines, "\n")
 }
 
 // longestRun returns the length of the longest run of c in s.

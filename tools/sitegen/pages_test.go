@@ -46,9 +46,21 @@ func TestPageShowsBuiltInHelp(t *testing.T) {
 		tool, command, prose string
 		want                 []string
 	}{
-		{"adr", "new", "../../internal/adr/help/new.md", []string{"Usage:\n  adr new TITLE [flags]", "--supersede REFERENCE"}},
-		{"detoo", "doctor", "../../internal/detoo/help/doctor.md", []string{"Usage:\n  detoo doctor"}},
-		{"detoo", "skills install", "../../internal/detoo/help/skills-install.md", []string{"Usage:\n  detoo skills install [SKILL...]", "--source SOURCE"}},
+		{"adr", "new", "../../internal/adr/help/new.md", []string{
+			"## Usage\n\n```bash\nadr new TITLE [flags]\n```",
+			"## Examples\n\n```bash\n# Create a new ADR with the title \"Use MySQL Database\":\nadr new \"Use MySQL Database\"\n",
+			"| `--supersede REFERENCE`, `-s` | a REFERENCE (number or partial filename) to a record this one supersedes |",
+		}},
+		{"adr", "", "../../internal/adr/help/root.md", []string{
+			"```bash\nadr [command]\n```",
+			"| [`new`](new/) | Create the next numbered decision record |",
+		}},
+		{"detoo", "doctor", "../../internal/detoo/help/doctor.md", []string{"```bash\ndetoo doctor [flags]\n```"}},
+		{"detoo", "skills install", "../../internal/detoo/help/skills-install.md", []string{
+			"```bash\ndetoo skills install [SKILL...] [flags]\n```",
+			"| `--source SOURCE` |",
+			"(default `mustardcustarddev/detoo`) |",
+		}},
 	}
 	for _, tt := range tests {
 		p := page(t, tt.tool, tt.command)
@@ -56,34 +68,95 @@ func TestPageShowsBuiltInHelp(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		first, _, _ := strings.Cut(strings.TrimSpace(string(prose)), "\n")
-		for _, want := range append(tt.want, first) {
-			if !strings.Contains(p.Help, want) {
-				t.Errorf("%s %s: help does not contain %q:\n%s", tt.tool, tt.command, want, p.Help)
+		// The prose is Markdown already, so it is on the page as it is, but
+		// for an overview's first paragraph, which is the page's description.
+		text := strings.TrimSpace(string(prose))
+		if tt.command == "" {
+			_, text, _ = strings.Cut(text, "\n\n")
+		}
+		for _, want := range append(tt.want, text) {
+			if !strings.Contains(p.Body, want) {
+				t.Errorf("%s %s: page does not contain %q:\n%s", tt.tool, tt.command, want, p.Body)
+			}
+		}
+		for _, unwanted := range []string{"--help", "Use \""} {
+			if strings.Contains(p.Body, unwanted) {
+				t.Errorf("%s %s: page contains %q:\n%s", tt.tool, tt.command, unwanted, p.Body)
 			}
 		}
 	}
 }
 
-// TestHelpMatchesBinary is the story's acceptance criterion: the page shows
-// the same text as the tool's built-in help.
-func TestHelpMatchesBinary(t *testing.T) {
+// TestPageSaysWhatHelpSays is the story's acceptance criterion: the page says
+// what the tool's built-in help says.  The page is laid out as a page rather
+// than a terminal, so each part of the help is looked for on it: the prose,
+// each line of the examples, and what each option does.
+func TestPageSaysWhatHelpSays(t *testing.T) {
 	cmd := exec.Command("go", "run", "./cmd/adr", "help", "new")
 	cmd.Dir = "../.."
 	cmd.Env = append(os.Environ(), "ADR_PAGER=")
-	want, err := cmd.Output()
+	out, err := cmd.Output()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got := page(t, "adr", "new").Help; got != string(want) {
-		t.Errorf("page differs from `adr help new`\n--- page\n%s\n--- adr help new\n%s", got, want)
+	help := string(out)
+	body := page(t, "adr", "new").Body
+
+	prose, rest, _ := strings.Cut(help, "\n\nUsage:\n")
+	want := []string{prose}
+	section := ""
+	for _, line := range strings.Split(rest, "\n") {
+		switch {
+		case line == "Examples:" || line == "Flags:":
+			section = line
+		case strings.TrimSpace(line) == "" || strings.Contains(line, "--help"):
+		case section == "Examples:":
+			want = append(want, strings.TrimSpace(line))
+		case section == "Flags:":
+			// "  -s, --supersede REFERENCE   what it does": what it does follows
+			// the first run of two spaces after the option.
+			_, usage, _ := strings.Cut(strings.TrimSpace(line), "  ")
+			want = append(want, strings.TrimSpace(usage))
+		}
+	}
+	if len(want) < 6 {
+		t.Fatalf("found too little in `adr help new` to compare:\n%s", help)
+	}
+	for _, w := range want {
+		if !strings.Contains(body, w) {
+			t.Errorf("page does not contain %q from `adr help new`:\n%s", w, body)
+		}
 	}
 }
 
 func TestFenceOutlastsBackticks(t *testing.T) {
-	md := Page{Tool: "adr", Title: "adr", Help: "a ```` b"}.Markdown()
-	if !strings.Contains(md, "\n`````text\na ```` b\n`````\n") {
-		t.Errorf("help is not fenced by a longer run of backticks:\n%s", md)
+	if got := codeBlock("a ```` b"); got != "`````bash\na ```` b\n`````" {
+		t.Errorf("code is not fenced by a longer run of backticks:\n%s", got)
+	}
+}
+
+func TestDedentKeepsRelativeIndentation(t *testing.T) {
+	if got := dedent("\n  # a\n  b\n\n    c\n"); got != "# a\nb\n\n  c" {
+		t.Errorf("dedent = %q", got)
+	}
+}
+
+func TestOverviewDoesNotRepeatItsDescription(t *testing.T) {
+	p := page(t, "adr", "")
+	if strings.Contains(p.Body, p.Description) {
+		t.Errorf("overview repeats its description %q:\n%s", p.Description, p.Body)
+	}
+	if got := withoutLead("A b.\n\nC.\n", "A b."); got != "C.\n" {
+		t.Errorf("withoutLead = %q", got)
+	}
+	if got := withoutLead("A b. C.\n\nD.\n", "A b."); got != "A b. C.\n\nD.\n" {
+		t.Errorf("withoutLead removed a paragraph that says more than the lead: %q", got)
+	}
+}
+
+func TestCellEscapesPipes(t *testing.T) {
+	if got := cell("a | b\n  c"); got != `a \| b c` {
+		t.Errorf("cell = %q", got)
 	}
 }
 

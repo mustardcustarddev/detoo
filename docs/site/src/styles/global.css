@@ -147,9 +147,8 @@ body {
 /* ================================================
    Code blocks
    Shiki writes both light and dark colours; show the
-   dark ones when the page is dark.  Help text is shown
-   exactly as a terminal shows it, so it scrolls rather
-   than wraps.
+   dark ones when the page is dark.  A command is shown
+   as it is typed, so it scrolls rather than wraps.
    ================================================ */
 .astro-code {
   overflow-x: auto;
@@ -173,4 +172,10 @@ body {
   background-color: var(--bg-secondary);
   padding: 0.1em 0.3em;
   font-weight: 500;
+}
+
+/* An option in a command's table of options, such as --source SOURCE, is
+   not broken across lines. */
+.prose td:first-child code {
+  white-space: nowrap;
 }

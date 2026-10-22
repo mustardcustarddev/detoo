@@ -62,7 +62,7 @@ const crumbs = [{ label: 'Docs', href: url('docs/') }, ...(page.slug ? [{ label:
         </div>
       </details>
 
-      <article class:list={[page.entry.collection === 'reference' ? 'max-w-5xl' : 'max-w-3xl']}>
+      <article class="max-w-3xl">
         <div class="flex items-start justify-between gap-4">
           <Breadcrumbs items={crumbs} />
           <CopyPage href={url(markdownPath(page.slug))} />
