@@ -1,6 +1,6 @@
-Installs the agent skills that drive adr, rfc, ust, plm, sop and fyr, keeps
-them up to date, and removes them.  The skills come from detoo's repository
-on GitHub, mustardcustarddev/detoo, unless you name another source.
+Lists and installs the agent skills that drive adr, rfc, ust, plm, sop and
+fyr, keeps them up to date, and removes them.  The skills come from detoo's
+repository on GitHub, mustardcustarddev/detoo, unless you name another source.
 
 detoo installs skills where the skills CLI (`npx skills`) does, and records
 them in the same lock files, so either tool can update or remove what the
@@ -13,6 +13,10 @@ other installed:
 * `skills-lock.json`, in the project's directory, records where each skill
   came from, so that `detoo skills update` can update it.  Commit it with the
   skills.
+
+`detoo skills update` and `detoo skills remove --all` touch only detoo's own
+skills, those installed from mustardcustarddev/detoo, and leave the skills of
+other sources as they are.
 
 The project is the nearest of the current directory and its parents that
 holds `skills-lock.json`, `.agents` or `.git`, below your home directory.  If

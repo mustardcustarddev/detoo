@@ -17,7 +17,7 @@ Install them with `detoo skills`, which comes with the tools:
 
 ```bash
 # See which skills there are, without installing any
-detoo skills install --list
+detoo skills list
 
 # Install all of them into the current project
 detoo skills install
@@ -44,7 +44,8 @@ Some useful options:
 | `--source SOURCE` | Install from another source: a branch, tag or commit, such as `mustardcustarddev/detoo#v1.2.0`, a fork on GitHub, or a directory, such as `../detoo`. |
 
 Later, `detoo skills update` brings the skills up to date, and
-`detoo skills remove` removes them. The
+`detoo skills remove` removes them. Both leave skills from other sources, such
+as a fork or a clone, as they are, unless you name one to remove. The
 [command reference](../../detoo/skills/) has every option.
 
 `detoo skills` keeps the same files as the

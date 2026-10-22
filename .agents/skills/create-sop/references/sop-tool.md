@@ -27,9 +27,10 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `sop list`: prints the path of every SOP, one a line, in order. Prints
   nothing if there are none. Fails with
   `sop: the docs/sop directory does not exist` if there is no log.
-* `sop init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/sop`,
-  and writes SOP 1, "Write a standard operating procedure". Does nothing if
-  the log already has SOPs.
+* `sop init`: starts a log in `docs/sop`, and writes its `README.md`, which
+  sets out what an SOP is, and how to follow and write one. It writes no SOP,
+  so the first SOP `sop new` creates is number 1. Does nothing if the log
+  already has SOPs, or a `README.md`.
 * `sop new [-s REF]... [-u REF]... TITLE`: creates the next numbered SOP from
   the template, in draft, and prints its path.
 * `sop link (-s | -u) SOURCE TARGET`: records, in both SOPs, that `SOURCE`
@@ -138,10 +139,9 @@ highest-numbered SOP means the next `sop new` reuses its number.
 | `SOP_DATE`         | Date written into a new SOP, as given.     |
 | `SOP_PAGER`        | Pager for help, if set. Clear it.          |
 
-The log directory is `docs/sop`, unless a `.sop-dir` file in the project root
-names another. The working directory and each of its ancestors are searched
-in turn for a `.sop-dir` file, then for a `docs/sop` directory, so the tool
-works from anywhere in the project. Run `sop config` rather than assuming.
+The log directory is `docs/sop`. The working directory and each of its
+ancestors are searched in turn for a `docs/sop` directory, so the tool works
+from anywhere in the project. Run `sop config` rather than assuming.
 
 ## Errors
 

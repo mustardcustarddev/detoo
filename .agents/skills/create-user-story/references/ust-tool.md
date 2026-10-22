@@ -26,9 +26,10 @@ Options come before operands. An operand that begins with a hyphen must follow
 * `ust list`: prints the path of every story, one a line, in order. Prints
   nothing if there are none. Fails with
   `ust: the docs/userstory directory does not exist` if there is no log.
-* `ust init [DIRECTORY]`: starts a log in `DIRECTORY`, default
-  `docs/userstory`, and writes story 1, "Describe work in user stories". Does nothing if the log
-  already has stories.
+* `ust init`: starts a log in `docs/userstory`, and writes its `README.md`,
+  which sets out what a user story is, and how to write one. It writes no
+  story, so the first story `ust new` creates is number 1. Does nothing if the
+  log already has stories, or a `README.md`.
 * `ust new [-r REF]... [-u REF]... TITLE`: creates the next numbered story
   from the template, in draft, and prints its path.
 * `ust link (-r | -u) SOURCE TARGET`: records, in both stories, that `SOURCE`
@@ -57,9 +58,8 @@ a slug of the title, such as
 Only files named `STORY-NNNN-….md` are stories, along with stories named
 before the prefix was upper case (`story-NNNN-….md`) or before there was one
 (`NNNN-….md`). Anything else in the log directory, such as a `README.md`, is
-ignored. `detoo doctor` reports stories with the older names, stories left
-in `docs/sty`, where ust no longer looks, and a `.sty-dir` file, which ust no
-longer reads.
+ignored. `detoo doctor` reports stories with the older names, and stories left
+in `docs/sty`, where ust no longer looks.
 
 ## Links
 
@@ -146,14 +146,12 @@ the highest-numbered story means the next `ust new` reuses its number.
 | `UST_DATE`           | Date written into a new story, as given.  |
 | `UST_PAGER`          | Pager for help, if set. Clear it.         |
 
-The log directory is `docs/userstory`, unless a `.ust-dir` file in the project
-root names another. The working directory and each of its ancestors are
-searched in turn for a `.ust-dir` file, then for a `docs/userstory` directory,
-so the tool works from anywhere in the project. Run `ust config` rather than
-assuming. A `.sty-dir` file, from when the tool was called `sty`, is not
-read: if `ust config` does not report the directory the stories are in,
-suggest `detoo doctor`, which finds it and, with `--fix`, renames it to
-`.ust-dir`.
+The log directory is `docs/userstory`. The working directory and each of its
+ancestors are searched in turn for a `docs/userstory` directory, so the tool
+works from anywhere in the project. Run `ust config` rather than assuming. If
+the stories are in `docs/sty`, from when the tool was called `sty`, suggest
+`detoo doctor`, which finds them and, with `--fix`, moves them to
+`docs/userstory`.
 
 ## Errors
 

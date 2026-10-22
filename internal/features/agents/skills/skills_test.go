@@ -238,22 +238,30 @@ func TestInstallNamedSkillsForNamedAgents(t *testing.T) {
 	}
 }
 
-// Update installs again only what changed, fetching each source once,
-// reports what its source no longer offers, and goes on past a source that
-// cannot be fetched.  A copy made where a link could not be is replaced.
+// Update installs again only what changed, fetching each ref of detoo's
+// repository once, reports what the repository no longer offers, and goes on
+// past a ref that cannot be fetched.  A copy made where a link could not be is
+// replaced.  The skills of other sources, a fork among them, are left alone.
 func TestUpdate(t *testing.T) {
 	inst := newMem()
+	release := Source{Kind: GitHub, Repo: DefaultSource, Ref: "v1.2.0"}
+	gone := Source{Kind: GitHub, Repo: DefaultSource, Ref: "deleted"}
 	mine := Source{Kind: Local, Dir: "/home/ann/skills"}
-	gone := Source{Kind: GitHub, Repo: "acme/gone"}
-	for name, src := range map[string]Source{"check-adrs": detoo, "create-adr": detoo, "review-adrs": detoo, "tidy": mine, "lost": gone} {
+	fork := Source{Kind: GitHub, Repo: "ann/detoo"}
+	for name, src := range map[string]Source{
+		"check-adrs": detoo, "create-adr": detoo, "review-adrs": detoo, "create-rfc": release, "lost": gone,
+		"tidy": mine, "forked": fork,
+	} {
 		inst.locked[name] = Locked{Source: src, Path: "skills/" + name + "/SKILL.md", Hash: "1"}
 		inst.dirs[path.Join(Canonical, name)] = "1"
 	}
 	inst.dirs[".claude/skills/create-adr"] = "1"
 	inst.locked["npx-only"] = Locked{Source: Source{Kind: Other, Type: "well-known", Name: "example.com"}}
 	f := &memFetcher{offers: map[Source][]Skill{
-		detoo: {skill("check-adrs", "1"), skill("create-adr", "2")},
-		mine:  {skill("tidy", "1")},
+		detoo:   {skill("check-adrs", "1"), skill("create-adr", "2")},
+		release: {skill("create-rfc", "1")},
+		mine:    {skill("tidy", "2")},
+		fork:    {skill("forked", "2")},
 	}}
 	var h heard
 	updated, err := Updater{Fetcher: f, Installations: Installations{Project: inst}}.Handle(context.Background(), Update{}, &h)
@@ -266,17 +274,16 @@ func TestUpdate(t *testing.T) {
 		"up to date check-adrs",
 		"installed create-adr",
 		"gone review-adrs",
-		"fetching acme/gone",
-		"failed lost",
-		"failed npx-only",
-		"fetching /home/ann/skills",
+		"fetching mustardcustarddev/detoo#v1.2.0",
 		"fetched 1",
-		"up to date tidy",
+		"up to date create-rfc",
+		"fetching mustardcustarddev/detoo#deleted",
+		"failed lost",
 	}
 	if !reflect.DeepEqual(h, want) {
 		t.Errorf("heard\n%q\nwant\n%q", h, want)
 	}
-	if !reflect.DeepEqual(updated.Updated, []string{"create-adr"}) || !reflect.DeepEqual(updated.Failed, []string{"lost", "npx-only"}) {
+	if !reflect.DeepEqual(updated.Updated, []string{"create-adr"}) || !reflect.DeepEqual(updated.Failed, []string{"lost"}) || updated.Others != 3 {
 		t.Errorf("updated %+v", updated)
 	}
 	if inst.dirs[".agents/skills/create-adr"] != "2" || inst.dirs[".claude/skills/create-adr"] != "2" || inst.locked["create-adr"].Hash != "2" {
@@ -284,6 +291,38 @@ func TestUpdate(t *testing.T) {
 	}
 	if _, ok := inst.dirs[".agents/skills/review-adrs"]; !ok {
 		t.Errorf("review-adrs, gone from its source, was removed")
+	}
+	if inst.dirs[".agents/skills/tidy"] != "1" || inst.dirs[".agents/skills/forked"] != "1" {
+		t.Errorf("a skill from another source was updated: %v", inst.dirs)
+	}
+}
+
+// Naming a skill from another source updates nothing, and fetches nothing.
+func TestUpdateRefusesOtherSources(t *testing.T) {
+	inst := newMem()
+	inst.locked["create-adr"] = Locked{Source: detoo, Path: "skills/create-adr/SKILL.md", Hash: "1"}
+	inst.locked["tidy"] = Locked{Source: Source{Kind: Local, Dir: "/home/ann/skills"}, Path: "skills/tidy/SKILL.md", Hash: "1"}
+	f := &memFetcher{}
+	_, err := Updater{Fetcher: f, Installations: Installations{Project: inst}}.Handle(context.Background(), Update{Skills: []string{"create-adr", "tidy"}}, nil)
+	if !errors.Is(err, ErrNotDetoo) || !strings.Contains(err.Error(), "tidy") {
+		t.Errorf("updating tidy = %v, want ErrNotDetoo naming it", err)
+	}
+	if len(f.fetched) > 0 {
+		t.Errorf("fetched %v", f.fetched)
+	}
+}
+
+func TestSourceDetoo(t *testing.T) {
+	for src, want := range map[Source]bool{
+		detoo: true,
+		{Kind: GitHub, Repo: "MustardCustardDev/Detoo", Ref: "v1.2.0"}: true,
+		{Kind: GitHub, Repo: "ann/detoo"}:                              false,
+		{Kind: Local, Dir: "../detoo"}:                                 false,
+		{Kind: Other, Type: "git", Name: DefaultSource}:                false,
+	} {
+		if got := src.Detoo(); got != want {
+			t.Errorf("%+v.Detoo() = %v, want %v", src, got, want)
+		}
 	}
 }
 
@@ -318,13 +357,15 @@ func TestRemove(t *testing.T) {
 	}
 	inst.dirs[".roo/skills/create-adr"] = "1"
 	inst.links[".kiro/skills/create-adr"] = "/elsewhere/create-adr"
+	inst.dirs[".agents/skills/tidy"] = "1"
+	inst.locked["tidy"] = Locked{Source: Source{Kind: Local, Dir: "/home/ann/skills"}}
 	r := Remover{Installations: Installations{Project: inst}}
 	ctx := context.Background()
 
 	if _, err := r.Handle(ctx, Remove{Skills: []string{"create-adr", "make-tea"}}, nil); !errors.Is(err, ErrUnknown) {
 		t.Errorf("removing make-tea = %v, want ErrUnknown", err)
 	}
-	if len(inst.locked) != 2 {
+	if len(inst.locked) != 3 {
 		t.Fatalf("removed something: %v", inst.locked)
 	}
 
@@ -344,14 +385,23 @@ func TestRemove(t *testing.T) {
 		t.Errorf("a link to elsewhere was removed")
 	}
 
+	// --all removes only the detoo skills; one from another source is
+	// removed by naming it.
 	removed, err = r.Handle(ctx, Remove{All: true}, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(removed.Removed, []string{"check-adrs"}) || len(inst.locked) != 0 || len(inst.dirs) != 0 {
+	if !reflect.DeepEqual(removed.Removed, []string{"check-adrs"}) || removed.Others != 1 || len(inst.locked) != 1 || len(inst.dirs) != 1 {
 		t.Errorf("removed %v, leaving %v and %v", removed.Removed, inst.locked, inst.dirs)
 	}
-	if want := []string{".claude/skills", ".agents/skills"}; !reflect.DeepEqual(removed.Emptied, want) {
+	if want := []string{".claude/skills"}; !reflect.DeepEqual(removed.Emptied, want) {
 		t.Errorf("emptied %v, want %v", removed.Emptied, want)
+	}
+	removed, err = r.Handle(ctx, Remove{Skills: []string{"tidy"}}, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(inst.locked) != 0 || len(inst.dirs) != 0 || !reflect.DeepEqual(removed.Emptied, []string{".agents/skills"}) {
+		t.Errorf("removing tidy left %v and %v, emptying %v", inst.locked, inst.dirs, removed.Emptied)
 	}
 }

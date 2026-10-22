@@ -117,11 +117,11 @@ plm list          # existing playbooks
 sop list          # the SOPs a playbook can refer to
 ```
 
-If there is no problem log yet, ask the user whether to start one, and
-where. There is none when `plm list` fails with `the docs/problem directory
-does not exist`, or names another missing directory. `plm init [DIR]` creates
-the directory and writes playbook 1, which plans for deciding when to write a
-playbook.
+If there is no problem log yet, ask the user whether to start one. There is
+none when `plm list` fails with `the docs/problem directory does not exist`.
+`plm init` creates `docs/problem` and writes its `README.md`, which sets out
+what a problem playbook is, and how to use and write one. The README is not a
+playbook: the new playbook is number 1.
 
 If `plm list` finds nothing but a `docs/piosee` directory exists, or
 playbooks are named `PIOSEE-`, the log was kept by `pse`, the tool `plm`
@@ -355,7 +355,8 @@ every command and its effects.
   link text gives its number and title as its own title line does.
 * Run `plm list` to confirm the playbook is in the log.
 * The project may keep a table of contents made by `plm list --toc`, such as
-  a `README.md` in the log directory. If so, offer to regenerate it.
+  a `CONTENTS.md` in the log directory. If so, offer to regenerate it. Never
+  write one over the `README.md` that `plm init` wrote.
 * Tell the user:
   * the path, and that the playbook is a draft;
   * any playbooks the tool changed, and any SOPs drafted for it;

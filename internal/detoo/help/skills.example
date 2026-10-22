@@ -1,3 +1,6 @@
+  # See which skills detoo offers:
+  detoo skills list
+
   # Install every skill in this project, for Claude Code and the agents found:
   detoo skills install
 

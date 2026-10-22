@@ -3,16 +3,15 @@ package skills
 import (
 	"context"
 	"fmt"
-	"maps"
 	"path"
 	"slices"
 )
 
-// Update asks for installed skills to be brought up to date with their
-// sources.
+// Update asks for installed detoo skills to be brought up to date with
+// detoo's repository.
 type Update struct {
-	// Skills are the names of the skills to update, or none for every skill
-	// the lock file records.
+	// Skills are the names of the skills to update, or none for every detoo
+	// skill the lock file records.
 	Skills []string
 
 	// Global updates the skills installed for the user.
@@ -33,6 +32,10 @@ type Updated struct {
 
 	// Failed could not be checked or updated.
 	Failed []string
+
+	// Others is how many skills the lock file records from other sources,
+	// which are left as they are.
+	Others int
 }
 
 // Updater updates skills in one of Installations from their sources, fetched
@@ -44,7 +47,8 @@ type Updater struct {
 
 // Handle updates the skills cmd asks for, fetching each source once, and
 // telling progress of each skill.  A skill whose source cannot be fetched is
-// reported as failed, and the others are updated still.
+// reported as failed, and the others are updated still.  It updates nothing
+// unless every skill named is a detoo skill the lock file records.
 func (u Updater) Handle(ctx context.Context, cmd Update, progress Progress) (Updated, error) {
 	progress = orSilent(progress)
 	inst := u.Installations.pick(cmd.Global)
@@ -55,11 +59,16 @@ func (u Updater) Handle(ctx context.Context, cmd Update, progress Progress) (Upd
 	}
 	names := cmd.Skills
 	if len(names) == 0 {
-		names = slices.Sorted(maps.Keys(locked))
+		names, updated.Others = detoos(locked)
 	}
 	for _, name := range names {
 		if _, ok := locked[name]; !ok {
 			return updated, fmt.Errorf("%w skill %s: %s does not record it", ErrUnknown, name, inst.LockFile())
+		}
+	}
+	for _, name := range names {
+		if !locked[name].Source.Detoo() {
+			return updated, fmt.Errorf("%s is %w: it was installed from another source than %s, so update it with the skills CLI, or by installing it again", name, ErrNotDetoo, DefaultSource)
 		}
 	}
 
@@ -92,10 +101,6 @@ func (u Updater) updateFrom(ctx context.Context, inst Installation, src Source, 
 			updated.Failed = append(updated.Failed, name)
 			progress.Failed(name, err)
 		}
-	}
-	if src.Kind == Other {
-		fail(fmt.Errorf("installed from a %s source, which only the skills CLI updates", src.Type))
-		return nil
 	}
 	offered, err := fetch(ctx, u.Fetcher, src, progress)
 	if err != nil {

@@ -3,7 +3,6 @@ package skills
 import (
 	"context"
 	"fmt"
-	"maps"
 	"path"
 	"slices"
 )
@@ -13,7 +12,8 @@ type Remove struct {
 	// Skills are the names of the skills to remove.
 	Skills []string
 
-	// All removes every skill the lock file records, instead of Skills.
+	// All removes every detoo skill the lock file records, instead of Skills,
+	// leaving the skills of other sources.
 	All bool
 
 	// Global removes skills installed for the user.
@@ -31,6 +31,9 @@ type Removed struct {
 	// Emptied are the skills directories removed because removing the
 	// skills left them empty, such as .claude/skills.
 	Emptied []string
+
+	// Others is how many skills from other sources All left.
+	Others int
 }
 
 // Remover removes skills from one of Installations.
@@ -58,7 +61,7 @@ func (r Remover) Handle(ctx context.Context, cmd Remove, progress Progress) (Rem
 		}
 	}
 	if cmd.All {
-		names = slices.Sorted(maps.Keys(locked))
+		names, removed.Others = detoos(locked)
 	}
 
 	// Every skill is found before any is removed.

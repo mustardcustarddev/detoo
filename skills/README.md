@@ -104,7 +104,7 @@ Install them with `detoo skills`, which comes with the tools:
 
 ```bash
 # See which skills there are, without installing any
-detoo skills install --list
+detoo skills list
 
 # Install all of them into the current project
 detoo skills install
@@ -127,8 +127,9 @@ Some useful options:
 | `--source SOURCE` | Install from another source, such as a tag (`mustardcustarddev/detoo#v1.2.0`) or a clone (`../detoo`).    |
 
 Later, `detoo skills update` brings the skills up to date, and
-`detoo skills remove` removes them. Run `detoo help skills install` for every
-option.
+`detoo skills remove` removes them. Both leave skills from other sources, such
+as a fork or a clone, as they are, unless you name one to remove. Run
+`detoo help skills install` for every option.
 
 `detoo skills` keeps the same files as the
 [skills](https://github.com/vercel-labs/skills) CLI, so either can update or

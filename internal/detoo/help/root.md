@@ -5,7 +5,7 @@ Run "detoo doctor" to check that each log is where its tool looks for it, and
 named and numbered as its tool names documents today, and "detoo doctor --fix"
 to put it right.
 
-Run "detoo skills install" to install the agent skills, which write ADRs,
-RFCs, user stories, playbooks, SOPs and fire drills with the tools, "detoo
-skills update" to bring them up to date, and "detoo skills remove" to remove
-them.
+Run "detoo skills list" to see the agent skills, which write ADRs, RFCs,
+user stories, playbooks, SOPs and fire drills with the tools, "detoo skills
+install" to install them, "detoo skills update" to bring them up to date, and
+"detoo skills remove" to remove them.

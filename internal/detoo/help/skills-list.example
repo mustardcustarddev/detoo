@@ -1,0 +1,6 @@
+  # See which skills detoo offers:
+  detoo skills list
+
+  # See which skills a release, or a clone of the repository, offers:
+  detoo skills list --source mustardcustarddev/detoo#v1.2.0
+  detoo skills list --source ../detoo

@@ -10,14 +10,14 @@ import (
 	"github.com/mustardcustard/detoo/internal/features/agents/skills"
 )
 
-// newSkillsCommand returns detoo skills, whose commands install the agent
-// skills that drive the tools, update them and remove them.  Each says what
-// it is doing as it does it, on stderr; only the list of skills a source
+// newSkillsCommand returns detoo skills, whose commands list the agent skills
+// that drive the tools, install them, update them and remove them.  Each says
+// what it is doing as it does it, on stderr; only the list of skills a source
 // offers is written to stdout, for a script to read.
 func newSkillsCommand(t tool, application *app.Detoo, terminal func() output.Terminal) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "skills",
-		Short:   "Install, update and remove the agent skills that drive the tools",
+		Short:   "List, install, update and remove the agent skills that drive the tools",
 		Long:    t.help("skills.md"),
 		Example: t.help("skills.example"),
 		Args:    cobra.NoArgs,
@@ -27,6 +27,7 @@ func newSkillsCommand(t tool, application *app.Detoo, terminal func() output.Ter
 		},
 	}
 	cmd.AddCommand(
+		newSkillsListCommand(t, application, terminal),
 		newSkillsInstallCommand(t, application, terminal),
 		newSkillsUpdateCommand(t, application, terminal),
 		newSkillsRemoveCommand(t, application, terminal),
@@ -34,10 +35,36 @@ func newSkillsCommand(t tool, application *app.Detoo, terminal func() output.Ter
 	return cmd
 }
 
+func newSkillsListCommand(t tool, application *app.Detoo, terminal func() output.Terminal) *cobra.Command {
+	var source string
+	cmd := &cobra.Command{
+		Use:     "list",
+		Short:   "List the agent skills a source offers, by default those detoo offers",
+		Long:    t.help("skills-list.md"),
+		Example: t.help("skills-list.example"),
+		Args:    cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			src, err := skills.ParseSource(source)
+			if err != nil {
+				return err
+			}
+			term := terminal()
+			offered, err := application.Skills.Install.Available(cmd.Context(), src, output.NewSkillsProgress(cmd.ErrOrStderr(), term))
+			if err != nil {
+				return err
+			}
+			return output.SkillsAvailable(cmd.OutOrStdout(), term, offered)
+		},
+	}
+	cmd.Flags().StringVar(&source, "source", skills.DefaultSource,
+		"list the skills of `SOURCE`: a repository on GitHub, as OWNER/REPO or OWNER/REPO#REF, or a directory, as a path beginning with ., / or ~")
+	return cmd
+}
+
 func newSkillsInstallCommand(t tool, application *app.Detoo, terminal func() output.Terminal) *cobra.Command {
 	var source string
 	var agents []string
-	var global, list bool
+	var global bool
 	cmd := &cobra.Command{
 		Use:     "install [SKILL...]",
 		Short:   "Install agent skills, by default every skill detoo offers",
@@ -48,18 +75,7 @@ func newSkillsInstallCommand(t tool, application *app.Detoo, terminal func() out
 			if err != nil {
 				return err
 			}
-			term := terminal()
-			progress := output.NewSkillsProgress(cmd.ErrOrStderr(), term)
-			if list {
-				if len(names) > 0 || len(agents) > 0 || global {
-					return errors.New("give --list alone, or with --source")
-				}
-				offered, err := application.Skills.Install.Available(cmd.Context(), src, progress)
-				if err != nil {
-					return err
-				}
-				return output.SkillsAvailable(cmd.OutOrStdout(), term, offered)
-			}
+			progress := output.NewSkillsProgress(cmd.ErrOrStderr(), terminal())
 			installed, err := application.Skills.Install.Handle(cmd.Context(), skills.Install{
 				Source: src,
 				Skills: names,
@@ -78,7 +94,6 @@ func newSkillsInstallCommand(t tool, application *app.Detoo, terminal func() out
 	cmd.Flags().StringArrayVarP(&agents, "agent", "a", nil,
 		"install for `AGENT`, such as claude-code or codex, rather than for Claude Code and each agent found; repeat for more")
 	cmd.Flags().BoolVarP(&global, "global", "g", false, "install for your user, in every project, rather than in this one")
-	cmd.Flags().BoolVarP(&list, "list", "l", false, "list the skills the source offers, and install nothing")
 	return cmd
 }
 
@@ -86,7 +101,7 @@ func newSkillsUpdateCommand(t tool, application *app.Detoo, terminal func() outp
 	var global bool
 	cmd := &cobra.Command{
 		Use:     "update [SKILL...]",
-		Short:   "Update installed agent skills from their sources, by default every one",
+		Short:   "Update installed detoo skills from detoo's repository, by default every one",
 		Long:    t.help("skills-update.md"),
 		Example: t.help("skills-update.example"),
 		RunE: func(cmd *cobra.Command, names []string) error {
@@ -110,7 +125,7 @@ func newSkillsRemoveCommand(t tool, application *app.Detoo, terminal func() outp
 	var global, all bool
 	cmd := &cobra.Command{
 		Use:     "remove SKILL...",
-		Short:   "Remove installed agent skills",
+		Short:   "Remove installed agent skills, or with --all, every detoo skill",
 		Long:    t.help("skills-remove.md"),
 		Example: t.help("skills-remove.example"),
 		RunE: func(cmd *cobra.Command, names []string) error {
@@ -129,7 +144,7 @@ func newSkillsRemoveCommand(t tool, application *app.Detoo, terminal func() outp
 			return nil
 		},
 	}
-	cmd.Flags().BoolVar(&all, "all", false, "remove every skill the lock file records")
+	cmd.Flags().BoolVar(&all, "all", false, "remove every detoo skill the lock file records")
 	cmd.Flags().BoolVarP(&global, "global", "g", false, "remove skills installed for your user, rather than in this project")
 	return cmd
 }

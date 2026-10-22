@@ -10,7 +10,9 @@
 // in a project.
 //
 // Installer installs skills, Updater brings them up to date with their source,
-// and Remover removes them.  Each tells Progress what it is doing as it does
+// and Remover removes them.  Updater and Remover touch only detoo's own
+// skills, those installed from its repository, and leave the skills of other
+// sources to the tools that installed them.  Each tells Progress what it is doing as it does
 // it, since fetching a source can take a while.
 package skills
 
@@ -104,6 +106,26 @@ func ParseSource(s string) (Source, error) {
 		return Source{}, fmt.Errorf("%q is not a source: give a repository on GitHub, such as %s, or a directory, such as ./skills", s, DefaultSource)
 	}
 	return Source{Kind: GitHub, Repo: name, Ref: ref}, nil
+}
+
+// Detoo reports whether s is detoo's own repository, at any ref.  GitHub's
+// names are not case sensitive.
+func (s Source) Detoo() bool {
+	return s.Kind == GitHub && strings.EqualFold(s.Repo, DefaultSource)
+}
+
+// detoos returns the names of the skills in locked installed from detoo's
+// repository, in order, and how many were installed from other sources.
+func detoos(locked map[string]Locked) (names []string, others int) {
+	for name, l := range locked {
+		if l.Source.Detoo() {
+			names = append(names, name)
+		} else {
+			others++
+		}
+	}
+	slices.Sort(names)
+	return names, others
 }
 
 // String is the source as the user would give it.
@@ -275,6 +297,10 @@ type Link struct {
 // ErrUnknown is wrapped by the error returned when a skill or agent named
 // is not one there is.
 var ErrUnknown = errors.New("unknown")
+
+// ErrNotDetoo is wrapped by the error returned when a skill named for update
+// was installed from a source other than detoo's repository.
+var ErrNotDetoo = errors.New("not a detoo skill")
 
 // targets works out where skills go in inst for the agents named, or, when
 // none is, for Claude Code and each agent that seems to be installed and is

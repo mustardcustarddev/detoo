@@ -1,9 +1,20 @@
 package clitest
 
-import "testing"
+import (
+	"archive/tar"
+	"compress/gzip"
+	"io/fs"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+)
 
 // detoo skills installs agent skills, updates them and removes them.  These
 // tests install from a directory, ~/src, laid out as detoo's repository is,
+// either directly or served as detoo's repository by a stand-in for GitHub,
 // so that they need no network; the project is ~/app, so that it is found
 // below the home directory, where an agent's own directories are.
 
@@ -14,17 +25,62 @@ func source(w *workspace) {
 	w.write("src/skills/beta/SKILL.md", "---\nname: beta\ndescription: Does the second thing.\n---\n# Beta\n")
 }
 
+// github stands in for GitHub's API, serving ~/src, as it is when it is
+// asked for, as detoo's repository at any ref.  The address is not shown,
+// since its port changes from run to run.
+func github(w *workspace) {
+	srv := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, "/repos/mustardcustarddev/detoo/tarball") {
+			http.NotFound(rw, r)
+			return
+		}
+		gz := gzip.NewWriter(rw)
+		tw := tar.NewWriter(gz)
+		root := filepath.Join(w.root, "src")
+		err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+			if err != nil || d.IsDir() {
+				return err
+			}
+			content, err := os.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			rel, err := filepath.Rel(root, p)
+			if err != nil {
+				return err
+			}
+			h := &tar.Header{Typeflag: tar.TypeReg, Name: "mustardcustarddev-detoo-1a2b3c/" + filepath.ToSlash(rel), Mode: 0o644, Size: int64(len(content))}
+			if err := tw.WriteHeader(h); err != nil {
+				return err
+			}
+			_, err = tw.Write(content)
+			return err
+		})
+		if err != nil {
+			w.t.Error(err)
+		}
+		tw.Close()
+		gz.Close()
+	}))
+	w.t.Cleanup(srv.Close)
+	w.env["DETOO_GITHUB_API"] = srv.URL
+}
+
 // Every skill is installed in .agents/skills, linked for Claude Code, and
-// recorded; an update installs again what changed in the source, and reports
-// what has gone from it; and remove removes a skill from everywhere, and the
-// skills directories it leaves empty.
+// recorded; an update installs again what changed in detoo's repository, and
+// reports what has gone from it, leaving a skill from another source alone;
+// and remove removes a skill from everywhere, and the skills directories it
+// leaves empty, removing with --all only the detoo skills.
 func TestSkillsInstallUpdateAndRemove(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	source(w)
+	github(w)
+	w.write("other/skills/gamma/SKILL.md", "---\nname: gamma\ndescription: Does another thing.\n---\n# Gamma\n")
 	w.mkdir("app")
 	w.cd("app")
-	w.detoo("skills", "install", "--source", "~/src", "--list")
-	w.detoo("skills", "install", "--source", "~/src")
+	w.detoo("skills", "list")
+	w.detoo("skills", "install")
+	w.detoo("skills", "install", "--source", "~/other")
 	w.ls(".agents/skills")
 	w.cat(".claude/skills/alpha/references/notes.md")
 	w.cat("skills-lock.json")
@@ -32,13 +88,18 @@ func TestSkillsInstallUpdateAndRemove(t *testing.T) {
 	w.detoo("skills", "update")
 	w.write("../src/skills/alpha/SKILL.md", "---\nname: alpha\ndescription: Does the first thing better.\n---\n# Alpha 2\n")
 	w.rm("../src/skills/beta")
+	w.write("../other/skills/gamma/SKILL.md", "---\nname: gamma\ndescription: Does another thing better.\n---\n# Gamma 2\n")
 	w.detoo("skills", "update")
 	w.cat(".claude/skills/alpha/SKILL.md")
+	w.cat(".claude/skills/gamma/SKILL.md")
+	w.detoo("skills", "update", "alpha", "gamma")
 
 	w.detoo("skills", "remove", "alpha")
 	w.ls(".agents/skills")
 	w.ls(".claude/skills")
 	w.detoo("skills", "remove", "--all")
+	w.ls(".agents/skills")
+	w.detoo("skills", "remove", "gamma")
 	w.ls(".")
 	w.ls(".claude")
 	w.cat("skills-lock.json")
@@ -69,9 +130,10 @@ func TestSkillsInstallForAgents(t *testing.T) {
 func TestSkillsGlobal(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	source(w)
+	github(w)
 	w.mkdir("app")
 	w.cd("app")
-	w.detoo("skills", "install", "--global", "--source", "~/src", "beta")
+	w.detoo("skills", "install", "--global", "beta")
 	w.ls("../.agents/skills")
 	w.cat("../.claude/skills/beta/SKILL.md")
 	w.detoo("skills", "update", "--global")
@@ -92,7 +154,7 @@ func TestSkillsRefuseWhatIsNotThere(t *testing.T) {
 	w.detoo("skills", "install", "--source", "~/src", "--agent", "vim")
 	w.detoo("skills", "install", "--source", "nowhere")
 	w.detoo("skills", "install", "--source", "./missing")
-	w.detoo("skills", "install", "--source", "~/src", "--list", "alpha")
+	w.detoo("skills", "list", "--source", "~/src", "alpha")
 	// Nothing has been installed.
 	w.detoo("skills", "update")
 	w.detoo("skills", "update", "alpha")

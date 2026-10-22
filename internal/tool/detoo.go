@@ -43,6 +43,10 @@ func RunDetoo(kinds []record.Kind, files fs.FS) int {
 	}
 	source := skillsource.New(workdir, home, os.Getenv)
 	source.Client = &http.Client{Timeout: 2 * time.Minute}
+	// The tests stand in for GitHub, so that they need no network.
+	if api := os.Getenv("DETOO_GITHUB_API"); api != "" {
+		source.API = api
+	}
 	installations := skills.Installations{
 		Project: skillstore.Project(workdir, home, os.Getenv),
 		User:    skillstore.User(home, os.Getenv),

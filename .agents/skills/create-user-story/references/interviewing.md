@@ -157,8 +157,8 @@ The user says: "Write a user story for exporting invoices."
 Read in proportion to the subject; here, the invoice feature and who can use
 it.
 
-* `ust config`, `ust list`, story 1 for the project's conventions, and any
-  story, RFC or ADR about invoices or exports.
+* `ust config`, `ust list`, the log's `README.md` for the project's
+  conventions, and any story, RFC or ADR about invoices or exports.
 * Where invoices are shown and stored, and what fields they have.
 * Which roles can see invoices, and any existing exports elsewhere in the
   software that the team might expect this to match.

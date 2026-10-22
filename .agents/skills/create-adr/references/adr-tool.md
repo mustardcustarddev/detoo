@@ -24,9 +24,8 @@ Options come before operands. An operand that begins with a hyphen must follow
   empty if the built-in template is used.
 * `adr list`: prints the path of every record, one a line, in order. Prints
   nothing if there are none.
-* `adr init [DIRECTORY]`: starts a log in `DIRECTORY`, default `docs/adr`, and
-  writes record 1, "Record architecture decisions". Does nothing if the log
-  already has records.
+* `adr init`: starts a log in `docs/adr`, and writes record 1, "Record
+  architecture decisions". Does nothing if the log already has records.
 * `adr new [-s REF]... [-u REF]... TITLE`: creates the next numbered record
   from the template and prints its path.
 * `adr link (-s | -u) SOURCE TARGET`: records, in both records, that `SOURCE`
@@ -133,9 +132,8 @@ the highest-numbered record means the next `adr new` reuses its number.
 | `ADR_DATE`           | Date written into a new record, as given.  |
 | `ADR_PAGER`          | Pager for help, if set. Clear it.          |
 
-The log directory is `docs/adr`, unless a `.adr-dir` file in the project root
-names another. The working directory and each of its ancestors are searched in
-turn for a `.adr-dir` file, then for a `docs/adr` directory, so the tool works
+The log directory is `docs/adr`. The working directory and each of its
+ancestors are searched in turn for a `docs/adr` directory, so the tool works
 from anywhere in the project. Run `adr config` rather than assuming.
 
 ## Errors

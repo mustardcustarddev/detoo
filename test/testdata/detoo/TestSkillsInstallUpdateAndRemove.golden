@@ -15,17 +15,24 @@ description: Does the second thing.
 ---
 # Beta
 EOF
+cat > other/skills/gamma/SKILL.md <<EOF
+---
+name: gamma
+description: Does another thing.
+---
+# Gamma
+EOF
 mkdir -p app
 cd app
-detoo skills install --source ~/src --list
-Reading skills from ~/src…
+detoo skills list
+Fetching mustardcustarddev/detoo from GitHub…
 Found 2 skills.
 alpha  Does the first thing.
 beta   Does the second thing.
 echo $?
 0
-detoo skills install --source ~/src
-Reading skills from ~/src…
+detoo skills install
+Fetching mustardcustarddev/detoo from GitHub…
 Found 2 skills.
 Installing into .agents/skills
 Linking from .claude/skills, for Claude Code
@@ -34,9 +41,19 @@ Linking from .claude/skills, for Claude Code
 ✓ Installed 2 skills in ~/app. skills-lock.json records them.
 echo $?
 0
+detoo skills install --source ~/other
+Reading skills from ~/other…
+Found 1 skill.
+Installing into .agents/skills
+Linking from .claude/skills, for Claude Code
+  ✓ gamma
+✓ Installed 1 skill in ~/app. skills-lock.json records it.
+echo $?
+0
 ls .agents/skills
 alpha
 beta
+gamma
 cat .claude/skills/alpha/references/notes.md
 Notes
 cat skills-lock.json
@@ -44,25 +61,32 @@ cat skills-lock.json
   "version": 1,
   "skills": {
     "alpha": {
-      "source": "../src",
-      "sourceType": "local",
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
       "skillPath": "skills/alpha/SKILL.md",
       "computedHash": "a2950c8dab8921cd5b580f072d3743aa4a82f5bf7497b6939953162722d2d38a"
     },
     "beta": {
-      "source": "../src",
-      "sourceType": "local",
+      "source": "mustardcustarddev/detoo",
+      "sourceType": "github",
       "skillPath": "skills/beta/SKILL.md",
       "computedHash": "6ca74edb8429e3682af91db918a720578f0fa4c4cb7efdfacd2faaca63eedf05"
+    },
+    "gamma": {
+      "source": "../other",
+      "sourceType": "local",
+      "skillPath": "skills/gamma/SKILL.md",
+      "computedHash": "29ad2f69307bf31512b918d47d4c12930df3b21cbcdd80bb5decf6d91dc67fda"
     }
   }
 }
 detoo skills update
-Reading skills from ~/src…
+Fetching mustardcustarddev/detoo from GitHub…
 Found 2 skills.
   – alpha up to date
   – beta up to date
 ✓ All 2 skills are up to date.
+1 skill from another source was left as it was.
 echo $?
 0
 cat > ../src/skills/alpha/SKILL.md <<EOF
@@ -73,13 +97,21 @@ description: Does the first thing better.
 # Alpha 2
 EOF
 rm -r ../src/skills/beta
+cat > ../other/skills/gamma/SKILL.md <<EOF
+---
+name: gamma
+description: Does another thing better.
+---
+# Gamma 2
+EOF
 detoo skills update
-Reading skills from ~/src…
+Fetching mustardcustarddev/detoo from GitHub…
 Found 1 skill.
   ✓ alpha updated
-  ! beta is no longer in ~/src, so is left as it is
+  ! beta is no longer in mustardcustarddev/detoo, so is left as it is
 ✓ Updated 1 skill.
 ! 1 skill is no longer in its source. Remove it with detoo skills remove.
+1 skill from another source was left as it was.
 echo $?
 0
 cat .claude/skills/alpha/SKILL.md
@@ -88,6 +120,16 @@ name: alpha
 description: Does the first thing better.
 ---
 # Alpha 2
+cat .claude/skills/gamma/SKILL.md
+---
+name: gamma
+description: Does another thing.
+---
+# Gamma
+detoo skills update alpha gamma
+detoo: gamma is not a detoo skill: it was installed from another source than mustardcustarddev/detoo, so update it with the skills CLI, or by installing it again
+echo $?
+1
 detoo skills remove alpha
   ✓ alpha removed from .claude/skills, .agents/skills
 ✓ Removed 1 skill.
@@ -95,10 +137,20 @@ echo $?
 0
 ls .agents/skills
 beta
+gamma
 ls .claude/skills
 beta
+gamma
 detoo skills remove --all
   ✓ beta removed from .claude/skills, .agents/skills
+✓ Removed 1 skill.
+1 skill from another source was left as it was.
+echo $?
+0
+ls .agents/skills
+gamma
+detoo skills remove gamma
+  ✓ gamma removed from .claude/skills, .agents/skills
 ✓ Removed 1 skill.
 ✓ Removed .claude/skills and .agents/skills, which are empty now.
 echo $?
@@ -112,6 +164,6 @@ cat skills-lock.json
   "skills": {}
 }
 detoo skills update
-No skills are recorded in skills-lock.json. Install them with detoo skills install.
+No detoo skills are recorded in skills-lock.json. Install them with detoo skills install.
 echo $?
 0

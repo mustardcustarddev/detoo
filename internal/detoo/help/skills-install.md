@@ -1,6 +1,7 @@
 Installs agent skills from a source: by default, every skill in detoo's
 repository on GitHub, mustardcustarddev/detoo, as it is on its default branch.
-Name skills to install only those.
+Name skills to install only those.  `detoo skills list` lists the skills a
+source offers.
 
 `--source` names another source:
 

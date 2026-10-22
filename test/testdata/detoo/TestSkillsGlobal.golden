@@ -17,8 +17,8 @@ description: Does the second thing.
 EOF
 mkdir -p app
 cd app
-detoo skills install --global --source ~/src beta
-Reading skills from ~/src…
+detoo skills install --global beta
+Fetching mustardcustarddev/detoo from GitHub…
 Found 2 skills.
 Installing into ~/.agents/skills
 Linking from ~/.claude/skills, for Claude Code
@@ -35,7 +35,7 @@ description: Does the second thing.
 ---
 # Beta
 detoo skills update --global
-Reading skills from ~/src…
+Fetching mustardcustarddev/detoo from GitHub…
 Found 2 skills.
   – beta up to date
 ✓ The skill is up to date.

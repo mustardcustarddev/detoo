@@ -23,31 +23,31 @@
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-adr/SKILL.md",
-      "computedHash": "59e964ff8d2604fdd395ba76e001c638d26348e07f2160cc0adb8d3a49bf1b81"
+      "computedHash": "36bcd806978c83c9ed684de41a192c2d90dad1e0c0b02f46a73cc3bdc190fdec"
     },
     "create-playbook": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-playbook/SKILL.md",
-      "computedHash": "7591c794c48de1ee28c2af345cce33bd3bb80de80b20bd1ded3530bd729978de"
+      "computedHash": "29ff22468eb49a2b103da1a7da3c22c77d8d4e243e67425d514b4e1c23ec6d35"
     },
     "create-rfc": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-rfc/SKILL.md",
-      "computedHash": "c02185c8fe6372e566beb3198ce555316eed1c4cdfe7d71ed2ee9de240ad4363"
+      "computedHash": "766040ce93b21dc8820faacc8622b7808a2793b8dbf2be5551afc470aa871063"
     },
     "create-sop": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-sop/SKILL.md",
-      "computedHash": "64115dee47f4cadb00cd7ed9cd0ea869c9d2ff7ffec9b148f23ffe3de27c2c4b"
+      "computedHash": "55bfc4848408e1409b0ab550f1a21faf7cd5dc1c9a27971ea210b3e4c16e2e09"
     },
     "create-user-story": {
       "source": "mustardcustarddev/detoo",
       "sourceType": "github",
       "skillPath": "skills/create-user-story/SKILL.md",
-      "computedHash": "380e86ee09ae993c5e86800b8dc4f4cb1e9acb3aadd0710236acb1cb824037b9"
+      "computedHash": "27268e663014b2f0763b4506fa79a5756c34ba605a84b2099f7f7b828df63f89"
     },
     "fact-checker": {
       "source": "nicepkg/ai-workflow",

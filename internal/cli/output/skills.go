@@ -133,7 +133,7 @@ func (p *SkillsProgress) SkillsUpdated(updated skills.Updated) bool {
 	checked := len(updated.Updated) + len(updated.UpToDate) + len(updated.Gone) + len(updated.Failed)
 	switch {
 	case checked == 0:
-		p.line("No skills are recorded in %s. Install them with detoo skills install.", p.home(updated.LockFile))
+		p.line("No detoo skills are recorded in %s. Install them with detoo skills install.", p.home(updated.LockFile))
 	case len(updated.Failed) > 0:
 		p.line("%s %s could not be updated.", p.cross(), count(len(updated.Failed), "skill", "skills"))
 	case len(updated.Updated) == 0 && len(updated.Gone) == 0:
@@ -148,13 +148,15 @@ func (p *SkillsProgress) SkillsUpdated(updated skills.Updated) bool {
 	if n := len(updated.Gone); n > 0 {
 		p.line("%s %s no longer in %s source. Remove %s with detoo skills remove.", p.bang(), are(n), its(n), them(n))
 	}
+	p.others(updated.Others)
 	return len(updated.Failed) == 0
 }
 
 // SkillsRemoved writes what a remove removed.
 func (p *SkillsProgress) SkillsRemoved(removed skills.Removed) {
 	if len(removed.Removed) == 0 {
-		p.line("No skills are recorded in %s, so none was removed.", p.home(removed.LockFile))
+		p.line("No detoo skills are recorded in %s, so none was removed.", p.home(removed.LockFile))
+		p.others(removed.Others)
 		return
 	}
 	p.line("%s Removed %s.", p.tick(), count(len(removed.Removed), "skill", "skills"))
@@ -164,6 +166,18 @@ func (p *SkillsProgress) SkillsRemoved(removed skills.Removed) {
 			dirs = append(dirs, p.home(dir))
 		}
 		p.line("%s Removed %s, which %s empty now.", p.tick(), and(dirs), isAre(n))
+	}
+	p.others(removed.Others)
+}
+
+// others says how many skills from other sources were left as they were, if
+// any were.
+func (p *SkillsProgress) others(n int) {
+	switch {
+	case n == 1:
+		p.line("%s", p.faint("1 skill from another source was left as it was."))
+	case n > 1:
+		p.line("%s", p.faint(fmt.Sprintf("%d skills from other sources were left as they were.", n)))
 	}
 }
 

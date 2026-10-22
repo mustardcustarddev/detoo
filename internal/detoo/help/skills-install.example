@@ -1,6 +1,3 @@
-  # See which skills detoo offers, without installing any:
-  detoo skills install --list
-
   # Install every skill in this project:
   detoo skills install
 

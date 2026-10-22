@@ -45,8 +45,8 @@ adr list          # existing records
 ```
 
 If there is no log yet (`adr list` fails or prints nothing, and `adr_dir` does
-not exist), ask the user whether to start one, and where. `adr init [DIR]`
-creates the directory and writes record 1, the decision to keep ADRs.
+not exist), ask the user whether to start one. `adr init` creates `docs/adr`
+and writes record 1, the decision to keep ADRs.
 
 Read the template in use: the file in `adr_template` if it is set, otherwise
 the built-in one in [adr-tool.md](references/adr-tool.md#templates). Read the
