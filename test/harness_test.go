@@ -126,11 +126,20 @@ func (w *workspace) fyr(args ...string) {
 
 // detoo runs the detoo command, and records its exit status, as echo $? would
 // show it.  The user's home directory is the project's, so that the project
-// is shown as ~ whichever temporary directory it is in.
+// is shown as ~ whichever temporary directory it is in.  Where its full path
+// is shown, as JSON shows it, it is recorded as $PROJECT.
 func (w *workspace) detoo(args ...string) {
 	w.t.Helper()
 	w.env["HOME"] = w.root
+	start := w.log.Len()
 	code := w.run("detoo", args...)
+	out := w.log.String()[start:]
+	if real, err := filepath.EvalSymlinks(w.root); err == nil {
+		out = strings.ReplaceAll(out, real, "$PROJECT")
+	}
+	out = strings.ReplaceAll(out, w.root, "$PROJECT")
+	w.log.Truncate(start)
+	w.log.WriteString(out)
 	w.echo("echo $?")
 	w.printf("%d\n", code)
 }

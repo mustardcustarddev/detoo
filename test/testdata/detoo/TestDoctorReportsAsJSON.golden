@@ -1,0 +1,167 @@
+touch doc/rfc/0001-adopt-a-single-detoo-command.md docs/userstory/STORY-0001-describe-work-in-user-stories.md docs/sty/STORY-0002-find-documents-in-the-wrong-place.md docs/sop/SOP-0001-roll-back-a-release.md docs/sop/SOP-0001-rotate-the-key.md
+cat > docs/adr/ADR-0001-do-stuff.md <<EOF
+# 1. Do other stuff
+EOF
+detoo doctor --json
+{
+  "project": "$PROJECT",
+  "healthy": false,
+  "exitStatus": 1,
+  "summary": {
+    "documents": 6,
+    "directories": 5,
+    "problems": 5,
+    "fixable": 2,
+    "byHand": 3,
+    "renumberable": 0
+  },
+  "logs": [
+    {
+      "tool": "adr",
+      "noun": "decision record",
+      "prefix": "ADR",
+      "dir": "docs/adr",
+      "found": true,
+      "documents": 1,
+      "directories": [
+        {
+          "path": "docs/adr",
+          "documents": 1
+        }
+      ],
+      "problems": [
+        {
+          "type": "mistitled",
+          "byHand": true,
+          "message": "The title does not match the file name: the words differ. Needs fixing by hand: correct the title, or rename the decision record and the links to it, whichever is wrong.",
+          "dir": "docs/adr",
+          "file": "ADR-0001-do-stuff.md",
+          "title": "1. Do other stuff",
+          "wordsDiffer": true
+        }
+      ]
+    },
+    {
+      "tool": "rfc",
+      "noun": "RFC",
+      "prefix": "RFC",
+      "dir": "docs/rfc",
+      "found": true,
+      "documents": 1,
+      "directories": [
+        {
+          "path": "doc/rfc",
+          "documents": 1
+        }
+      ],
+      "problems": [
+        {
+          "type": "misplaced",
+          "byHand": false,
+          "fix": "detoo doctor --fix",
+          "message": "The rfc log is kept under doc/ instead of docs/. The fix moves doc/rfc to docs/rfc.",
+          "reason": "under-doc",
+          "from": "doc/rfc",
+          "to": "docs/rfc"
+        },
+        {
+          "type": "misnamed",
+          "byHand": false,
+          "fix": "detoo doctor --fix",
+          "message": "The file name does not begin with RFC-. The fix renames it to RFC-0001-adopt-a-single-detoo-command.md, and updates the links to it.",
+          "dir": "doc/rfc",
+          "from": "0001-adopt-a-single-detoo-command.md",
+          "to": "RFC-0001-adopt-a-single-detoo-command.md"
+        }
+      ]
+    },
+    {
+      "tool": "ust",
+      "noun": "user story",
+      "prefix": "STORY",
+      "dir": "docs/userstory",
+      "found": true,
+      "documents": 2,
+      "directories": [
+        {
+          "path": "docs/userstory",
+          "documents": 1
+        },
+        {
+          "path": "docs/sty",
+          "documents": 1
+        }
+      ],
+      "problems": [
+        {
+          "type": "misplaced",
+          "byHand": true,
+          "message": "The ust log is kept in a former directory, where ust no longer looks: user stories now live in docs/userstory. Needs fixing by hand: both docs/sty and docs/userstory exist, so moving one would clash.",
+          "reason": "former-directory",
+          "clash": "target-exists",
+          "from": "docs/sty",
+          "to": "docs/userstory"
+        }
+      ]
+    },
+    {
+      "tool": "plm",
+      "noun": "playbook",
+      "prefix": "PROBLEM",
+      "dir": "docs/problem",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "sop",
+      "noun": "SOP",
+      "prefix": "SOP",
+      "dir": "docs/sop",
+      "found": true,
+      "documents": 2,
+      "directories": [
+        {
+          "path": "docs/sop",
+          "documents": 2
+        }
+      ],
+      "problems": [
+        {
+          "type": "shared-number",
+          "byHand": true,
+          "message": "2 SOPs share the number 1. Needs fixing by hand: this is not a git repository, so which came first is not known. Keep the first, and renumber the others, such as the log's renumbers suggest, updating the title of each, the links to them, and anything else that refers to them.",
+          "clash": "no-history",
+          "dir": "docs/sop",
+          "number": 1,
+          "documents": [
+            "SOP-0001-roll-back-a-release.md",
+            "SOP-0001-rotate-the-key.md"
+          ]
+        }
+      ],
+      "renumbers": [
+        {
+          "dir": "docs/sop",
+          "file": "SOP-0001-rotate-the-key.md",
+          "to": "SOP-0002-rotate-the-key.md",
+          "sharesNumber": true,
+          "byHand": true
+        }
+      ]
+    },
+    {
+      "tool": "fyr",
+      "noun": "fire drill",
+      "prefix": "FIREDRILL",
+      "dir": "docs/firedrill",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    }
+  ]
+}
+echo $?
+1

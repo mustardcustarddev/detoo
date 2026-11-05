@@ -131,12 +131,17 @@ Ask your agent in your own words, for example:
 ```bash
 detoo doctor                # check every log directory
 detoo doctor --fix          # put right what it finds
+detoo doctor --json         # report as JSON, for an agent to read
 ```
 
 `detoo doctor` checks that each log directory is where its tool looks for it,
 that each document is named the way its tool expects, that no two share a
 number, and that each title matches its file name. It changes nothing, and exits 1 when it finds a problem, so it can run
 in CI.
+
+`detoo doctor --json` writes the same report as JSON, for an agent or a
+script to read: each problem, whether it needs fixing by hand, and the
+command that fixes it if not.
 
 `detoo doctor --fix` moves and renames what is out of place, and updates the
 links to it. In a git repository it offers to use `git mv`, so that git

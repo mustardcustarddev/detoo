@@ -249,6 +249,40 @@ func TestDoctorFixRenumbersInAGitRepository(t *testing.T) {
 	w.check()
 }
 
+// --json reports what doctor finds for a program or an agent to read: each
+// problem, whether it needs fixing by hand, and the command that fixes it if
+// not.  It exits as the report does.
+func TestDoctorReportsAsJSON(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.touch(
+		"doc/rfc/0001-adopt-a-single-detoo-command.md",
+		"docs/userstory/STORY-0001-describe-work-in-user-stories.md",
+		"docs/sty/STORY-0002-find-documents-in-the-wrong-place.md",
+		"docs/sop/SOP-0001-roll-back-a-release.md",
+		"docs/sop/SOP-0001-rotate-the-key.md",
+	)
+	w.write("docs/adr/ADR-0001-do-stuff.md", "# 1. Do other stuff\n")
+	w.detoo("doctor", "--json")
+	w.check()
+}
+
+// With --json, a fix asks nothing, and reports what it changed, and the
+// health of the logs after it.
+func TestDoctorFixReportsAsJSON(t *testing.T) {
+	w := newWorkspace(t, "detoo")
+	w.write("docs/adr/ADR-0001-record-architecture-decisions.md", "# 1. Record architecture decisions\n")
+	w.write("docs/adr/ADR-0001-use-postgresql.md",
+		"# 1. Use PostgreSQL\n\nAfter [1. Record architecture decisions](ADR-0001-record-architecture-decisions.md).\n")
+	w.write("doc/rfc/0001-adopt-a-single-detoo-command.md",
+		"# 1. Adopt a single detoo command\n\nAs [ADR 2](../../docs/adr/ADR-0001-use-postgresql.md) says.\n")
+	w.git("init", "--quiet", "--initial-branch=main")
+	w.git("add", "docs/adr/ADR-0001-record-architecture-decisions.md")
+	w.detoo("doctor", "--json")
+	w.detoo("doctor", "-j", "--fix", "--renumber")
+	w.detoo("doctor", "-j")
+	w.check()
+}
+
 func TestDetooHelp(t *testing.T) {
 	w := newWorkspace(t, "detoo")
 	w.detoo("help")

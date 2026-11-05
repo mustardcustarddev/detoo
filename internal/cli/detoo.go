@@ -44,7 +44,7 @@ func NewDetooCommand(files fs.FS, application *app.Detoo, terminal func() output
 }
 
 func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Terminal, confirm Confirm) *cobra.Command {
-	var fix, git, renumber bool
+	var fix, git, renumber, asJSON bool
 	cmd := &cobra.Command{
 		Use:     "doctor",
 		Short:   "Check that each log is where its tool looks, with documents named and numbered as it names them",
@@ -58,6 +58,11 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 			if renumber && !fix {
 				return errors.New("give --fix to use --renumber")
 			}
+			// JSON is for a program or an agent, which no one is there to
+			// answer for, and no terminal is drawn on.
+			if asJSON {
+				confirm = nil
+			}
 			healthy := false
 			if fix {
 				if err := offer(cmd, application, terminal, confirm, &git, &renumber); err != nil {
@@ -67,7 +72,12 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 				if err != nil {
 					return err
 				}
-				if err := output.DoctorFix(cmd.OutOrStdout(), terminal(), fixed); err != nil {
+				if asJSON {
+					err = output.DoctorFixJSON(cmd.OutOrStdout(), fixed)
+				} else {
+					err = output.DoctorFix(cmd.OutOrStdout(), terminal(), fixed)
+				}
+				if err != nil {
 					return err
 				}
 				healthy = fixed.After.Healthy()
@@ -76,7 +86,12 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 				if err != nil {
 					return err
 				}
-				if err := output.Doctor(cmd.OutOrStdout(), terminal(), result); err != nil {
+				if asJSON {
+					err = output.DoctorJSON(cmd.OutOrStdout(), result)
+				} else {
+					err = output.Doctor(cmd.OutOrStdout(), terminal(), result)
+				}
+				if err != nil {
 					return err
 				}
 				healthy = result.Healthy()
@@ -91,6 +106,7 @@ func newDoctorCommand(t tool, application *app.Detoo, terminal func() output.Ter
 	}
 	cmd.Flags().BoolVar(&fix, "fix", false, "move and rename the logs to where the tools look, and update the links to them")
 	cmd.Flags().BoolVar(&git, "git", false, "with --fix, move and rename with git mv; --git=false moves without git, and neither asks")
+	cmd.Flags().BoolVarP(&asJSON, "json", "j", false, "write the report as JSON, for a program or an agent to read; with --fix, nothing is asked")
 	cmd.Flags().BoolVar(&renumber, "renumber", false, "with --fix, renumber documents that share a number, by when git added them; --renumber=false does not, and neither asks")
 	return cmd
 }

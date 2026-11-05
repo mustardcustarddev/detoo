@@ -66,5 +66,14 @@ Before asking anything, `--fix` lists what it will do whatever the answers,
 such as the documents it renames to begin with their prefix, so that a
 question is not taken for the whole of the fix.
 
+`--json` writes the report as JSON, for a program or an agent to read
+rather than a person: the project's directory, whether anything is wrong, a
+summary, and each log with its problems.  Each problem has a type
+(`misplaced`, `misnamed`, `shared-number` or `mistitled`), says whether it
+needs fixing by hand, and why, and names the command that fixes it if not.
+Every path but the project's is relative to the project.  With `--fix`, the
+JSON also says what the fix changed, and doctor asks nothing, as when it is
+not run at a terminal.
+
 When nothing is wrong, or nothing is left wrong after a fix, doctor says so
 and exits 0; otherwise it exits 1.

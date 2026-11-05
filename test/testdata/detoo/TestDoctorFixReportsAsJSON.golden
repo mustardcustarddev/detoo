@@ -1,0 +1,364 @@
+cat > docs/adr/ADR-0001-record-architecture-decisions.md <<EOF
+# 1. Record architecture decisions
+EOF
+cat > docs/adr/ADR-0001-use-postgresql.md <<EOF
+# 1. Use PostgreSQL
+
+After [1. Record architecture decisions](ADR-0001-record-architecture-decisions.md).
+EOF
+cat > doc/rfc/0001-adopt-a-single-detoo-command.md <<EOF
+# 1. Adopt a single detoo command
+
+As [ADR 2](../../docs/adr/ADR-0001-use-postgresql.md) says.
+EOF
+git init --quiet --initial-branch=main
+git add docs/adr/ADR-0001-record-architecture-decisions.md
+detoo doctor --json
+{
+  "project": "$PROJECT",
+  "healthy": false,
+  "exitStatus": 1,
+  "summary": {
+    "documents": 3,
+    "directories": 2,
+    "problems": 3,
+    "fixable": 3,
+    "byHand": 0,
+    "renumberable": 1
+  },
+  "logs": [
+    {
+      "tool": "adr",
+      "noun": "decision record",
+      "prefix": "ADR",
+      "dir": "docs/adr",
+      "found": true,
+      "documents": 2,
+      "directories": [
+        {
+          "path": "docs/adr",
+          "documents": 2
+        }
+      ],
+      "problems": [
+        {
+          "type": "shared-number",
+          "byHand": false,
+          "fix": "detoo doctor --fix --renumber",
+          "message": "2 decision records share the number 1. The first git added keeps it, and detoo doctor --fix --renumber renumbers the others, as the log's renumbers say, and updates the links to them in the project's Markdown. Other references to them, by name or number, could be affected.",
+          "dir": "docs/adr",
+          "number": 1,
+          "documents": [
+            "ADR-0001-record-architecture-decisions.md",
+            "ADR-0001-use-postgresql.md"
+          ]
+        }
+      ],
+      "renumbers": [
+        {
+          "dir": "docs/adr",
+          "file": "ADR-0001-use-postgresql.md",
+          "to": "ADR-0002-use-postgresql.md",
+          "sharesNumber": true,
+          "after": "ADR-0001-record-architecture-decisions.md",
+          "byHand": false
+        }
+      ]
+    },
+    {
+      "tool": "rfc",
+      "noun": "RFC",
+      "prefix": "RFC",
+      "dir": "docs/rfc",
+      "found": true,
+      "documents": 1,
+      "directories": [
+        {
+          "path": "doc/rfc",
+          "documents": 1
+        }
+      ],
+      "problems": [
+        {
+          "type": "misplaced",
+          "byHand": false,
+          "fix": "detoo doctor --fix",
+          "message": "The rfc log is kept under doc/ instead of docs/. The fix moves doc/rfc to docs/rfc.",
+          "reason": "under-doc",
+          "from": "doc/rfc",
+          "to": "docs/rfc"
+        },
+        {
+          "type": "misnamed",
+          "byHand": false,
+          "fix": "detoo doctor --fix",
+          "message": "The file name does not begin with RFC-. The fix renames it to RFC-0001-adopt-a-single-detoo-command.md, and updates the links to it.",
+          "dir": "doc/rfc",
+          "from": "0001-adopt-a-single-detoo-command.md",
+          "to": "RFC-0001-adopt-a-single-detoo-command.md"
+        }
+      ]
+    },
+    {
+      "tool": "ust",
+      "noun": "user story",
+      "prefix": "STORY",
+      "dir": "docs/userstory",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "plm",
+      "noun": "playbook",
+      "prefix": "PROBLEM",
+      "dir": "docs/problem",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "sop",
+      "noun": "SOP",
+      "prefix": "SOP",
+      "dir": "docs/sop",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "fyr",
+      "noun": "fire drill",
+      "prefix": "FIREDRILL",
+      "dir": "docs/firedrill",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    }
+  ]
+}
+echo $?
+1
+detoo doctor -j --fix --renumber
+{
+  "project": "$PROJECT",
+  "healthy": true,
+  "exitStatus": 0,
+  "summary": {
+    "documents": 3,
+    "directories": 2,
+    "problems": 0,
+    "fixable": 0,
+    "byHand": 0,
+    "renumberable": 0
+  },
+  "fixed": {
+    "problems": 3,
+    "changes": 6,
+    "git": false,
+    "moved": [
+      {
+        "tool": "rfc",
+        "from": "doc/rfc",
+        "to": "docs/rfc"
+      }
+    ],
+    "renamed": [
+      {
+        "tool": "rfc",
+        "dir": "doc/rfc",
+        "from": "0001-adopt-a-single-detoo-command.md",
+        "to": "RFC-0001-adopt-a-single-detoo-command.md"
+      }
+    ],
+    "renumbered": [
+      {
+        "tool": "adr",
+        "dir": "docs/adr",
+        "from": "ADR-0001-use-postgresql.md",
+        "to": "ADR-0002-use-postgresql.md"
+      }
+    ],
+    "removed": [
+      "doc"
+    ],
+    "relinked": [
+      {
+        "path": "docs/adr/ADR-0002-use-postgresql.md",
+        "links": 0,
+        "retitled": true
+      },
+      {
+        "path": "docs/rfc/RFC-0001-adopt-a-single-detoo-command.md",
+        "links": 1,
+        "retitled": false
+      }
+    ]
+  },
+  "logs": [
+    {
+      "tool": "adr",
+      "noun": "decision record",
+      "prefix": "ADR",
+      "dir": "docs/adr",
+      "found": true,
+      "documents": 2,
+      "directories": [
+        {
+          "path": "docs/adr",
+          "documents": 2
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tool": "rfc",
+      "noun": "RFC",
+      "prefix": "RFC",
+      "dir": "docs/rfc",
+      "found": true,
+      "documents": 1,
+      "directories": [
+        {
+          "path": "docs/rfc",
+          "documents": 1
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tool": "ust",
+      "noun": "user story",
+      "prefix": "STORY",
+      "dir": "docs/userstory",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "plm",
+      "noun": "playbook",
+      "prefix": "PROBLEM",
+      "dir": "docs/problem",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "sop",
+      "noun": "SOP",
+      "prefix": "SOP",
+      "dir": "docs/sop",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "fyr",
+      "noun": "fire drill",
+      "prefix": "FIREDRILL",
+      "dir": "docs/firedrill",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    }
+  ]
+}
+echo $?
+0
+detoo doctor -j
+{
+  "project": "$PROJECT",
+  "healthy": true,
+  "exitStatus": 0,
+  "summary": {
+    "documents": 3,
+    "directories": 2,
+    "problems": 0,
+    "fixable": 0,
+    "byHand": 0,
+    "renumberable": 0
+  },
+  "logs": [
+    {
+      "tool": "adr",
+      "noun": "decision record",
+      "prefix": "ADR",
+      "dir": "docs/adr",
+      "found": true,
+      "documents": 2,
+      "directories": [
+        {
+          "path": "docs/adr",
+          "documents": 2
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tool": "rfc",
+      "noun": "RFC",
+      "prefix": "RFC",
+      "dir": "docs/rfc",
+      "found": true,
+      "documents": 1,
+      "directories": [
+        {
+          "path": "docs/rfc",
+          "documents": 1
+        }
+      ],
+      "problems": []
+    },
+    {
+      "tool": "ust",
+      "noun": "user story",
+      "prefix": "STORY",
+      "dir": "docs/userstory",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "plm",
+      "noun": "playbook",
+      "prefix": "PROBLEM",
+      "dir": "docs/problem",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "sop",
+      "noun": "SOP",
+      "prefix": "SOP",
+      "dir": "docs/sop",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    },
+    {
+      "tool": "fyr",
+      "noun": "fire drill",
+      "prefix": "FIREDRILL",
+      "dir": "docs/firedrill",
+      "found": false,
+      "documents": 0,
+      "directories": [],
+      "problems": []
+    }
+  ]
+}
+echo $?
+0

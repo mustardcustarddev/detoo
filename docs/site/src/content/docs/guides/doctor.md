@@ -35,6 +35,10 @@ It finds, for example:
   `ADR-0001-do-stuff.md`. Case and punctuation do not count. Fix these by
   hand: doctor cannot tell whether the title or the file name is wrong.
 
+`detoo doctor --json` writes the same report as JSON, for an agent or a
+script to read: each problem, whether it needs fixing by hand, and the
+command that fixes it if not.
+
 ## Fix
 
 ```bash
